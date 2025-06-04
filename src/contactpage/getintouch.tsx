@@ -100,13 +100,13 @@ function GetInTouch() {
           </div>
         </div>
       </div>
-
+{/* 
       <div className="getintouch-map">
         <iframe
           src={`https://www.google.com/maps?q=${encodeURIComponent(address)}&z=18&output=embed`}
           allowFullScreen
         ></iframe>
-      </div>
+      </div> */}
     </div>
   );
 }

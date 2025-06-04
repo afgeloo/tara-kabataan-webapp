@@ -16,30 +16,24 @@ const BlogsSec: React.FC = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
 
   useEffect(() => {
-    fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/blogs.php")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.blogs) {
-          const allBlogs: Blog[] = data.blogs;
+  fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/blogs.php")
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.blogs) {
+        const allBlogs: Blog[] = data.blogs;
 
-          const pinnedBlogs = allBlogs
-            .filter(blog => blog.blog_status === "PINNED")
-            .sort((a, b) => new Date(b.created_at || "").getTime() - new Date(a.created_at || "").getTime());
+        const sortedBlogs = allBlogs.sort(
+          (a, b) =>
+            new Date(b.created_at || "").getTime() -
+            new Date(a.created_at || "").getTime()
+        );
 
-          const otherBlogs = allBlogs
-            .filter(blog => blog.blog_status !== "PINNED")
-            .sort((a, b) => new Date(b.created_at || "").getTime() - new Date(a.created_at || "").getTime());
+        setBlogs(sortedBlogs.slice(0, 3));
+      }
+    })
+    .catch((err) => console.error("Failed to fetch blogs:", err));
+}, []);
 
-          const finalBlogs = [
-            ...pinnedBlogs.slice(0, 3), // get as many PINNED as possible (up to 3)
-            ...otherBlogs,
-          ].slice(0, 3); // then slice to exactly 3 blogs total
-
-          setBlogs(finalBlogs);
-        }
-      })
-      .catch((err) => console.error("Failed to fetch blogs:", err));
-  }, []);
 
   if (blogs.length === 0) return null;
 
@@ -63,14 +57,22 @@ const BlogsSec: React.FC = () => {
                   style={{ textDecoration: 'none', color: 'inherit' }} 
                 >
                   <div className="blogs-image-container">
+                  {image_url ? (
                     <img
                       src={`http://localhost${image_url}`}
                       alt={`Blog ${blog_id}`}
                       onError={(e) => {
-                        (e.target as HTMLImageElement).src = "./src/assets/homepage/default-blog.png";
+                        (e.target as HTMLImageElement).style.display = "none";
+                        const fallback = document.createElement("div");
+                        fallback.textContent = "No Image Available";
+                        fallback.className = "no-image-fallback";
+                        e.currentTarget.parentElement?.appendChild(fallback);
                       }}
                     />
-                  </div>
+                  ) : (
+                    <div className="no-image-fallback">No Image Available</div>
+                  )}
+                </div>
                   <div className="blog-title">
                     <h1>{title}</h1>
                   </div>
