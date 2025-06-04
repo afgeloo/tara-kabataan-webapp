@@ -30,6 +30,7 @@ function SingleBlog() {
   const [fullImageUrl, setFullImageUrl] = useState<string | null>(null);
   const [showAllImagesModal, setShowAllImagesModal] = useState(false);
   const [restoringScroll, setRestoringScroll] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
     const fetchBlog = async () => {
@@ -39,6 +40,7 @@ function SingleBlog() {
         if (data && data.blog_id) {
           setBlog(data);
         } else {
+          setNotFound(true);
           console.error("No blog found");
         }
       } catch (error) {
@@ -96,7 +98,8 @@ function SingleBlog() {
   }, [loading, blog]);  
 
   if (loading || restoringScroll) return <Preloader />;
-  if (!blog) return <div className="single-blog-not-found">Blog not found.</div>;
+  if (notFound) return <div className="single-blog-not-found">Blog does not exist.</div>;
+  if (!blog) return null;
 
   function formatContent(content: string) {
     return content
@@ -127,35 +130,33 @@ function SingleBlog() {
               className="single-blog-image"
             />
           </div>
-        {moreImages.length > 0 ? (
-          <div className="blog-more-image-grid">
-            {[...moreImages]
-              .slice(0, 4)
-              .map((img, i) => {
-                const isLast = i === 3 && moreImages.length > 4;
-                return (
-                  <div key={i} className="blog-image-preview">
-                    <img
-                      src={getFullImageUrl(img)}
-                      alt={`More Image ${i}`}
-                      onClick={() => setFullImageUrl(getFullImageUrl(img))}
-                      style={{ cursor: "zoom-in" }}
-                    />
-                    {isLast && (
-                      <div
-                        className="blog-image-overlay"
-                        onClick={() => setShowAllImagesModal(true)}
-                      >
-                        +{moreImages.length - 3}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-          </div>
-        ) : (
-          <p>No additional images available.</p>
-        )}
+        {moreImages.length > 0 && (
+        <div className="blog-more-image-grid">
+          {[...moreImages]
+            .slice(0, 4)
+            .map((img, i) => {
+              const isLast = i === 3 && moreImages.length > 4;
+              return (
+                <div key={i} className="blog-image-preview">
+                  <img
+                    src={getFullImageUrl(img)}
+                    alt={`More Image ${i}`}
+                    onClick={() => setFullImageUrl(getFullImageUrl(img))}
+                    style={{ cursor: "zoom-in" }}
+                  />
+                  {isLast && (
+                    <div
+                      className="blog-image-overlay"
+                      onClick={() => setShowAllImagesModal(true)}
+                    >
+                      +{moreImages.length - 3}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+        </div>
+      )}
         <div className="single-blog-info">
           <h1 className="single-blog-title">{blog.title}</h1>
           <div className="single-blog-meta">

@@ -186,18 +186,18 @@ function EventsPageRSVP() {
             <h1 className="eventspage-header-EVENTS">Events</h1>
           </div>
           <div className="events-header-row-2">
-          <div className="event-search-bar">
-            <img
-              src={searchIconEventspage}
-              alt="Search"
-              className="event-search-icon"
-            />
+          <div className="event-searchbar-container">
             <input
               type="text"
               placeholder="Search events..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="event-search-input"
+              className="event-searchbar-input"
+            />
+            <img
+              src={searchIconEventspage}
+              alt="Search"
+              className="event-searchbar-icon"
             />
           </div>
           <div className="event-toggle-tabs">

@@ -31,11 +31,16 @@
   
   .single-blog-image {
     width: 100%;
-    max-height: 520px;
+    max-height: 510px;
     object-fit: cover;
     border-radius: 16px;
   }
-  
+
+  .blog-image-preview img{
+    max-height: 150px;
+    object-fit: cover;
+  }
+
   .single-blog-info {
     display: flex;
     flex-direction: column;

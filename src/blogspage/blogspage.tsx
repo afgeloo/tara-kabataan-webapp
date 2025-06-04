@@ -48,8 +48,11 @@ function BlogsPage() {
   };
 
   const categories = ["ALL", "KALUSUGAN", "KALIKASAN", "KARUNUNGAN", "KULTURA", "KASARIAN"];
-  const filteredBlogs = blogs.filter((blog) =>
-    blog.title.toLowerCase().includes(searchQuery.toLowerCase())
+  const pinnedBlogIds = new Set(pinnedBlogs.map((blog) => blog.blog_id));
+  const filteredBlogs = blogs.filter(
+    (blog) =>
+      !pinnedBlogIds.has(blog.blog_id) &&
+      blog.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
   const displayedBlogs = showAllBlogs ? filteredBlogs : filteredBlogs.slice(0, 4);
 
@@ -309,15 +312,19 @@ function BlogsPage() {
             ))}
           </select>
         </div>
-        <div className="blog-search-bar" style={{ marginTop: "14px" }}>
+        <div className="blog-searchbar-container">
           <input
             type="text"
             placeholder="Search blogs..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="blog-search-input"
+            className="blog-searchbar-input"
           />
-          <img src={searchIconEventspage} alt="Search" className="blog-search-icon" />
+          <img
+            src={searchIconEventspage}
+            alt="Search"
+            className="blog-searchbar-icon"
+          />
         </div>
       </div>
     </div>

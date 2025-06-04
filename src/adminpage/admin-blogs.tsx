@@ -1146,7 +1146,7 @@ const AdminBlogs = () => {
                     )}
                   </div>
                 </th>
-                <th>View</th>
+                <th>{selectMode ? "Select" : "View"}</th>
               </tr>
             </thead>
             <colgroup>

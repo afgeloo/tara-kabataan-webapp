@@ -2005,7 +2005,7 @@ const AdminSettings = () => {
                   <th>Description</th>
                   <th>Email</th>
                   <th>Contact No.</th>
-                  <th>View</th>
+                  <th>{selectMode ? "Select" : "View"}</th>
                 </tr>
               </thead>
               <colgroup>
