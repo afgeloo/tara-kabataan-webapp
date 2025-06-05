@@ -29,8 +29,8 @@
 }
   
 .event-details-image {
-  width: 100%;
-  height: 350px;
+  width: 350px;
+  height: 320px;
   object-fit: cover;
   border-radius: 16px;
 }

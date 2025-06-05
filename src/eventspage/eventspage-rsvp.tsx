@@ -4,6 +4,7 @@ import "./css/eventpage-rsvp.css";
 import locationIconeventspage from "../assets/eventspage/Location-eventspage.png";
 import searchIconEventspage from "../assets/eventspage/Search-icon-events.png";
 import Preloader from "../preloader";
+import EventsCarousel from "../homepage/events-carousel"; 
 
 export interface Event {
   event_id: string;
@@ -183,8 +184,26 @@ function EventsPageRSVP() {
       ) : (
         <>
           <div className="events-header-row">
-            <h1 className="eventspage-header-EVENTS">Events</h1>
+            <h1 className="eventspage-header-EVENTS">Recent Events</h1>
+            {events.length > 0 && (
+              <EventsCarousel
+                slides={events
+                  .sort((a, b) => new Date(b.event_date).getTime() - new Date(a.event_date).getTime())
+                  .slice(0, 5)
+                  .map((event) => ({
+                    image: getFullImageUrl(event.event_image),
+                    category: event.event_category,
+                    title: event.event_title,
+                    date: formatDateRSVP(event.event_date),
+                    location: event.event_venue,
+                  }))}
+                autoSlide
+                autoSlideInterval={5000}
+              />
+            )}
           </div>
+          <hr className="events-header-divider" />
+          <h1 className="eventspage-header-2-EVENTS">Events</h1>
           <div className="events-header-row-2">
           <div className="event-searchbar-container">
             <input
@@ -347,7 +366,7 @@ function EventsPageRSVP() {
             </div>
           ) : (
             <div className="no-events-container">
-              <p>No events found.</p>
+              <p>No upcoming events found.</p>
             </div>
           )}
         </>
