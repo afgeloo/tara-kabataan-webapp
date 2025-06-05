@@ -16,12 +16,14 @@ const slidesadvocacies = [
         hoverImage: healthIconHover,
         category: "Kalusugan",
         title: "Itinataguyod ang abot-kamay at makataong serbisyong pangkalusugan para sa lahat sa pamamagitan ng paglaban sa pribatisasyon ng healthcare, pagtugon sa mga salik panlipunan na nakakaapekto sa kalusugan, at pagsasaayos sa kakulangan ng health workers at pasilidad.",
+        leads: ["Juan Dela Cruz"]
     },
     { 
         defaultImage: natureIconDefault,
         hoverImage: natureIconHover,
         category: "Kalikasan",
         title: "Nangunguna sa panawagan para sa katarungang pangklima at pangangalaga sa kalikasan sa pamamagitan ng makatarungang paglipat sa sustenableng pamumuhay, paghahanda sa sakuna, at pagprotekta sa mga komunidad laban sa mapaminsalang proyekto tulad ng reclamation.",
+        leads: ["Alex Reyes", "Jamie Santos"]
     },
     { 
         defaultImage: bookIconDefault,
@@ -60,6 +62,28 @@ function AboutAdvocacies() {
                     </div>
                     <h2 className="advocacy-category">{slide.category}</h2>
                     <p className="advocacy-title">{slide.title}</p>
+                    <h2 className="advocacy-category">
+                    {(slide.leads && slide.leads.length >= 2) ? "Leads" : "Lead"}
+                    </h2>
+
+                    <div style={{ display: "flex", gap: "20px", justifyContent: "center", marginBottom: "10px" }}>
+                    {(slide.leads && slide.leads.length > 0) ? (
+                        slide.leads.map((lead, idx) => (
+                        <div
+                            key={idx}
+                            style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+                        >
+                            <div className="lead-placeholder" />
+                            <p className="advocacy-lead">{lead}</p>
+                        </div>
+                        ))
+                    ) : (
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                        <div className="lead-placeholder" />
+                        <p className="advocacy-lead">No Current Lead</p>
+                        </div>
+                    )}
+                    </div>
                 </div>
             ))}
             </div>
