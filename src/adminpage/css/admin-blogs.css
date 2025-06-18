@@ -868,7 +868,7 @@
     opacity: 0;
     transform: translateY(20px);
     transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-    z-index: 1000;
+    z-index: 999999;
     backdrop-filter: blur(4px);
   }
   

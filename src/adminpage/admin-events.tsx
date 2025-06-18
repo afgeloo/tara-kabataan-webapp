@@ -481,9 +481,47 @@ const AdminEvents = () => {
     setIsEditing(false);
     setEditableEvent(null);
   };
+
+  const [editMissing, setEditMissing] = useState({
+    title: false,
+    category: false,
+    event_date: false,
+    event_start_time: false,
+    event_end_time: false,
+    event_venue: false,
+    event_speakers: false,
+    content: false,
+    image_url: false,
+  });
   
   const handleSave = () => {
     if (!editableEvent) return;
+
+    const content = textareaRef.current?.innerHTML.trim() || "";
+    const textContent = textareaRef.current?.textContent?.trim() || "";
+    const hasImage     = Boolean(
+      textareaRef.current?.querySelector("img")
+    );
+
+    const newEditMissing = {
+      title: !editableEvent.title.trim(),
+      category: !editableEvent.category.trim(),
+      event_date: !editableEvent.event_date,
+      event_start_time: !editableEvent.event_start_time,
+      event_end_time: !editableEvent.event_end_time,
+      event_venue: !editableEvent.event_venue.trim(),
+      event_speakers: !editableEvent.event_speakers.trim(),
+      content: !(textContent || hasImage),
+      image_url: !tempImageUrl && !editableEvent.image_url,
+    };
+
+    setEditMissing(newEditMissing);
+
+    if (Object.values(newEditMissing).some(Boolean)) {
+      setNotification("Please fill out all required fields marked with *");
+      setTimeout(() => setNotification(""), 4000);
+      return;
+    }
   
     const now = new Date();
   
@@ -498,7 +536,6 @@ const AdminEvents = () => {
       return;
     }
 
-  
     if (tempImageUrl !== null) {
       editableEvent.image_url = tempImageUrl;
     }
@@ -537,22 +574,26 @@ const AdminEvents = () => {
     const editor = document.getElementById("add-event-content-editor");
     const extractedContent = editor ? editor.innerHTML.trim() : "";
   
-    if (
-      !newEvent.title.trim() ||
-      !newEvent.category.trim() ||
-      !newEvent.event_date ||
-      !newEvent.event_start_time ||
-      !newEvent.event_end_time ||
-      !newEvent.event_venue.trim() ||
-      !newEvent.event_speakers.trim() ||
-      !extractedContent ||
-      !newImageUrl
-    ) {
-      setNotification("Please complete all fields before saving the event.");
+    const newMissing = {
+      title: !newEvent.title.trim(),
+      category: !newEvent.category.trim(),
+      event_date: !newEvent.event_date,
+      event_start_time: !newEvent.event_start_time,
+      event_end_time: !newEvent.event_end_time,
+      event_venue: !newEvent.event_venue.trim(),
+      event_speakers: !newEvent.event_speakers.trim(),
+      content: !extractedContent,
+      image: !newImageUrl,
+    };
+
+    setMissing(newMissing);
+
+    if (Object.values(newMissing).some(Boolean)) {
+      setNotification("Please fill out all required fields marked with *");
       setTimeout(() => setNotification(""), 4000);
       return;
     }
-  
+
     const today = new Date();
     today.setHours(0, 0, 0, 0); 
     const selectedDate = new Date(newEvent.event_date);
@@ -581,18 +622,29 @@ const AdminEvents = () => {
       const data = await res.json();
   
       if (data.success && data.event) {
-        setEvents((prev) => [data.event, ...prev]);
-        setNotification("New event added successfully!");
-        setIsAddingNew(false);
-        resetNewEvent();
-      } else {
-        setNotification("Failed to add new event.");
-        console.error("Add error:", data.error);
-      }
-    } catch (err) {
-      console.error("Add event error:", err);
-      setNotification("An error occurred while adding the event.");
+      setEvents((prev) => [data.event, ...prev]);
+      setNotification("New event added successfully!");
+      setIsAddingNew(false);
+      resetNewEvent();
+      setMissing({
+        title: false,
+        category: false,
+        event_date: false,
+        event_start_time: false,
+        event_end_time: false,
+        event_venue: false,
+        event_speakers: false,
+        content: false,
+        image: false,
+      });
+    } else {
+      setNotification("Failed to add new event.");
+      console.error("Add error:", data.error);
     }
+  } catch (err) {
+    console.error("Add event error:", err);
+    setNotification("An error occurred while adding the event.");
+  }
   
     setTimeout(() => setNotification(""), 4000);
   };  
@@ -766,6 +818,19 @@ const AdminEvents = () => {
     content: "",
     image_url: ""
   });
+
+  const [missing, setMissing] = useState({
+    title: true,
+    category: true,
+    event_date: true,
+    event_start_time: true,
+    event_end_time: true,
+    event_venue: true,
+    event_speakers: true,
+    content: true,
+    image: true,
+  });
+
   const [newImageUrl, setNewImageUrl] = useState<string | null>(null);  
 
   const resetNewEvent = () => {
@@ -798,6 +863,21 @@ const AdminEvents = () => {
     setOtpRequired(false);
     setIsEditingProfile(false);
   };  
+
+  useEffect(() => {
+    setEditMissing({
+      title:      false,
+      category:   false,
+      event_date: false,
+      event_start_time: false,
+      event_end_time:   false,
+      event_venue: false,
+      event_speakers: false,
+      content:    false,
+      image_url:  false,
+    });
+  }, [selectedEvent]);
+
   
   return (
     <div className="admin-events">
@@ -1257,7 +1337,11 @@ const AdminEvents = () => {
                       <p className="admin-events-inner-content-modal-id-content">{selectedEvent.event_id}</p>
                     </div>
                     <div className="admin-events-inner-content-modal-title">
-                      <p><strong>Title</strong></p>
+                      <p>
+                        <strong>
+                          Title {editMissing.title && <span style={{ color: "red" }}>*</span>}
+                        </strong>
+                      </p>
                       {isEditing ? (
                         <input
                           type="text"
@@ -1291,7 +1375,11 @@ const AdminEvents = () => {
                     </select>
                     </div>
                     <div className="admin-events-inner-content-modal-venue">
-                      <p><strong>Venue</strong></p>
+                      <p>
+                        <strong>
+                          Venue {editMissing.event_venue && <span style={{ color: "red" }}>*</span>}
+                        </strong>
+                      </p>
                       {isEditing ? (
                         <input
                           type="text"
@@ -1347,7 +1435,7 @@ const AdminEvents = () => {
                       </select>
                     </div>
                     <div className="admin-events-inner-content-modal-date">
-                      <p><strong>Date</strong></p>
+                    <p><strong>Date</strong></p>
                       {isEditing ? (
                         <input
                           type="date"
@@ -1366,7 +1454,7 @@ const AdminEvents = () => {
                     </div>
                     <div className="admin-events-inner-content-modal-time">
                       <div className="admin-events-inner-content-modal-time-start">
-                        <p><strong>Start Time:</strong></p>
+                      <p><strong>Start Time</strong></p>
                         {isEditing ? (
                           <input
                             type="time"
@@ -1384,7 +1472,7 @@ const AdminEvents = () => {
                         )}
                       </div>
                       <div className="admin-events-inner-content-modal-time-end">
-                        <p><strong>End Time:</strong></p>
+                        <p><strong>End Time</strong></p>
                         {isEditing ? (
                           <input
                             type="time"
@@ -1403,7 +1491,11 @@ const AdminEvents = () => {
                       </div>
                     </div>
                     <div className="admin-events-inner-content-modal-speakers">
-                      <p><strong>Speaker/s</strong></p>
+                      <p>
+                        <strong>
+                          Speakers {editMissing.event_speakers && <span style={{ color: "red" }}>*</span>}
+                        </strong>
+                      </p>
                       {isEditing ? (
                         <textarea
                           value={editableEvent?.event_speakers || ""}
@@ -1423,7 +1515,11 @@ const AdminEvents = () => {
                 <div className="admin-events-inner-content-modal-bot">
                   <div className="admin-events-inner-content-modal-bot-left">
                     <div className="admin-events-inner-content-modal-image">
-                      <p><strong>Image</strong></p>
+                      <p>
+                        <strong>
+                          Image {editMissing.image_url && <span style={{ color: "red" }}>*</span>}
+                        </strong>
+                      </p>
                         {getFullImageUrl(
                           isEditing
                             ? tempImageUrl !== null
@@ -1497,7 +1593,11 @@ const AdminEvents = () => {
                   </div>
                   <div className="admin-events-inner-content-modal-bot-right">
                     <div className="admin-events-inner-content-modal-desc">
-                      <p><strong>Event Content</strong></p>
+                      <p>
+                        <strong>
+                          Event Content {editMissing.content && <span style={{ color: "red" }}>*</span>}
+                        </strong>
+                      </p>
                       {isEditing ? (
                       <>
                         <div className="admin-blogs-content-image-tools">
@@ -1707,7 +1807,11 @@ const AdminEvents = () => {
                 <div className="admin-new-event-inner-content-modal-top">
                   <div className="admin-new-event-inner-content-modal-top-left">
                     <h2>Event Details</h2>
-                    <p><strong>Title</strong></p>
+                      <p>
+                        <strong>
+                          Title {missing.title && <span style={{ color: "red" }}>*</span>}
+                        </strong>
+                      </p>
                       <input
                         className="admin-new-event-inner-content-modal-title-content"
                         type="text"
@@ -1715,7 +1819,7 @@ const AdminEvents = () => {
                         onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
                       />
                     <div className="admin-new-event-inner-content-modal-category">
-                    <p><strong>Category</strong></p>
+                    <p><strong>Category {missing.category && <span style={{ color: "red" }}>*</span>}</strong></p>
                       <select
                         className="admin-events-inner-content-modal-category-content pink-category"
                         value={newEvent.category}
@@ -1727,7 +1831,7 @@ const AdminEvents = () => {
                       </select>
                     </div>
                       <div className="admin-new-event-inner-content-modal-venue">
-                        <p><strong>Venue</strong></p>
+                      <p><strong>Venue {missing.event_venue && <span style={{ color: "red" }}>*</span>}</strong></p>
                         <input
                           type="text"
                           className="admin-new-event-inner-content-modal-venue-content"
@@ -1762,7 +1866,7 @@ const AdminEvents = () => {
                       </select>
                     </div>
                     <div className="admin-new-event-inner-content-modal-date">
-                      <p><strong>Date</strong></p>
+                    <p><strong>Date {missing.event_date && <span style={{ color: "red" }}>*</span>}</strong></p>
                       <input
                         type="date"
                         className="admin-new-event-inner-content-modal-date-content"
@@ -1774,7 +1878,7 @@ const AdminEvents = () => {
                     </div>
                     <div className="admin-new-event-inner-content-modal-time">
                       <div className="admin-new-event-inner-content-modal-time-start">
-                        <p><strong>Start Time:</strong></p>
+                      <p><strong>Start Time {missing.event_start_time && <span style={{ color: "red" }}>*</span>}</strong></p>
                         <input
                           type="time"
                           className="admin-new-event-inner-content-modal-time-start-content"
@@ -1785,7 +1889,7 @@ const AdminEvents = () => {
                         />
                       </div>
                       <div className="admin-new-event-inner-content-modal-time-end">
-                        <p><strong>End Time:</strong></p>
+                        <p><strong>End Time {missing.event_end_time && <span style={{ color: "red" }}>*</span>}</strong></p>
                         <input
                           type="time"
                           className="admin-new-event-inner-content-modal-time-end-content"
@@ -1797,7 +1901,7 @@ const AdminEvents = () => {
                       </div>
                     </div>
                     <div className="admin-events-inner-content-modal-speakers">
-                      <p><strong>Speaker/s</strong></p>
+                      <p><strong>Speaker/s {missing.event_speakers && <span style={{ color: "red" }}>*</span>}</strong></p>
                       <textarea
                         className="admin-new-event-inner-content-modal-speakers-content"
                         value={newEvent.event_speakers}
@@ -1812,7 +1916,7 @@ const AdminEvents = () => {
                   <div className="admin-new-event-inner-content-modal-bot-left">
                     <div className="admin-new-event-inner-content-modal-bot-left">
                     <div className="admin-new-event-inner-content-modal-image">
-                      <p><strong>Image</strong></p>
+                      <p><strong>Image {missing.image && <span style={{ color: "red" }}>*</span>}</strong></p>
                       {getFullImageUrl(newImageUrl) ? (
                         <img
                           src={getFullImageUrl(newImageUrl)}
@@ -1882,7 +1986,7 @@ const AdminEvents = () => {
                   </div>
                   <div className="admin-new-event-inner-content-modal-bot-right">
                   <div className="admin-new-event-inner-content-modal-desc">
-                    <p><strong>Event Content</strong></p>
+                    <p><strong>Event Content {missing.content && <span style={{ color: "red" }}>*</span>}</strong></p>
                     <div className="admin-blogs-content-image-tools">
                       <button className="format-btn undo"
                         onMouseDown={(e) => { e.preventDefault(); saveSelection(); }}

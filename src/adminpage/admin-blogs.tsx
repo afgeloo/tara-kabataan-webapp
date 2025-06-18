@@ -360,17 +360,42 @@ const AdminBlogs = () => {
   .slice(0, count === -1 ? blogs.length : count);
 
   const handleEdit = () => {
+    setSubmittedEdit(false);
     setEditableBlog({ ...selectedBlog! });
     setEditableBlogMoreImages(selectedBlog?.more_images || []);
     setIsEditing(true);
   };  
   
   const handleCancel = () => {
+    setSubmittedEdit(false);
     setIsEditing(false);
     setEditableBlog(null);
   };
+
+  const [submittedEdit, setSubmittedEdit] = useState(false);
   
   const handleSave = () => {
+    setSubmittedEdit(true);
+    const updatedContent = textareaRef.current?.innerHTML ?? "";
+    const stripped = updatedContent.replace(/<[^>]+>/g, "").trim();
+
+    setEditableBlog(prev => prev
+      ? { ...prev, content: updatedContent }
+      : prev
+    );
+
+    if (
+      !editableBlog?.title?.trim() ||
+      !editableBlog?.image_url ||
+      !editableBlog?.content?.trim() ||
+      !stripped
+    ) {
+      setNotification("Please fill out all required fields marked with *");
+      setNotificationType("error");
+      setTimeout(() => setNotification(""), 4000);
+      return;
+    }
+
     if (textareaRef.current) {
       const updatedContent = textareaRef.current.innerHTML;
       if (editableBlog) {
@@ -396,8 +421,10 @@ const AdminBlogs = () => {
           );
           setSelectedBlog(mergedBlog); 
           setIsEditing(false);
+          setNotificationType("success");
           setNotification("Blog updated successfully!");
           setTimeout(() => setNotification(""), 4000);
+          setSubmittedEdit(false);
         } else {
           setNotification("Failed to update blog.");
           setTimeout(() => setNotification(""), 4000);
@@ -693,41 +720,49 @@ const AdminBlogs = () => {
       alert("An error occurred during image upload.");
     }
   };
+
+  const [submitted, setSubmitted] = useState(false);
     
   const handleNewBlogSave = async () => {
-    const isIncomplete =
-      !newBlogTitle.trim() ||
-      !newBlogContent.trim() ||
-      !newBlogImage;
-  
+    setSubmitted(true);
+
+    if (!newBlogTitle.trim() || !newBlogContent.trim() || !newBlogImage) {
+      setNotification("Please fill out all required fields marked with *");
+      setNotificationType("error");
+      setTimeout(() => setNotification(""), 4000);
+      return;
+    }
+
     const blogData = {
       title: newBlogTitle,
       content: newBlogContent,
       category: newBlogCategory,
-      blog_status: isIncomplete ? "DRAFT" : newBlogStatus, 
+      blog_status: newBlogStatus,
       image_url: newBlogImage,
       author: newBlogAuthor,
       more_images: newBlogMoreImages,
     };
-  
+
     try {
-      const res = await fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/add_new_blog.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(blogData),
-      });
-  
+      const res = await fetch(
+        "http://localhost/tara-kabataan/tara-kabataan-backend/api/add_new_blog.php",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(blogData),
+        }
+      );
       const text = await res.text();
       const data = JSON.parse(text);
-  
+
       if (data.success && data.blog) {
         setBlogs((prev) => [...prev, data.blog]);
-  
-        fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/blogs.php")
-          .then((res) => res.json())
-          .then((data) => setBlogs(data.blogs))
-          .catch((err) => console.error("Failed to refresh blogs:", err));
-  
+
+        const fresh = await fetch(
+          "http://localhost/tara-kabataan/tara-kabataan-backend/api/blogs.php"
+        ).then((r) => r.json());
+        setBlogs(fresh.blogs);
+
         resetNewBlogForm();
         setNewBlogMoreImages([]);
         setShowAllImagesModal(false);
@@ -739,7 +774,7 @@ const AdminBlogs = () => {
       console.error("Save error:", err);
       alert("Error occurred while saving blog.");
     }
-  };  
+  };
 
   const pinnedBlogs = blogs.filter(blog => blog.blog_status === "PINNED");
   const pinnedCount = pinnedBlogs.length;
@@ -790,6 +825,8 @@ const AdminBlogs = () => {
 
   const [confirmThumbDeleteIndex, setConfirmThumbDeleteIndex] = useState<number | null>(null);
   const [viewMode, setViewMode] = useState<"table" | "grid">("table");
+
+  const rawText = textareaRef.current?.innerText.trim() ?? "";
   
   return (
     <div className="admin-blogs">
@@ -1320,7 +1357,11 @@ const AdminBlogs = () => {
                       <p className="admin-blogs-modal-id-content">{selectedBlog.blog_id}</p>
                     </div>
                     <div className="admin-blogs-modal-title">
-                      <p><strong>Title</strong></p>
+                      <p><strong>Title</strong>
+                        {submittedEdit && !editableBlog?.title?.trim() && (
+                          <span style={{ color: 'red' }}>*</span>
+                        )}
+                      </p>
                       {isEditing ? (
                         <input
                           type="text"
@@ -1384,7 +1425,11 @@ const AdminBlogs = () => {
                   </div>
                   <div className="admin-blogs-modal-right">
                     <div className="admin-blogs-modal-image">
-                      <p><strong>Main Image</strong></p>
+                      <p><strong>Main Image</strong>
+                        {submittedEdit && !editableBlog?.image_url && (
+                          <span style={{ color: 'red' }}>*</span>
+                        )}
+                      </p>
                       {(isEditing ? editableBlog?.image_url : selectedBlog.image_url) ? (
                         <img
                         src={`http://localhost${isEditing ? editableBlog?.image_url : selectedBlog.image_url}`}
@@ -1535,7 +1580,12 @@ const AdminBlogs = () => {
                 </div>
                 <div className="admin-blogs-modal-inner-content-bot">
                   <div className="admin-events-inner-content-modal-desc">
-                    <p><strong>Blog Content</strong></p>
+                    <p>
+                      <strong>Blog Content</strong>
+                      {submittedEdit && !rawText && (
+                        <span style={{ color: "red" }}>*</span>
+                      )}
+                    </p>
                     {isEditing ? (
                     <>
                       <div className="admin-blogs-content-image-tools">
@@ -1706,7 +1756,14 @@ const AdminBlogs = () => {
                   <div className="admin-blogs-new-blog-modal-left">
                     <h2>Add New Blog</h2>
                     <div className="admin-blogs-new-blog-modal-title">
-                      <p><strong>Title</strong></p>
+                      <p>
+                        <strong>
+                          Title{" "}
+                          {(!submitted || !newBlogTitle.trim()) && (
+                            <span style={{ color: "red" }}>*</span>
+                          )}
+                        </strong>
+                      </p>
                       <input
                         type="text"
                         className="admin-blogs-new-blog-modal-title-content"
@@ -1716,7 +1773,14 @@ const AdminBlogs = () => {
                       />
                     </div>
                     <div className="admin-blogs-new-blog-modal-category">
-                      <p><strong>Category</strong></p>
+                      <p>
+                        <strong>
+                          Category{" "}
+                          {(!submitted || !newBlogCategory.trim()) && (
+                            <span style={{ color: "red" }}>*</span>
+                          )}
+                        </strong>
+                      </p>
                       <select
                         className="admin-blogs-new-blog-modal-select modal-category-pink"
                         value={newBlogCategory}
@@ -1732,7 +1796,14 @@ const AdminBlogs = () => {
                       <p className="admin-blogs-new-blog-modal-author-content">{newBlogAuthorName}</p>
                     </div>
                     <div className="admin-blogs-new-blog-modal-status">
-                    <p><strong>Status</strong></p>
+                    <p>
+                      <strong>
+                        Status{" "}
+                        {(!submitted || !newBlogStatus.trim()) && (
+                          <span style={{ color: "red" }}>*</span>
+                        )}
+                      </strong>
+                    </p>
                     <select
                       className={`admin-blogs-new-blog-modal-select modal-status-${newBlogStatus.toLowerCase()}`}
                       value={newBlogStatus}
@@ -1746,7 +1817,14 @@ const AdminBlogs = () => {
                   </div>
                   <div className="admin-blogs-new-blog-modal-right">    
                   <div className="admin-blogs-new-blog-modal-image">
-                    <p><strong>Main Image</strong></p>
+                    <p>
+                      <strong>
+                        Main Image{" "}
+                        {(!submitted || !newBlogImage) && (
+                          <span style={{ color: "red" }}>*</span>
+                        )}
+                      </strong>
+                    </p>
                     {newBlogImage ? (
                       <img
                       src={`http://localhost${newBlogImage}`}
@@ -1888,7 +1966,14 @@ const AdminBlogs = () => {
                 </div>
                 <div className="admin-blogs-new-blog-modal-inner-content-bot">
                   <div className="admin-blogs-new-blog-modal-desc">
-                    <p><strong>Blog Content</strong></p>
+                    <p>
+                      <strong>
+                        Blog Content{" "}
+                        {(!submitted || !newBlogContent.trim()) && (
+                          <span style={{ color: "red" }}>*</span>
+                        )}
+                      </strong>
+                    </p>
                     <div className="admin-blogs-new-blog-modal-desc">
                       <div className="admin-blogs-content-image-tools">
                         <button className="format-btn undo" onMouseDown={(e) => e.preventDefault()} onClick={() => document.execCommand("undo")}>
