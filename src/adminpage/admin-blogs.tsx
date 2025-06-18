@@ -362,6 +362,7 @@ const AdminBlogs = () => {
   const handleEdit = () => {
     setSubmittedEdit(false);
     setEditableBlog({ ...selectedBlog! });
+    setInitialStatus(selectedBlog!.blog_status);
     setEditableBlogMoreImages(selectedBlog?.more_images || []);
     setIsEditing(true);
   };  
@@ -827,6 +828,16 @@ const AdminBlogs = () => {
   const [viewMode, setViewMode] = useState<"table" | "grid">("table");
 
   const rawText = textareaRef.current?.innerText.trim() ?? "";
+
+  const editStatusOptions = () => {
+    if (initialStatus === "DRAFT") {
+      return ["DRAFT", "PUBLISHED"];
+    } else {
+      return ["PUBLISHED", "PINNED", "ARCHIVED"];
+    }
+  };
+
+  const [initialStatus, setInitialStatus] = useState<string>("");
   
   return (
     <div className="admin-blogs">
@@ -1413,7 +1424,7 @@ const AdminBlogs = () => {
                           setEditableBlog({ ...editableBlog!, blog_status: newStatus });
                         }}                        
                       >
-                        {["DRAFT", "PUBLISHED", "PINNED", "ARCHIVED"].map((status) => (
+                        {editStatusOptions().map((status) => (
                           <option key={status} value={status}>{status}</option>
                         ))}
                       </select>
@@ -1809,7 +1820,7 @@ const AdminBlogs = () => {
                       value={newBlogStatus}
                       onChange={(e) => setNewBlogStatus(e.target.value)}
                     >
-                      {["DRAFT", "PUBLISHED", "PINNED", "ARCHIVED"].map((status) => (
+                      {["DRAFT", "PUBLISHED"].map((status) => (
                         <option key={status} value={status}>{status}</option>
                       ))}
                     </select>
