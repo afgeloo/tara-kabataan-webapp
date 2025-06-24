@@ -1,5 +1,16 @@
 import "./css/admin-settings.css";
-import { FaSearch, FaBell, FaPlus, FaEdit, FaPhone, FaEnvelope, FaMapMarkerAlt, FaFacebookF, FaInstagram, FaTimes } from "react-icons/fa";
+import {
+  FaSearch,
+  FaBell,
+  FaPlus,
+  FaEdit,
+  FaPhone,
+  FaEnvelope,
+  FaMapMarkerAlt,
+  FaFacebookF,
+  FaInstagram,
+  FaTimes,
+} from "react-icons/fa";
 import president from "../assets/aboutpage/council/president.jpg";
 import { BsThreeDots } from "react-icons/bs";
 import { useState, useEffect, useRef } from "react";
@@ -20,7 +31,9 @@ const AdminSettings = () => {
   const [members, setMembers] = useState<Member[]>([]);
 
   useEffect(() => {
-    fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/members.php")
+    fetch(
+      "http://localhost/tara-kabataan/tara-kabataan-backend/api/members.php"
+    )
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
@@ -36,8 +49,12 @@ const AdminSettings = () => {
   const [memberImageUrl, setMemberImageUrl] = useState<string | null>(null);
   const [loggedInUser, setLoggedInUser] = useState<any>(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
-  const [profileEmail, setProfileEmail] = useState(loggedInUser?.user_email || "");
-  const [profilePhone, setProfilePhone] = useState(loggedInUser?.user_contact || "");
+  const [profileEmail, setProfileEmail] = useState(
+    loggedInUser?.user_email || ""
+  );
+  const [profilePhone, setProfilePhone] = useState(
+    loggedInUser?.user_contact || ""
+  );
   const [profilePassword, setProfilePassword] = useState("");
   const [oldPassword, setOldPassword] = useState("");
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -46,10 +63,13 @@ const AdminSettings = () => {
   const [otpRequired, setOtpRequired] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const otpRefs = useRef<HTMLInputElement[]>([]);
-  const [roles, setRoles] = useState<{ role_id: string, role_name: string }[]>([]);
+  const [roles, setRoles] = useState<{ role_id: string; role_name: string }[]>(
+    []
+  );
+  const [showNewUserModal, setShowNewUserModal] = useState(false);
 
   useEffect(() => {
-  fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/roles.php")
+    fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/roles.php")
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
@@ -59,7 +79,7 @@ const AdminSettings = () => {
       .catch((err) => console.error("Failed to fetch roles:", err));
   }, []);
 
-   const resetProfileModal = () => {
+  const resetProfileModal = () => {
     setProfilePhone(loggedInUser?.user_contact || "");
     setProfilePassword("");
     setOldPassword("");
@@ -67,7 +87,7 @@ const AdminSettings = () => {
     setOtpSent(false);
     setOtpRequired(false);
     setIsEditingProfile(false);
-  };  
+  };
 
   useEffect(() => {
     const storedUser = localStorage.getItem("admin-user");
@@ -86,11 +106,11 @@ const AdminSettings = () => {
   ) => {
     const file = e.target.files?.[0];
     if (!file || !editableMember?.role_id) return;
-  
+
     const formData = new FormData();
     formData.append("image", file);
     formData.append("member_id", editableMember.member_id);
-  
+
     try {
       const res = await fetch(
         "http://localhost/tara-kabataan/tara-kabataan-backend/api/upload_member_image.php",
@@ -106,64 +126,74 @@ const AdminSettings = () => {
       } else {
         setNotification("Member image upload failed.");
       }
-      
+
       setTimeout(() => setNotification(""), 4000);
-      
     } catch (err) {
       console.error("Member image upload error:", err);
       setNotification("Error occurred during member image upload.");
       setTimeout(() => setNotification(""), 4000);
     }
   };
-  
+
   const handleMemberImageRemove = () => {
     setMemberImageUrl(null);
-  };  
+  };
 
   const handleAddNewMemberSave = async () => {
     try {
-      const response = await fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/add_new_member.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...newMember, member_image: "" }),
-      });
-  
+      const response = await fetch(
+        "http://localhost/tara-kabataan/tara-kabataan-backend/api/add_new_member.php",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...newMember, member_image: "" }),
+        }
+      );
+
       const data = await response.json();
-  
+
       if (data.success && data.member) {
         const newId = data.member.member_id;
         let imageUrl = "";
-  
-        const fileInput = document.getElementById("new-member-image-upload") as HTMLInputElement;
+
+        const fileInput = document.getElementById(
+          "new-member-image-upload"
+        ) as HTMLInputElement;
         const file = fileInput?.files?.[0];
         if (file) {
           const formData = new FormData();
           formData.append("image", file);
           formData.append("member_id", newId);
-  
-          const uploadRes = await fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/upload_member_image.php", {
-            method: "POST",
-            body: formData,
-          });
-  
+
+          const uploadRes = await fetch(
+            "http://localhost/tara-kabataan/tara-kabataan-backend/api/upload_member_image.php",
+            {
+              method: "POST",
+              body: formData,
+            }
+          );
+
           const uploadData = await uploadRes.json();
           if (uploadData.success && uploadData.image_url) {
             imageUrl = uploadData.image_url;
-  
-            await fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/update_member.php", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                ...data.member,
-                member_image: imageUrl,
-              }),
-            });
+
+            await fetch(
+              "http://localhost/tara-kabataan/tara-kabataan-backend/api/update_member.php",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  ...data.member,
+                  member_image: imageUrl,
+                }),
+              }
+            );
           }
         }
         setMembers((prev) => [
           { ...data.member, member_image: imageUrl },
-          ...prev
-        ]);        
+          ...prev,
+        ]);
         setIsAddingNewMember(false);
         setNewMember({ member_name: "", member_image: "", role_id: "" });
         setMemberImageUrl(null);
@@ -175,32 +205,40 @@ const AdminSettings = () => {
       console.error("Add member error:", err);
       setNotification("An error occurred while adding the member.");
     }
-  
+
     setTimeout(() => setNotification(""), 4000);
   };
-  
+
   const [isAddingNewMember, setIsAddingNewMember] = useState(false);
-  const [newMember, setNewMember] = useState<Omit<Member, "member_id" | "role_name">>({
+  const [newMember, setNewMember] = useState<
+    Omit<Member, "member_id" | "role_name">
+  >({
     member_name: "",
     member_image: "",
     role_id: "",
   });
 
-  const [confirmMemberDeleteVisible, setConfirmMemberDeleteVisible] = useState(false);
+  const [confirmMemberDeleteVisible, setConfirmMemberDeleteVisible] =
+    useState(false);
 
   const handleDeleteMember = async () => {
     if (!selectedMember) return;
-  
+
     try {
-      const res = await fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/delete_member.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ member_id: selectedMember.member_id }),
-      });
-  
+      const res = await fetch(
+        "http://localhost/tara-kabataan/tara-kabataan-backend/api/delete_member.php",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ member_id: selectedMember.member_id }),
+        }
+      );
+
       const data = await res.json();
       if (data.success) {
-        setMembers((prev) => prev.filter((m) => m.member_id !== selectedMember.member_id));
+        setMembers((prev) =>
+          prev.filter((m) => m.member_id !== selectedMember.member_id)
+        );
         setNotification("Member deleted successfully!");
         setIsEditingMember(false);
         setSelectedMember(null);
@@ -213,9 +251,9 @@ const AdminSettings = () => {
       console.error("Delete member error:", err);
       setNotification("An error occurred while deleting the member.");
     }
-  
+
     setTimeout(() => setNotification(""), 4000);
-  };  
+  };
 
   interface Partner {
     partner_id: string;
@@ -245,7 +283,9 @@ const AdminSettings = () => {
   >(null);
 
   useEffect(() => {
-    fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/partners.php")
+    fetch(
+      "http://localhost/tara-kabataan/tara-kabataan-backend/api/partners.php"
+    )
       .then((res) => res.json())
       .then((data) => {
         console.log("PARTNERS DATA:", data);
@@ -255,259 +295,290 @@ const AdminSettings = () => {
   }, []);
 
   useEffect(() => {
-      if (loggedInUser) {
-        setProfileEmail(loggedInUser.user_email || "");
-        setProfilePhone(loggedInUser.user_contact || "");
+    if (loggedInUser) {
+      setProfileEmail(loggedInUser.user_email || "");
+      setProfilePhone(loggedInUser.user_contact || "");
+    }
+  }, [loggedInUser]);
+
+  const handleSendOTP = async () => {
+    if (!profileEmail) {
+      toast.error("Email not found.");
+      return;
+    }
+
+    if (!profilePhone && !profilePassword) {
+      toast.error("At least one of phone or password must be provided.");
+      return;
+    }
+
+    if (profilePassword) {
+      if (!oldPassword) {
+        toast.error("Please enter your current password.");
+        return;
       }
-    }, [loggedInUser]);  
-  
-    const handleSendOTP = async () => {
-          if (!profileEmail) {
-            toast.error("Email not found.");
-            return;
+
+      try {
+        const verifyRes = await fetch(
+          "http://localhost/tara-kabataan/tara-kabataan-backend/api/verify_old_password.php",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: profileEmail,
+              old_password: oldPassword,
+            }),
           }
-        
-          if (!profilePhone && !profilePassword) {
-            toast.error("At least one of phone or password must be provided.");
-            return;
-          }
-        
-          if (profilePassword) {
-            if (!oldPassword) {
-              toast.error("Please enter your current password.");
-              return;
-            }
-        
-            try {
-              const verifyRes = await fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/verify_old_password.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email: profileEmail, old_password: oldPassword }),
-              });
-        
-              const verifyData = await verifyRes.json();
-              if (!verifyData.valid) {
-                toast.error("Old password is incorrect.");
-                return;
-              }
-            } catch (err) {
-              toast.error("Failed to verify old password.");
-              return;
-            }
-        
-            if (profilePassword.length < 8) {
-              toast.error("Password must be at least 8 characters.");
-              return;
-            }
-        
-            const strongPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[^\w\s]).+$/;
-            if (!strongPattern.test(profilePassword)) {
-              toast.error("Password must include letters, numbers, and symbols.");
-              return;
-            }
-        
-            const emailParts = profileEmail.split(/[@._\-]/).filter(Boolean);
-            const passwordLower = profilePassword.toLowerCase();
-            for (const part of emailParts) {
-              if (part && passwordLower.includes(part.toLowerCase())) {
-                toast.error("Password should not include parts of your email.");
-                return;
-              }
-            }
-        
-            try {
-              const prevRes = await fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/check_previous_password.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email: profileEmail, new_password: profilePassword }),
-              });
-              const prevData = await prevRes.json();
-              if (prevData.same === true) {
-                toast.error("New password must be different from the previous password.");
-                return;
-              }
-            } catch {
-              toast.error("Failed to check previous password.");
-              return;
-            }
-          }
-        
-          const toastId = toast.loading("Sending OTP...");
-        
-          try {
-            const res = await fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/send_otp.php", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ email: profileEmail }),
-            });
-        
-            const data = await res.json();
-        
-            if (data.success) {
-              setOtpSent(true);
-              toast.update(toastId, {
-                render: (
-                  <div>
-                    <strong>OTP sent to your email.</strong>
-                    <div style={{ fontSize: "0.8rem", marginTop: "4px" }}>
-                      Check spam folder if not found.
-                    </div>
-                  </div>
-                ),
-                type: "success",
-                isLoading: false,
-                autoClose: 3000,
-              });
-            } else {
-              toast.update(toastId, {
-                render: data.message || "Failed to send OTP.",
-                type: "error",
-                isLoading: false,
-                autoClose: 3000,
-              });
-            }
-          } catch (err) {
-            toast.update(toastId, {
-              render: "Error sending OTP.",
-              type: "error",
-              isLoading: false,
-              autoClose: 3000,
-            });
-            console.error(err);
-          }
-        };    
-  
-      const handleProfileUpdate = async () => {
-            if (!profilePhone && !profilePassword) {
-              toast.error("At least one of phone or password must be provided.");
-              return;
-            }
-          
-            if (profilePassword) {
-              if (profilePassword.length < 8) {
-                toast.error("Password must be at least 8 characters.");
-                return;
-              }
-          
-              const strongPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[^\w\s]).+$/;
-              if (!strongPattern.test(profilePassword)) {
-                toast.error("Password must include letters, numbers, and symbols.");
-                return;
-              }
-          
-              const emailParts = profileEmail.split(/[@._\-]/).filter(Boolean);
-              const passwordLower = profilePassword.toLowerCase();
-              for (const part of emailParts) {
-                if (part && passwordLower.includes(part.toLowerCase())) {
-                  toast.error("Password should not include parts of your email.");
-                  return;
-                }
-              }
-          
-              try {
-                const prevRes = await fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/check_previous_password.php", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ email: profileEmail, new_password: profilePassword }),
-                });
-                const prevData = await prevRes.json();
-                if (prevData.same === true) {
-                  toast.error("New password must be different from the previous password.");
-                  return;
-                }
-              } catch {
-                toast.error("Failed to check previous password.");
-                return;
-              }
-            }
-          
-            try {
-              const res = await fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/update_profile.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  user_id: loggedInUser?.user_id,
-                  email: profileEmail,
-                  phone: profilePhone,
-                  password: profilePassword,
-                }),
-              });
-          
-              const text = await res.text();
-          
-              try {
-                const data = JSON.parse(text);
-                if (data.success) {
-                  toast.success("Profile updated!");
-                  setLoggedInUser(data.user);
-                  localStorage.setItem("admin-user", JSON.stringify(data.user));
-                  setShowProfileModal(false);
-                } else {
-                  toast.error(data.message || "Failed to update profile.");
-                }
-              } catch (err) {
-                console.error("Invalid JSON from update_profile.php:", text);
-                toast.error("Invalid server response.");
-              }
-            } catch (err) {
-              console.error("Fetch error:", err);
-              toast.error("Server error.");
-            }
-          };    
-  
-      const handleVerifyOTP = async () => {
-            const toastId = toast.loading("Verifying OTP...");
-          
-            try {
-              const res = await fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/verify_otp.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email: profileEmail, otp: otpInput }),
-              });
-          
-              const data = await res.json();
-          
-              if (data.success) {
-                await handleProfileUpdate();
-                setOtpSent(false);
-                setOtpInput("");
-                setIsEditingProfile(false);
-                toast.update(toastId, {
-                  render: "OTP verified. Profile updated.",
-                  type: "success",
-                  isLoading: false,
-                  autoClose: 3000,
-                });
-              } else {
-                toast.update(toastId, {
-                  render: "Incorrect OTP.",
-                  type: "error",
-                  isLoading: false,
-                  autoClose: 3000,
-                });
-              }
-            } catch (err) {
-              toast.update(toastId, {
-                render: "Error verifying OTP.",
-                type: "error",
-                isLoading: false,
-                autoClose: 3000,
-              });
-              console.error(err);
-            }
-          };    
-  
-    useEffect(() => {
-      const storedUser = localStorage.getItem("admin-user");
-      if (storedUser) {
-        try {
-          const parsed = JSON.parse(storedUser);
-          setLoggedInUser(parsed);
-        } catch {
-          console.error("Failed to parse stored user");
+        );
+
+        const verifyData = await verifyRes.json();
+        if (!verifyData.valid) {
+          toast.error("Old password is incorrect.");
+          return;
+        }
+      } catch (err) {
+        toast.error("Failed to verify old password.");
+        return;
+      }
+
+      if (profilePassword.length < 8) {
+        toast.error("Password must be at least 8 characters.");
+        return;
+      }
+
+      const strongPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[^\w\s]).+$/;
+      if (!strongPattern.test(profilePassword)) {
+        toast.error("Password must include letters, numbers, and symbols.");
+        return;
+      }
+
+      const emailParts = profileEmail.split(/[@._\-]/).filter(Boolean);
+      const passwordLower = profilePassword.toLowerCase();
+      for (const part of emailParts) {
+        if (part && passwordLower.includes(part.toLowerCase())) {
+          toast.error("Password should not include parts of your email.");
+          return;
         }
       }
-    }, []);
+
+      try {
+        const prevRes = await fetch(
+          "http://localhost/tara-kabataan/tara-kabataan-backend/api/check_previous_password.php",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: profileEmail,
+              new_password: profilePassword,
+            }),
+          }
+        );
+        const prevData = await prevRes.json();
+        if (prevData.same === true) {
+          toast.error(
+            "New password must be different from the previous password."
+          );
+          return;
+        }
+      } catch {
+        toast.error("Failed to check previous password.");
+        return;
+      }
+    }
+
+    const toastId = toast.loading("Sending OTP...");
+
+    try {
+      const res = await fetch(
+        "http://localhost/tara-kabataan/tara-kabataan-backend/api/send_otp.php",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: profileEmail }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (data.success) {
+        setOtpSent(true);
+        toast.update(toastId, {
+          render: (
+            <div>
+              <strong>OTP sent to your email.</strong>
+              <div style={{ fontSize: "0.8rem", marginTop: "4px" }}>
+                Check spam folder if not found.
+              </div>
+            </div>
+          ),
+          type: "success",
+          isLoading: false,
+          autoClose: 3000,
+        });
+      } else {
+        toast.update(toastId, {
+          render: data.message || "Failed to send OTP.",
+          type: "error",
+          isLoading: false,
+          autoClose: 3000,
+        });
+      }
+    } catch (err) {
+      toast.update(toastId, {
+        render: "Error sending OTP.",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+      });
+      console.error(err);
+    }
+  };
+
+  const handleProfileUpdate = async () => {
+    if (!profilePhone && !profilePassword) {
+      toast.error("At least one of phone or password must be provided.");
+      return;
+    }
+
+    if (profilePassword) {
+      if (profilePassword.length < 8) {
+        toast.error("Password must be at least 8 characters.");
+        return;
+      }
+
+      const strongPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[^\w\s]).+$/;
+      if (!strongPattern.test(profilePassword)) {
+        toast.error("Password must include letters, numbers, and symbols.");
+        return;
+      }
+
+      const emailParts = profileEmail.split(/[@._\-]/).filter(Boolean);
+      const passwordLower = profilePassword.toLowerCase();
+      for (const part of emailParts) {
+        if (part && passwordLower.includes(part.toLowerCase())) {
+          toast.error("Password should not include parts of your email.");
+          return;
+        }
+      }
+
+      try {
+        const prevRes = await fetch(
+          "http://localhost/tara-kabataan/tara-kabataan-backend/api/check_previous_password.php",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: profileEmail,
+              new_password: profilePassword,
+            }),
+          }
+        );
+        const prevData = await prevRes.json();
+        if (prevData.same === true) {
+          toast.error(
+            "New password must be different from the previous password."
+          );
+          return;
+        }
+      } catch {
+        toast.error("Failed to check previous password.");
+        return;
+      }
+    }
+
+    try {
+      const res = await fetch(
+        "http://localhost/tara-kabataan/tara-kabataan-backend/api/update_profile.php",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            user_id: loggedInUser?.user_id,
+            email: profileEmail,
+            phone: profilePhone,
+            password: profilePassword,
+          }),
+        }
+      );
+
+      const text = await res.text();
+
+      try {
+        const data = JSON.parse(text);
+        if (data.success) {
+          toast.success("Profile updated!");
+          setLoggedInUser(data.user);
+          localStorage.setItem("admin-user", JSON.stringify(data.user));
+          setShowProfileModal(false);
+        } else {
+          toast.error(data.message || "Failed to update profile.");
+        }
+      } catch (err) {
+        console.error("Invalid JSON from update_profile.php:", text);
+        toast.error("Invalid server response.");
+      }
+    } catch (err) {
+      console.error("Fetch error:", err);
+      toast.error("Server error.");
+    }
+  };
+
+  const handleVerifyOTP = async () => {
+    const toastId = toast.loading("Verifying OTP...");
+
+    try {
+      const res = await fetch(
+        "http://localhost/tara-kabataan/tara-kabataan-backend/api/verify_otp.php",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: profileEmail, otp: otpInput }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (data.success) {
+        await handleProfileUpdate();
+        setOtpSent(false);
+        setOtpInput("");
+        setIsEditingProfile(false);
+        toast.update(toastId, {
+          render: "OTP verified. Profile updated.",
+          type: "success",
+          isLoading: false,
+          autoClose: 3000,
+        });
+      } else {
+        toast.update(toastId, {
+          render: "Incorrect OTP.",
+          type: "error",
+          isLoading: false,
+          autoClose: 3000,
+        });
+      }
+    } catch (err) {
+      toast.update(toastId, {
+        render: "Error verifying OTP.",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+      });
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("admin-user");
+    if (storedUser) {
+      try {
+        const parsed = JSON.parse(storedUser);
+        setLoggedInUser(parsed);
+      } catch {
+        console.error("Failed to parse stored user");
+      }
+    }
+  }, []);
 
   const getFullImageUrl = (url: string | null) => {
     if (!url) return "";
@@ -521,14 +592,14 @@ const AdminSettings = () => {
   const getFullImageUrlCouncil = (url: string | null) => {
     if (!url || url.trim() === "") return placeholderImg;
     if (url.startsWith("http")) return url;
-  
+
     const [path, query] = url.split("?");
     const fullPath = path.includes("/tara-kabataan/")
       ? `http://localhost${path}`
       : `http://localhost/tara-kabataan/${path.startsWith("/") ? "" : "/"}${path}`;
-  
+
     return query ? `${fullPath}?${query}` : fullPath;
-  };  
+  };
 
   const handleSavePartnerUpdate = async () => {
     if (!editablePartner) return;
@@ -547,7 +618,7 @@ const AdminSettings = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(updatedPartner),
-        },
+        }
       );
 
       const data = await res.json();
@@ -555,8 +626,8 @@ const AdminSettings = () => {
       if (data.success) {
         setPartners((prev) =>
           prev.map((p) =>
-            p.partner_id === updatedPartner.partner_id ? updatedPartner : p,
-          ),
+            p.partner_id === updatedPartner.partner_id ? updatedPartner : p
+          )
         );
 
         setIsEditingPartner(false);
@@ -588,7 +659,7 @@ const AdminSettings = () => {
       ...newPartner,
       partner_image: newPartner.partner_image || "",
     };
-  
+
     try {
       const res = await fetch(
         "http://localhost/tara-kabataan/tara-kabataan-backend/api/add_new_partner.php",
@@ -600,21 +671,23 @@ const AdminSettings = () => {
           body: JSON.stringify(payload),
         }
       );
-  
+
       const data = await res.json();
-  
+
       if (data.success && data.partner) {
         const newId = data.partner.partner_id;
-  
+
         if (newImageUrl) {
-          const imageFileInput = document.getElementById("new-partner-image-upload") as HTMLInputElement;
+          const imageFileInput = document.getElementById(
+            "new-partner-image-upload"
+          ) as HTMLInputElement;
           const file = imageFileInput?.files?.[0];
-  
+
           if (file) {
             const formData = new FormData();
             formData.append("image", file);
             formData.append("partner_id", newId);
-  
+
             const imgRes = await fetch(
               "http://localhost/tara-kabataan/tara-kabataan-backend/api/upload_partner_image.php",
               {
@@ -622,27 +695,30 @@ const AdminSettings = () => {
                 body: formData,
               }
             );
-  
+
             const imgData = await imgRes.json();
-  
+
             if (imgData.success && imgData.image_url) {
               data.partner.partner_image = imgData.image_url;
-              await fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/update_partners.php", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  ...data.partner,
-                  partner_image: imgData.image_url,
-                }),
-              });
+              await fetch(
+                "http://localhost/tara-kabataan/tara-kabataan-backend/api/update_partners.php",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    ...data.partner,
+                    partner_image: imgData.image_url,
+                  }),
+                }
+              );
             }
           }
         }
-  
+
         setPartners((prev) => [data.partner, ...prev]);
-  
+
         setNotification("New partner added successfully!");
         setNewPartner({
           partner_image: "",
@@ -660,42 +736,42 @@ const AdminSettings = () => {
       console.error("Add partner error:", err);
       setNotification("An error occurred while adding the partner.");
     }
-  
+
     setTimeout(() => setNotification(""), 4000);
   };
-  
+
   const handleImageUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
     mode: "edit" | "new"
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;
-  
+
     const tempPreviewUrl = URL.createObjectURL(file);
-  
+
     if (mode === "edit") {
       setEditImageUrl(tempPreviewUrl);
     } else {
       setNewImageUrl(tempPreviewUrl);
       return;
     }
-  
+
     const formData = new FormData();
     formData.append("image", file);
-  
+
     if (editablePartner?.partner_id) {
       formData.append("partner_id", editablePartner.partner_id);
     }
-  
+
     try {
       const uploadUrl =
         "http://localhost/tara-kabataan/tara-kabataan-backend/api/upload_partner_image.php";
-  
+
       const res = await fetch(uploadUrl, {
         method: "POST",
         body: formData,
       });
-  
+
       const data = await res.json();
       if (data.success && data.image_url) {
         const finalUrl = `${data.image_url}?t=${Date.now()}`;
@@ -730,7 +806,7 @@ const AdminSettings = () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ partner_id: selectedPartner.partner_id }),
-        },
+        }
       );
 
       const data = await res.json();
@@ -738,7 +814,7 @@ const AdminSettings = () => {
       if (data.success) {
         setNotification("Partner deleted successfully!");
         setPartners((prev) =>
-          prev.filter((p) => p.partner_id !== selectedPartner.partner_id),
+          prev.filter((p) => p.partner_id !== selectedPartner.partner_id)
         );
         setSelectedPartner(null);
       } else {
@@ -760,14 +836,14 @@ const AdminSettings = () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ partner_ids: selectedPartnerIds }),
-        },
+        }
       );
 
       const data = await response.json();
 
       if (data.success) {
         setPartners((prev) =>
-          prev.filter((p) => !selectedPartnerIds.includes(p.partner_id)),
+          prev.filter((p) => !selectedPartnerIds.includes(p.partner_id))
         );
         setSelectedPartnerIds([]);
         setSelectMode(false);
@@ -803,12 +879,14 @@ const AdminSettings = () => {
     facebook: string;
     instagram: string;
     address: string;
-  }  
+  }
 
   const [aboutData, setAboutData] = useState<AboutUs | null>(null);
 
   useEffect(() => {
-    fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/aboutus.php")
+    fetch(
+      "http://localhost/tara-kabataan/tara-kabataan-backend/api/aboutus.php"
+    )
       .then((res) => res.json())
       .then((data) => {
         if (!data.error) {
@@ -825,7 +903,9 @@ const AdminSettings = () => {
   const [emailInvalid, setEmailInvalid] = useState(false);
   const [phoneInvalid, setPhoneInvalid] = useState(false);
   const [isEditingPageContent, setIsEditingPageContent] = useState(false);
-  const [pageContentField, setPageContentField] = useState<keyof AboutUs | null>(null);
+  const [pageContentField, setPageContentField] = useState<
+    keyof AboutUs | null
+  >(null);
   const [editablePageContent, setEditablePageContent] = useState("");
   const [isEditingCoreValues, setIsEditingCoreValues] = useState(false);
 
@@ -846,15 +926,18 @@ const AdminSettings = () => {
 
   const handleSaveCoreValues = async () => {
     if (!aboutData) return;
-  
+
     try {
       const updated = { ...aboutData, ...editableCoreValues };
-      const res = await fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/update_aboutus.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updated),
-      });
-  
+      const res = await fetch(
+        "http://localhost/tara-kabataan/tara-kabataan-backend/api/update_aboutus.php",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updated),
+        }
+      );
+
       const data = await res.json();
       if (data.success) {
         setAboutData(updated);
@@ -869,18 +952,21 @@ const AdminSettings = () => {
     setIsEditingCoreValues(false);
     setTimeout(() => setNotification(""), 4000);
   };
-  
+
   const handleSaveAdvocacies = async () => {
     if (!aboutData) return;
-  
+
     try {
       const updated = { ...aboutData, ...editableAdvocacies };
-      const res = await fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/update_aboutus.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updated),
-      });
-  
+      const res = await fetch(
+        "http://localhost/tara-kabataan/tara-kabataan-backend/api/update_aboutus.php",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updated),
+        }
+      );
+
       const data = await res.json();
       if (data.success) {
         setAboutData(updated);
@@ -894,29 +980,39 @@ const AdminSettings = () => {
     }
     setIsEditingAdvocacies(false);
     setTimeout(() => setNotification(""), 4000);
-  };  
+  };
 
-  const [selectedCoreValue, setSelectedCoreValue] = useState<keyof typeof editableCoreValues>("core_kapwa");
-  const [selectedAdvocacy, setSelectedAdvocacy] = useState<keyof typeof editableAdvocacies>("adv_kalusugan");
+  const [selectedCoreValue, setSelectedCoreValue] =
+    useState<keyof typeof editableCoreValues>("core_kapwa");
+  const [selectedAdvocacy, setSelectedAdvocacy] =
+    useState<keyof typeof editableAdvocacies>("adv_kalusugan");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredMembers = members.filter((member) =>
-    member.member_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    member.role_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    member.member_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    member.role_name.toLowerCase().includes(searchQuery.toLowerCase())
-  );  
-
-  const filteredPartners = partners.filter((partner) =>
-    partner.partner_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    partner.partner_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    partner.partner_dec.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    partner.partner_contact_email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    partner.partner_phone_number.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredMembers = members.filter(
+    (member) =>
+      member.member_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.role_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.member_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.role_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const [fullscreenImageUrl, setFullscreenImageUrl] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
+  const filteredPartners = partners.filter(
+    (partner) =>
+      partner.partner_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      partner.partner_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      partner.partner_dec.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      partner.partner_contact_email
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      partner.partner_phone_number
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase())
+  );
+
+  const [fullscreenImageUrl, setFullscreenImageUrl] = useState<string | null>(
+    null
+  );
+  const [viewMode, setViewMode] = useState<"table" | "grid">("table");
 
   return (
     <div className="admin-settings">
@@ -932,8 +1028,16 @@ const AdminSettings = () => {
       <div className="admin-settings-header">
         <div className="admin-settings-search-container">
           <FaSearch className="admin-settings-search-icon" />
-          <input type="text" name="fakeusernameremembered" style={{ display: "none" }} />
-          <input type="password" name="fakepasswordremembered" style={{ display: "none" }} />
+          <input
+            type="text"
+            name="fakeusernameremembered"
+            style={{ display: "none" }}
+          />
+          <input
+            type="password"
+            name="fakepasswordremembered"
+            style={{ display: "none" }}
+          />
           <input
             type="text"
             placeholder="Search"
@@ -945,78 +1049,144 @@ const AdminSettings = () => {
           />
         </div>
         <div className="admin-settings-header-right">
-          <div className="admin-blogs-userinfo" onClick={() => setShowProfileModal(true)} style={{ cursor: "pointer" }}>
+          <button className="admin-settings-create-user" onClick={() => {setShowNewUserModal(true)}}>
+            <FaPlus className="create-user-icon" />
+            <span>Create New User</span>
+          </button>
+          {showNewUserModal && (
+          <div className="create-user-modal-backdrop" onClick={() => setShowNewUserModal(false)}>
+            <div className="create-user-modal-content" onClick={e => e.stopPropagation()}>
+              <button className="create-user-modal-close" onClick={() => setShowNewUserModal(false)}>✕</button>
+              <h2>New User</h2>
+              <form onSubmit={e => { e.preventDefault(); setShowNewUserModal(false); }}>
+                <label className="create-user-modal-label">
+                  Name
+                  <input type="text" name="name" required />
+                </label>
+                <label className="create-user-modal-label">
+                  Phone Number
+                  <input type="text" name="phone" required />
+                </label>
+                <label className="create-user-modal-label">
+                  Email
+                  <input type="email" name="email" required />
+                </label>
+                <label className="create-user-modal-label">
+                  Password
+                  <input type="password" name="password" required />
+                </label>
+                <label className="create-user-modal-label">
+                  Confirm Password
+                  <input type="password" name="confirmPassword" required />
+                </label>
+                <div className="create-user-modal-actions">
+                  <button type="button" className="cancel-btn" onClick={() => setShowNewUserModal(false)}>Cancel</button>
+                  <button type="submit" className="save-btn">Save</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+          <div
+            className="admin-blogs-userinfo"
+            onClick={() => setShowProfileModal(true)}
+            style={{ cursor: "pointer" }}
+          >
             <div className="userinfo-label">Logged in as:</div>
             <div className="userinfo-details">
-              <p className="userinfo-name">{loggedInUser?.user_name || "Admin"}</p>
+              <p className="userinfo-name">
+                {loggedInUser?.user_name || "Admin"}
+              </p>
               <p className="userinfo-email">{loggedInUser?.user_email || ""}</p>
             </div>
           </div>
           {showProfileModal && (
             <div className="admin-profile-modal">
               <div className="admin-profile-modal-box">
-              <div
-                className="modal-close-icon"
-                onClick={() => {
-                  setShowProfileModal(false);
-                  resetProfileModal();
-                }}
-              >
-                <FaTimes />
-              </div>
-                <h2>Edit Profile</h2>
+                <div
+                  className="modal-close-icon"
+                  onClick={() => {
+                    setShowProfileModal(false);
+                    resetProfileModal();
+                  }}
+                >
+                  <FaTimes />
+                </div>
+                <h2>Change Password</h2>
                 <label>Email:</label>
                 <input type="email" value={profileEmail} disabled />
-                <label>Phone:</label>
-                <input
-                  type="tel"
-                  value={profilePhone}
-                  disabled={!isEditingProfile}
-                  onChange={(e) => setProfilePhone(e.target.value)}
-                />
-                <div style={{ position: "relative" }}>
-                <label>Old Password:</label>
-                <input type="text" name="fakeusernameremembered" style={{ display: "none" }} />
-                <input type="password" name="fakepasswordremembered" style={{ display: "none" }} />
-                <form autoComplete="off">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Enter your current password"
-                    autoComplete="current-password"
-                    value={oldPassword}
-                    onChange={(e) => setOldPassword(e.target.value)}
-                    style={{ width: "100%" }}
-                    required
-                  />
-                </form>
-                <label>New Password:</label>
-                <input type="text" name="fakeusernameremembered" style={{ display: "none" }} />
-                <input type="password" name="fakepasswordremembered" style={{ display: "none" }} />
-                <form autoComplete="off">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Enter a New Password"
-                    autoComplete="new-password"
-                    value={profilePassword}
-                    readOnly={!isEditingProfile}
-                    onChange={(e) => setProfilePassword(e.target.value)}
-                    style={{
-                      width: "100%",
-                      color: !isEditingProfile ? "#999" : "inherit",
-                      cursor: !isEditingProfile ? "default" : "text",
-                    }}
-                  />
-                </form>
-                </div>
+                {isEditingProfile && (
+                  <>
+                    <label>Phone:</label>
+                    <input
+                      type="tel"
+                      value={profilePhone}
+                      disabled={!isEditingProfile}
+                      onChange={(e) => setProfilePhone(e.target.value)}
+                    />
+                    <div style={{ position: "relative" }}>
+                      <label>Old Password:</label>
+                      <input
+                        type="text"
+                        name="fakeusernameremembered"
+                        style={{ display: "none" }}
+                      />
+                      <input
+                        type="password"
+                        name="fakepasswordremembered"
+                        style={{ display: "none" }}
+                      />
+                      <form autoComplete="off">
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Enter your current password"
+                          autoComplete="current-password"
+                          value={oldPassword}
+                          onChange={(e) => setOldPassword(e.target.value)}
+                          style={{ width: "100%" }}
+                          required
+                        />
+                      </form>
+                      <label>New Password:</label>
+                      <input
+                        type="text"
+                        name="fakeusernameremembered"
+                        style={{ display: "none" }}
+                      />
+                      <input
+                        type="password"
+                        name="fakepasswordremembered"
+                        style={{ display: "none" }}
+                      />
+                      <form autoComplete="off">
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Enter a New Password"
+                          autoComplete="new-password"
+                          value={profilePassword}
+                          readOnly={!isEditingProfile}
+                          onChange={(e) => setProfilePassword(e.target.value)}
+                          style={{
+                            width: "100%",
+                            color: !isEditingProfile ? "#999" : "inherit",
+                            cursor: !isEditingProfile ? "default" : "text",
+                          }}
+                        />
+                      </form>
+                    </div>
+                  </>
+                )}
                 <div className="admin-profile-buttons">
                   {!isEditingProfile ? (
-                    <button onClick={() => setIsEditingProfile(true)}>Edit</button>
+                    <button onClick={() => setIsEditingProfile(true)}>
+                      Edit
+                    </button>
                   ) : (
                     <>
                       <button
                         onClick={() => {
                           handleSendOTP();
-                          setOtpRequired(true); 
+                          setOtpRequired(true);
                         }}
                       >
                         Send OTP
@@ -1036,39 +1206,41 @@ const AdminSettings = () => {
                   <div className="otp-verification">
                     <label>Enter 6-digit OTP:</label>
                     <div className="otp-inputs">
-                      {Array(6).fill("").map((_, index) => (
-                        <input
-                          key={index}
-                          ref={(el) => {
-                            otpRefs.current[index] = el;
-                          }}                  
-                          type="text"
-                          maxLength={1}
-                          className="otp-box"
-                          value={otpInput[index] || ""}
-                          onChange={(e) => {
-                            const val = e.target.value.replace(/\D/g, "");
-                            if (!val) return;
-                            const updated = [...otpInput];
-                            updated[index] = val[0];
-                            setOtpInput(updated.join(""));
-                            if (index < 5 && val) {
-                              otpRefs.current[index + 1]?.focus();
-                            }
-                          }}
-                          onKeyDown={(e) => {
-                            if (e.key === "Backspace") {
+                      {Array(6)
+                        .fill("")
+                        .map((_, index) => (
+                          <input
+                            key={index}
+                            ref={(el) => {
+                              otpRefs.current[index] = el;
+                            }}
+                            type="text"
+                            maxLength={1}
+                            className="otp-box"
+                            value={otpInput[index] || ""}
+                            onChange={(e) => {
+                              const val = e.target.value.replace(/\D/g, "");
+                              if (!val) return;
                               const updated = [...otpInput];
-                              if (otpInput[index]) {
-                                updated[index] = "";
-                                setOtpInput(updated.join(""));
-                              } else if (index > 0) {
-                                otpRefs.current[index - 1]?.focus();
+                              updated[index] = val[0];
+                              setOtpInput(updated.join(""));
+                              if (index < 5 && val) {
+                                otpRefs.current[index + 1]?.focus();
                               }
-                            }
-                          }}
-                        />
-                      ))}
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === "Backspace") {
+                                const updated = [...otpInput];
+                                if (otpInput[index]) {
+                                  updated[index] = "";
+                                  setOtpInput(updated.join(""));
+                                } else if (index > 0) {
+                                  otpRefs.current[index - 1]?.focus();
+                                }
+                              }
+                            }}
+                          />
+                        ))}
                     </div>
                     <button onClick={handleVerifyOTP}>Verify OTP & Save</button>
                   </div>
@@ -1119,14 +1291,14 @@ const AdminSettings = () => {
                 </button>
                 <div className="admin-blogs-toggle-wrapper">
                   <button
-                    className={`admin-blogs-toggle-button ${viewMode === 'table' ? 'active' : ''}`}
-                    onClick={() => setViewMode('table')}
+                    className={`admin-blogs-toggle-button ${viewMode === "table" ? "active" : ""}`}
+                    onClick={() => setViewMode("table")}
                   >
                     Table View
                   </button>
                   <button
-                    className={`admin-blogs-toggle-button ${viewMode === 'grid' ? 'active' : ''}`}
-                    onClick={() => setViewMode('grid')}
+                    className={`admin-blogs-toggle-button ${viewMode === "grid" ? "active" : ""}`}
+                    onClick={() => setViewMode("grid")}
                   >
                     Grid View
                   </button>
@@ -1166,7 +1338,9 @@ const AdminSettings = () => {
             <div className="admin-settings-aboutus">
               <div className="admin-settings-aboutus-contact-info">
                 <div className="admin-settings-aboutus-contact-info-left">
-                <h1 className="admin-settings-aboutus-contact-info-left-h1">Contact Information</h1>
+                  <h1 className="admin-settings-aboutus-contact-info-left-h1">
+                    Contact Information
+                  </h1>
                   <div className="admin-settings-aboutus-contact-info-phone">
                     <div className="admin-settings-aboutus-contact-info-phone-icon">
                       <FaPhone />
@@ -1227,24 +1401,26 @@ const AdminSettings = () => {
               </div>
               <div className="admin-settings-aboutus-page-contents">
                 <div className="admin-settings-aboutus-page-contents-left">
-                  <h1 className="admin-settings-aboutus-page-contents-left-h1">Page Contents</h1>
+                  <h1 className="admin-settings-aboutus-page-contents-left-h1">
+                    Page Contents
+                  </h1>
                   <div className="admin-settings-aboutus-core-val">
                     <div className="admin-settings-aboutus-core-val-left">
                       <h1>Core Values</h1>
                       <p>Kapwa, Kalinagan, Kaginhawaan</p>
                     </div>
                     <div className="admin-settings-aboutus-core-val-right">
-                    <FaEdit 
-                      className="aboutus-page-contents-edit-icon" 
-                      onClick={() => {
-                        setEditableCoreValues({
-                          core_kapwa: aboutData?.core_kapwa || "",
-                          core_kalinangan: aboutData?.core_kalinangan || "",
-                          core_kaginhawaan: aboutData?.core_kaginhawaan || "",
-                        });
-                        setIsEditingCoreValues(true);
-                      }}
-                    />
+                      <FaEdit
+                        className="aboutus-page-contents-edit-icon"
+                        onClick={() => {
+                          setEditableCoreValues({
+                            core_kapwa: aboutData?.core_kapwa || "",
+                            core_kalinangan: aboutData?.core_kalinangan || "",
+                            core_kaginhawaan: aboutData?.core_kaginhawaan || "",
+                          });
+                          setIsEditingCoreValues(true);
+                        }}
+                      />
                     </div>
                   </div>
                   <div className="admin-settings-aboutus-mission">
@@ -1256,17 +1432,17 @@ const AdminSettings = () => {
                             ? aboutData.mission.slice(0, 50) + "..."
                             : aboutData.mission
                           : "No mission found."}
-                      </p>                    
+                      </p>
                     </div>
                     <div className="admin-settings-aboutus-mission-right">
-                    <FaEdit
-                      className="aboutus-page-contents-edit-icon"
-                      onClick={() => {
-                        setPageContentField("mission");
-                        setEditablePageContent(aboutData?.mission || "");
-                        setIsEditingPageContent(true);
-                      }}
-                    />
+                      <FaEdit
+                        className="aboutus-page-contents-edit-icon"
+                        onClick={() => {
+                          setPageContentField("mission");
+                          setEditablePageContent(aboutData?.mission || "");
+                          setIsEditingPageContent(true);
+                        }}
+                      />
                     </div>
                   </div>
                   <div className="admin-settings-aboutus-vision">
@@ -1278,16 +1454,17 @@ const AdminSettings = () => {
                             ? aboutData.vision.slice(0, 50) + "..."
                             : aboutData.vision
                           : "No vision found."}
-                      </p>                       </div>
+                      </p>{" "}
+                    </div>
                     <div className="admin-settings-aboutus-vision-right">
-                    <FaEdit
-                      className="aboutus-page-contents-edit-icon"
-                      onClick={() => {
-                        setPageContentField("vision");
-                        setEditablePageContent(aboutData?.vision || "");
-                        setIsEditingPageContent(true);
-                      }}
-                    />
+                      <FaEdit
+                        className="aboutus-page-contents-edit-icon"
+                        onClick={() => {
+                          setPageContentField("vision");
+                          setEditablePageContent(aboutData?.vision || "");
+                          setIsEditingPageContent(true);
+                        }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -1304,14 +1481,14 @@ const AdminSettings = () => {
                       </p>
                     </div>
                     <div className="admin-settings-aboutus-background-text-right">
-                    <FaEdit
-                      className="aboutus-page-contents-edit-icon"
-                      onClick={() => {
-                        setPageContentField("background");
-                        setEditablePageContent(aboutData?.background || "");
-                        setIsEditingPageContent(true);
-                      }}
-                    />
+                      <FaEdit
+                        className="aboutus-page-contents-edit-icon"
+                        onClick={() => {
+                          setPageContentField("background");
+                          setEditablePageContent(aboutData?.background || "");
+                          setIsEditingPageContent(true);
+                        }}
+                      />
                     </div>
                   </div>
                   <div className="admin-settings-aboutus-council-text">
@@ -1326,14 +1503,14 @@ const AdminSettings = () => {
                       </p>
                     </div>
                     <div className="admin-settings-aboutus-council-text-right">
-                    <FaEdit
-                      className="aboutus-page-contents-edit-icon"
-                      onClick={() => {
-                        setPageContentField("council");
-                        setEditablePageContent(aboutData?.council || "");
-                        setIsEditingPageContent(true);
-                      }}
-                    />
+                      <FaEdit
+                        className="aboutus-page-contents-edit-icon"
+                        onClick={() => {
+                          setPageContentField("council");
+                          setEditablePageContent(aboutData?.council || "");
+                          setIsEditingPageContent(true);
+                        }}
+                      />
                     </div>
                   </div>
                   <div className="admin-settings-aboutus-advocacies">
@@ -1342,136 +1519,153 @@ const AdminSettings = () => {
                       <p>Kalusugan, Kalikasan, Karunungan, Kultura, Kasarian</p>
                     </div>
                     <div className="admin-settings-aboutus-advocacies-right">
-                    <FaEdit 
-                      className="aboutus-page-contents-edit-icon" 
-                      onClick={() => {
-                        setEditableAdvocacies({
-                          adv_kalusugan: aboutData?.adv_kalusugan || "",
-                          adv_kalikasan: aboutData?.adv_kalikasan || "",
-                          adv_karunungan: aboutData?.adv_karunungan || "",
-                          adv_kultura: aboutData?.adv_kultura || "",
-                          adv_kasarian: aboutData?.adv_kasarian || "",
-                        });
-                        setIsEditingAdvocacies(true);
-                      }}
-                    />
+                      <FaEdit
+                        className="aboutus-page-contents-edit-icon"
+                        onClick={() => {
+                          setEditableAdvocacies({
+                            adv_kalusugan: aboutData?.adv_kalusugan || "",
+                            adv_kalikasan: aboutData?.adv_kalikasan || "",
+                            adv_karunungan: aboutData?.adv_karunungan || "",
+                            adv_kultura: aboutData?.adv_kultura || "",
+                            adv_kasarian: aboutData?.adv_kasarian || "",
+                          });
+                          setIsEditingAdvocacies(true);
+                        }}
+                      />
                     </div>
                   </div>
                 </div>
               </div>
             </div>
             {isEditingPageContent && pageContentField && (
-            <div className="admin-contact-modal">
-              <div className="admin-contact-modal-content">
-                <button
-                  className="admin-contact-modal-close"
-                  onClick={() => {
-                    setIsEditingPageContent(false);
-                    setPageContentField(null);
-                  }}
-                >
-                  ✕
-                </button>
-                <h1>Edit {pageContentField.replace("_", " ").replace(/^\w/, (c) => c.toUpperCase())}</h1>
-                <textarea
-                  className="admin-pagecontent-text"
-                  value={editablePageContent}
-                  onChange={(e) => setEditablePageContent(e.target.value)}
-                />
-                <div className="admin-contact-edit-actions">
+              <div className="admin-contact-modal">
+                <div className="admin-contact-modal-content">
                   <button
-                    className="save-btn"
-                    onClick={async () => {
-                      if (!aboutData || !pageContentField) return;
-                      try {
-                        const updated = { ...aboutData, [pageContentField]: editablePageContent };
-                        const res = await fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/update_aboutus.php", {
-                          method: "POST",
-                          headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify(updated),
-                        });
-                        const data = await res.json();
-                        if (data.success) {
-                          setAboutData(updated);
-                          setNotification("Page content updated successfully!");
-                        } else {
-                          setNotification("Failed to update page content.");
-                        }
-                      } catch (err) {
-                        console.error("Error updating page content:", err);
-                        setNotification("An error occurred while updating page content.");
-                      }
-                      setTimeout(() => setNotification(""), 4000);
-
-                      setIsEditingPageContent(false);
-                      setPageContentField(null);
-                    }}
-                  >
-                    Save
-                  </button>
-                  <button
-                    className="cancel-btn"
+                    className="admin-contact-modal-close"
                     onClick={() => {
                       setIsEditingPageContent(false);
                       setPageContentField(null);
                     }}
                   >
-                    Cancel
+                    ✕
                   </button>
-                </div>
-              </div>
-            </div>
-          )}
-              {isEditingCoreValues && (
-                <div className="admin-contact-modal">
-                  <div className="admin-contact-modal-content">
+                  <h1>
+                    Edit{" "}
+                    {pageContentField
+                      .replace("_", " ")
+                      .replace(/^\w/, (c) => c.toUpperCase())}
+                  </h1>
+                  <textarea
+                    className="admin-pagecontent-text"
+                    value={editablePageContent}
+                    onChange={(e) => setEditablePageContent(e.target.value)}
+                  />
+                  <div className="admin-contact-edit-actions">
                     <button
-                      className="admin-contact-modal-close"
-                      onClick={() => setIsEditingCoreValues(false)}
+                      className="save-btn"
+                      onClick={async () => {
+                        if (!aboutData || !pageContentField) return;
+                        try {
+                          const updated = {
+                            ...aboutData,
+                            [pageContentField]: editablePageContent,
+                          };
+                          const res = await fetch(
+                            "http://localhost/tara-kabataan/tara-kabataan-backend/api/update_aboutus.php",
+                            {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify(updated),
+                            }
+                          );
+                          const data = await res.json();
+                          if (data.success) {
+                            setAboutData(updated);
+                            setNotification(
+                              "Page content updated successfully!"
+                            );
+                          } else {
+                            setNotification("Failed to update page content.");
+                          }
+                        } catch (err) {
+                          console.error("Error updating page content:", err);
+                          setNotification(
+                            "An error occurred while updating page content."
+                          );
+                        }
+                        setTimeout(() => setNotification(""), 4000);
+
+                        setIsEditingPageContent(false);
+                        setPageContentField(null);
+                      }}
                     >
-                      ✕
+                      Save
                     </button>
-                    <h1>Edit Core Values</h1>
-                    <div className="admin-contact-edit-fields">
-                      <label>Select Core Value</label>
-                      <select
-                        className="admin-contact-edit-select"
-                        value={selectedCoreValue}
-                        onChange={(e) =>
-                          setSelectedCoreValue(e.target.value as keyof typeof editableCoreValues)
-                        }
-                      >
-                        <option value="core_kapwa">Kapwa</option>
-                        <option value="core_kalinangan">Kalinangan</option>
-                        <option value="core_kaginhawaan">Kaginhawaan</option>
-                      </select>
-                      <label className="label-page-content">Edit Text</label>
-                      <textarea
-                        value={editableCoreValues[selectedCoreValue]}
-                        onChange={(e) =>
-                          setEditableCoreValues((prev) => ({
-                            ...prev,
-                            [selectedCoreValue]: e.target.value,
-                          }))
-                        }
-                        className="admin-corevalue-textarea"
-                      />
-                    </div>
-                    <div className="admin-contact-edit-actions">
-                      <button className="save-btn" onClick={handleSaveCoreValues}>
-                        Save
-                      </button>
-                      <button
-                        className="cancel-btn"
-                        onClick={() => setIsEditingCoreValues(false)}
-                      >
-                        Cancel
-                      </button>
-                    </div>
+                    <button
+                      className="cancel-btn"
+                      onClick={() => {
+                        setIsEditingPageContent(false);
+                        setPageContentField(null);
+                      }}
+                    >
+                      Cancel
+                    </button>
                   </div>
                 </div>
-              )}
-              {isEditingAdvocacies && (
+              </div>
+            )}
+            {isEditingCoreValues && (
+              <div className="admin-contact-modal">
+                <div className="admin-contact-modal-content">
+                  <button
+                    className="admin-contact-modal-close"
+                    onClick={() => setIsEditingCoreValues(false)}
+                  >
+                    ✕
+                  </button>
+                  <h1>Edit Core Values</h1>
+                  <div className="admin-contact-edit-fields">
+                    <label>Select Core Value</label>
+                    <select
+                      className="admin-contact-edit-select"
+                      value={selectedCoreValue}
+                      onChange={(e) =>
+                        setSelectedCoreValue(
+                          e.target.value as keyof typeof editableCoreValues
+                        )
+                      }
+                    >
+                      <option value="core_kapwa">Kapwa</option>
+                      <option value="core_kalinangan">Kalinangan</option>
+                      <option value="core_kaginhawaan">Kaginhawaan</option>
+                    </select>
+                    <label className="label-page-content">Edit Text</label>
+                    <textarea
+                      value={editableCoreValues[selectedCoreValue]}
+                      onChange={(e) =>
+                        setEditableCoreValues((prev) => ({
+                          ...prev,
+                          [selectedCoreValue]: e.target.value,
+                        }))
+                      }
+                      className="admin-corevalue-textarea"
+                    />
+                  </div>
+                  <div className="admin-contact-edit-actions">
+                    <button className="save-btn" onClick={handleSaveCoreValues}>
+                      Save
+                    </button>
+                    <button
+                      className="cancel-btn"
+                      onClick={() => setIsEditingCoreValues(false)}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+            {isEditingAdvocacies && (
               <div className="admin-contact-modal">
                 <div className="admin-contact-modal-content">
                   <button
@@ -1487,7 +1681,9 @@ const AdminSettings = () => {
                       className="admin-contact-edit-select"
                       value={selectedAdvocacy}
                       onChange={(e) =>
-                        setSelectedAdvocacy(e.target.value as keyof typeof editableAdvocacies)
+                        setSelectedAdvocacy(
+                          e.target.value as keyof typeof editableAdvocacies
+                        )
                       }
                     >
                       <option value="adv_kalusugan">Kalusugan</option>
@@ -1523,136 +1719,162 @@ const AdminSettings = () => {
               </div>
             )}
             {isEditingContact && editableContact && (
-            <div className="admin-contact-modal">
-              <div className="admin-contact-modal-content">
-                <button
-                  className="admin-contact-modal-close"
-                  onClick={() => {
-                    setIsEditingContact(false);
-                    setEditableContact(null);
-                  }}
-                >
-                  ✕
-                </button>
-                <h1>Edit Contact Information</h1>
-                <div className="admin-contact-edit-fields">
-                <label>Phone Number</label>
-                  <input
-                    type="text"
-                    value={editableContact.contact_no || ""}
-                    maxLength={11}
-                    className={phoneInvalid ? "error-input" : ""}
-                    onChange={(e) => {
-                      const newValue = e.target.value.replace(/\D/g, ''); 
-                      if (newValue.length <= 11) {
-                        setEditableContact((prev) => prev ? { ...prev, contact_no: newValue } : prev);
-                      }
-                      setPhoneInvalid(false); 
-                    }}
-                  />
-                  {phoneError && <p className="error-message">{phoneError}</p>}
-
-                  <label>Email</label>
-                    <input
-                      type="text"
-                      value={editableContact.about_email || ""}
-                      className={emailInvalid ? "error-input" : ""}
-                      onChange={(e) => {
-                        setEditableContact((prev) => prev ? { ...prev, about_email: e.target.value } : prev);
-                        setEmailInvalid(false); 
-                      }}
-                    />
-                  {emailError && <p className="error-message">{emailError}</p>}
-
-                  <label>Address</label>
-                  <input
-                    type="text"
-                    value={editableContact.address || ""}
-                    onChange={(e) =>
-                      setEditableContact((prev) => prev ? { ...prev, address: e.target.value } : prev)
-                    }
-                  />
-
-                  <label>Facebook</label>
-                  <input
-                    type="text"
-                    value={editableContact.facebook || ""}
-                    onChange={(e) =>
-                      setEditableContact((prev) => prev ? { ...prev, facebook: e.target.value } : prev)
-                    }
-                  />
-
-                  <label>Instagram</label>
-                  <input
-                    type="text"
-                    value={editableContact.instagram || ""}
-                    onChange={(e) =>
-                      setEditableContact((prev) => prev ? { ...prev, instagram: e.target.value } : prev)
-                    }
-                  />
-                </div>
-                <div className="admin-contact-edit-actions">
-                <button
-                  className="save-btn"
-                  onClick={async () => {
-                    if (!editableContact) return;
-                  
-                    let hasError = false;
-                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    const phoneRegex = /^09\d{9}$/;
-                  
-                    if (!emailRegex.test(editableContact.about_email)) {
-                      setEmailInvalid(true);
-                      hasError = true;
-                    }
-                  
-                    if (!phoneRegex.test(editableContact.contact_no)) {
-                      setPhoneInvalid(true);
-                      hasError = true;
-                    }
-                  
-                    if (hasError) return; 
-                  
-                    try {
-                      const res = await fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/update_aboutus.php", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(editableContact),
-                      });
-                  
-                      const data = await res.json();
-                  
-                      if (data.success) {
-                        setAboutData(editableContact);
-                        setNotification("Contact Information updated successfully!");
-                      } else {
-                        setNotification("Failed to update Contact Information.");
-                      }
-                    } catch (err) {
-                      console.error("Error updating Contact Information:", err);
-                      setNotification("An error occurred while updating Contact Information.");
-                    }
-                  
-                    setTimeout(() => setNotification(""), 4000);
-                    setIsEditingContact(false);
-                    setEditableContact(null);
-                  }}                  
-                >
-                  Save
-                </button>
+              <div className="admin-contact-modal">
+                <div className="admin-contact-modal-content">
                   <button
-                    className="cancel-btn"
+                    className="admin-contact-modal-close"
                     onClick={() => {
                       setIsEditingContact(false);
                       setEditableContact(null);
                     }}
                   >
-                    Cancel
+                    ✕
                   </button>
+                  <h1>Edit Contact Information</h1>
+                  <div className="admin-contact-edit-fields">
+                    <label>Phone Number</label>
+                    <input
+                      type="text"
+                      value={editableContact.contact_no || ""}
+                      maxLength={11}
+                      className={phoneInvalid ? "error-input" : ""}
+                      onChange={(e) => {
+                        const newValue = e.target.value.replace(/\D/g, "");
+                        if (newValue.length <= 11) {
+                          setEditableContact((prev) =>
+                            prev ? { ...prev, contact_no: newValue } : prev
+                          );
+                        }
+                        setPhoneInvalid(false);
+                      }}
+                    />
+                    {phoneError && (
+                      <p className="error-message">{phoneError}</p>
+                    )}
+
+                    <label>Email</label>
+                    <input
+                      type="text"
+                      value={editableContact.about_email || ""}
+                      className={emailInvalid ? "error-input" : ""}
+                      onChange={(e) => {
+                        setEditableContact((prev) =>
+                          prev ? { ...prev, about_email: e.target.value } : prev
+                        );
+                        setEmailInvalid(false);
+                      }}
+                    />
+                    {emailError && (
+                      <p className="error-message">{emailError}</p>
+                    )}
+
+                    <label>Address</label>
+                    <input
+                      type="text"
+                      value={editableContact.address || ""}
+                      onChange={(e) =>
+                        setEditableContact((prev) =>
+                          prev ? { ...prev, address: e.target.value } : prev
+                        )
+                      }
+                    />
+
+                    <label>Facebook</label>
+                    <input
+                      type="text"
+                      value={editableContact.facebook || ""}
+                      onChange={(e) =>
+                        setEditableContact((prev) =>
+                          prev ? { ...prev, facebook: e.target.value } : prev
+                        )
+                      }
+                    />
+
+                    <label>Instagram</label>
+                    <input
+                      type="text"
+                      value={editableContact.instagram || ""}
+                      onChange={(e) =>
+                        setEditableContact((prev) =>
+                          prev ? { ...prev, instagram: e.target.value } : prev
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="admin-contact-edit-actions">
+                    <button
+                      className="save-btn"
+                      onClick={async () => {
+                        if (!editableContact) return;
+
+                        let hasError = false;
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        const phoneRegex = /^09\d{9}$/;
+
+                        if (!emailRegex.test(editableContact.about_email)) {
+                          setEmailInvalid(true);
+                          hasError = true;
+                        }
+
+                        if (!phoneRegex.test(editableContact.contact_no)) {
+                          setPhoneInvalid(true);
+                          hasError = true;
+                        }
+
+                        if (hasError) return;
+
+                        try {
+                          const res = await fetch(
+                            "http://localhost/tara-kabataan/tara-kabataan-backend/api/update_aboutus.php",
+                            {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify(editableContact),
+                            }
+                          );
+
+                          const data = await res.json();
+
+                          if (data.success) {
+                            setAboutData(editableContact);
+                            setNotification(
+                              "Contact Information updated successfully!"
+                            );
+                          } else {
+                            setNotification(
+                              "Failed to update Contact Information."
+                            );
+                          }
+                        } catch (err) {
+                          console.error(
+                            "Error updating Contact Information:",
+                            err
+                          );
+                          setNotification(
+                            "An error occurred while updating Contact Information."
+                          );
+                        }
+
+                        setTimeout(() => setNotification(""), 4000);
+                        setIsEditingContact(false);
+                        setEditableContact(null);
+                      }}
+                    >
+                      Save
+                    </button>
+                    <button
+                      className="cancel-btn"
+                      onClick={() => {
+                        setIsEditingContact(false);
+                        setEditableContact(null);
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
           </div>
         )}
         {activeTab === 1 && (
@@ -1687,15 +1909,15 @@ const AdminSettings = () => {
                           </div>
                         </div>
                         <FaEdit
-                        className="admin-settings-member-edit-icon"
-                        title="Edit"
-                        onClick={() => {
-                          setSelectedMember(member);
-                          setEditableMember({ ...member });
-                          setMemberImageUrl(member.member_image);
-                          setIsEditingMember(true);
-                        }}
-                      />
+                          className="admin-settings-member-edit-icon"
+                          title="Edit"
+                          onClick={() => {
+                            setSelectedMember(member);
+                            setEditableMember({ ...member });
+                            setMemberImageUrl(member.member_image);
+                            setIsEditingMember(true);
+                          }}
+                        />
                       </div>
                     </div>
                   </div>
@@ -1704,7 +1926,11 @@ const AdminSettings = () => {
                   className="admin-settings-members-cards-content admin-settings-add-member-card"
                   onClick={() => {
                     setIsAddingNewMember(true);
-                    setNewMember({ member_name: "", member_image: "", role_id: "" });
+                    setNewMember({
+                      member_name: "",
+                      member_image: "",
+                      role_id: "",
+                    });
                     setMemberImageUrl(null);
                   }}
                 >
@@ -1728,14 +1954,16 @@ const AdminSettings = () => {
               {isEditingMember && selectedMember && (
                 <div className="admin-member-modal">
                   {notification && (
-                  <div
-                    className={`blogs-notification-message ${
-                      notification.includes("successfully") ? "success" : "error"
-                    } show`}
-                  >
-                    {notification}
-                  </div>
-                )}
+                    <div
+                      className={`blogs-notification-message ${
+                        notification.includes("successfully")
+                          ? "success"
+                          : "error"
+                      } show`}
+                    >
+                      {notification}
+                    </div>
+                  )}
                   <div className="admin-member-modal-content">
                     <button
                       className="admin-member-modal-close"
@@ -1751,39 +1979,53 @@ const AdminSettings = () => {
                     <h1>Edit Member</h1>
                     <div className="admin-member-edit-section">
                       <div className="admin-member-edit-image-wrapper">
-                      {memberImageUrl ? (
-                        <img
-                          src={getFullImageUrlCouncil(memberImageUrl)}
-                          onClick={() => setFullscreenImageUrl(getFullImageUrlCouncil(memberImageUrl))}
-                          style={{ cursor: "zoom-in" }}
-                          alt="Preview"
-                          className="admin-member-edit-photo"
-                        />
-                      ) : (
-                        <div className="admin-member-no-image">No Image</div>
-                      )}
+                        {memberImageUrl ? (
+                          <img
+                            src={getFullImageUrlCouncil(memberImageUrl)}
+                            onClick={() =>
+                              setFullscreenImageUrl(
+                                getFullImageUrlCouncil(memberImageUrl)
+                              )
+                            }
+                            style={{ cursor: "zoom-in" }}
+                            alt="Preview"
+                            className="admin-member-edit-photo"
+                          />
+                        ) : (
+                          <div className="admin-member-no-image">No Image</div>
+                        )}
                         <input
-                        type="file"
-                        accept="image/*"
-                        id="member-image-upload"
-                        style={{ display: "none" }}
-                        onChange={handleMemberImageUpload}
-                      />
-                      <div className="admin-member-image-buttons">
-                        <button onClick={() => document.getElementById("member-image-upload")?.click()}>
-                          Upload
-                        </button>
-                        <button onClick={handleMemberImageRemove}>Remove</button>
-                      </div>
+                          type="file"
+                          accept="image/*"
+                          id="member-image-upload"
+                          style={{ display: "none" }}
+                          onChange={handleMemberImageUpload}
+                        />
+                        <div className="admin-member-image-buttons">
+                          <button
+                            onClick={() =>
+                              document
+                                .getElementById("member-image-upload")
+                                ?.click()
+                            }
+                          >
+                            Upload
+                          </button>
+                          <button onClick={handleMemberImageRemove}>
+                            Remove
+                          </button>
+                        </div>
                       </div>
                       <div className="admin-member-edit-fields">
                         <label>Name</label>
                         <input
                           type="text"
-                          value={editableMember?.member_name || ''}
+                          value={editableMember?.member_name || ""}
                           onChange={(e) =>
                             setEditableMember((prev) =>
-                              prev ? { ...prev, member_name: e.target.value } : prev
+                              prev
+                                ? { ...prev, member_name: e.target.value }
+                                : prev
                             )
                           }
                         />
@@ -1796,7 +2038,9 @@ const AdminSettings = () => {
                             )
                           }
                         >
-                          <option value="" disabled>Select a role</option>
+                          <option value="" disabled>
+                            Select a role
+                          </option>
                           {roles.map((role) => (
                             <option key={role.role_id} value={role.role_id}>
                               {role.role_name}
@@ -1807,8 +2051,8 @@ const AdminSettings = () => {
                     </div>
                     <div className="admin-member-edit-actions">
                       <button
-                      className="delete-member-btn"
-                      onClick={() => setConfirmMemberDeleteVisible(true)}
+                        className="delete-member-btn"
+                        onClick={() => setConfirmMemberDeleteVisible(true)}
                       >
                         Delete
                       </button>
@@ -1816,22 +2060,27 @@ const AdminSettings = () => {
                         className="save-btn"
                         onClick={async () => {
                           if (!editableMember) return;
-                        
+
                           const originalImage = selectedMember?.member_image;
                           const updatedImage = memberImageUrl || "";
-                        
+
                           if (!memberImageUrl && originalImage) {
-                            await fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/delete_member_image.php", {
-                              method: "POST",
-                              headers: { "Content-Type": "application/json" },
-                              body: JSON.stringify({ image_url: originalImage }),
-                            });
+                            await fetch(
+                              "http://localhost/tara-kabataan/tara-kabataan-backend/api/delete_member_image.php",
+                              {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                  image_url: originalImage,
+                                }),
+                              }
+                            );
                           }
                           const updatedMember = {
                             ...editableMember,
                             member_image: updatedImage,
                           };
-                        
+
                           try {
                             const response = await fetch(
                               "http://localhost/tara-kabataan/tara-kabataan-backend/api/update_member.php",
@@ -1845,7 +2094,9 @@ const AdminSettings = () => {
                             if (result.success && result.member) {
                               setMembers((prev) =>
                                 prev.map((u) =>
-                                  u.member_id === result.member.member_id ? result.member : u
+                                  u.member_id === result.member.member_id
+                                    ? result.member
+                                    : u
                                 )
                               );
                               setIsEditingMember(false);
@@ -1854,18 +2105,23 @@ const AdminSettings = () => {
                               setMemberImageUrl(null);
                               setNotification("Member updated successfully!");
                             } else {
-                              setNotification("Failed to update member: " + result.message);
+                              setNotification(
+                                "Failed to update member: " + result.message
+                              );
                             }
-                            setTimeout(() => setNotification(""), 4000);                            
+                            setTimeout(() => setNotification(""), 4000);
                           } catch (error) {
                             console.error("Update error:", error);
                             alert("Error occurred while updating member.");
                           }
-                        }}                                             
+                        }}
                       >
                         Save
                       </button>
-                      <button className="cancel-btn" onClick={() => setIsEditingMember(false)}>
+                      <button
+                        className="cancel-btn"
+                        onClick={() => setIsEditingMember(false)}
+                      >
                         Cancel
                       </button>
                     </div>
@@ -1873,467 +2129,526 @@ const AdminSettings = () => {
                 </div>
               )}
               {confirmMemberDeleteVisible && (
-              <div className="blogs-confirmation-popup show">
-                <div className="blogs-confirmation-box">
-                  <p>Are you sure you want to delete this member and all their images?</p>
-                  <div className="blogs-confirmation-actions">
-                    <button
-                      className="confirm-yes"
-                      onClick={() => {
-                        setConfirmMemberDeleteVisible(false);
-                        handleDeleteMember();
-                      }}
-                    >
-                      Yes
-                    </button>
-                    <button
-                      className="confirm-no"
-                      onClick={() => setConfirmMemberDeleteVisible(false)}
-                    >
-                      No
-                    </button>
+                <div className="blogs-confirmation-popup show">
+                  <div className="blogs-confirmation-box">
+                    <p>
+                      Are you sure you want to delete this member and all their
+                      images?
+                    </p>
+                    <div className="blogs-confirmation-actions">
+                      <button
+                        className="confirm-yes"
+                        onClick={() => {
+                          setConfirmMemberDeleteVisible(false);
+                          handleDeleteMember();
+                        }}
+                      >
+                        Yes
+                      </button>
+                      <button
+                        className="confirm-no"
+                        onClick={() => setConfirmMemberDeleteVisible(false)}
+                      >
+                        No
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-               {isAddingNewMember && (
-              <div className="admin-member-modal">
-                {notification && (
-                  <div className={`blogs-notification-message ${notification.includes("successfully") ? "success" : "error"} show`}>
-                    {notification}
-                  </div>
-                )}
-                <div className="admin-member-modal-content">
-                  <button
-                    className="admin-member-modal-close"
-                    onClick={() => {
-                      setIsAddingNewMember(false);
-                      setNewMember({ member_name: "", member_image: "", role_id: "" });
-                      setMemberImageUrl(null);
-                      setNotification("");
-                    }}
-                  >✕</button>
-                  <h1>New Member</h1>
-                  <div className="admin-member-edit-section">
-                    <div className="admin-member-edit-image-wrapper">
-                      {memberImageUrl ? (
-                        <img
-                        src={
-                          memberImageUrl?.startsWith("blob:")
-                            ? memberImageUrl
-                            : getFullImageUrlCouncil(memberImageUrl)
-                        }
-                        alt="Preview"
-                        className="admin-member-edit-photo"
-                      />                      
-                      ) : (
-                        <div className="admin-member-no-image">No Image</div>
-                      )}
-                      <input
-                      type="file"
-                      accept="image/*"
-                      id="new-member-image-upload"  
-                      style={{ display: "none" }}
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          const tempUrl = URL.createObjectURL(file);
-                          setMemberImageUrl(tempUrl);
-                        }
-                      }}
-                    />
-                      <div className="admin-member-image-buttons">
-                      <button onClick={() => document.getElementById("new-member-image-upload")?.click()}>
-                        Upload
-                      </button>
-                      <button onClick={handleMemberImageRemove}>Remove</button>
-                      </div>
+              )}
+              {isAddingNewMember && (
+                <div className="admin-member-modal">
+                  {notification && (
+                    <div
+                      className={`blogs-notification-message ${notification.includes("successfully") ? "success" : "error"} show`}
+                    >
+                      {notification}
                     </div>
-                    <div className="admin-member-edit-fields">
-                      <label>Name</label>
-                      <input
-                        type="text"
-                        value={newMember.member_name}
-                        onChange={(e) =>
-                          setNewMember((prev) => ({ ...prev, member_name: e.target.value }))
-                        }
-                      />
-                      <label>Role</label>
-                      <select
-                        value={newMember.role_id}
-                        onChange={(e) =>
-                          setNewMember((prev) => ({ ...prev, role_id: e.target.value }))
-                        }
-                      >
-                        <option value="" disabled>Select a role</option>
-                        {roles.map((role) => (
-                          <option key={role.role_id} value={role.role_id}>
-                            {role.role_name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                  <div className="admin-member-edit-actions">
-                  <button className="save-btn" onClick={handleAddNewMemberSave}>Save</button>
-                  <button
-                      className="cancel-btn"
+                  )}
+                  <div className="admin-member-modal-content">
+                    <button
+                      className="admin-member-modal-close"
                       onClick={() => {
                         setIsAddingNewMember(false);
-                        setNewMember({ member_name: "", member_image: "", role_id: "" });
+                        setNewMember({
+                          member_name: "",
+                          member_image: "",
+                          role_id: "",
+                        });
+                        setMemberImageUrl(null);
                         setNotification("");
                       }}
                     >
-                      Cancel
+                      ✕
                     </button>
+                    <h1>New Member</h1>
+                    <div className="admin-member-edit-section">
+                      <div className="admin-member-edit-image-wrapper">
+                        {memberImageUrl ? (
+                          <img
+                            src={
+                              memberImageUrl?.startsWith("blob:")
+                                ? memberImageUrl
+                                : getFullImageUrlCouncil(memberImageUrl)
+                            }
+                            alt="Preview"
+                            className="admin-member-edit-photo"
+                          />
+                        ) : (
+                          <div className="admin-member-no-image">No Image</div>
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          id="new-member-image-upload"
+                          style={{ display: "none" }}
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              const tempUrl = URL.createObjectURL(file);
+                              setMemberImageUrl(tempUrl);
+                            }
+                          }}
+                        />
+                        <div className="admin-member-image-buttons">
+                          <button
+                            onClick={() =>
+                              document
+                                .getElementById("new-member-image-upload")
+                                ?.click()
+                            }
+                          >
+                            Upload
+                          </button>
+                          <button onClick={handleMemberImageRemove}>
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                      <div className="admin-member-edit-fields">
+                        <label>Name</label>
+                        <input
+                          type="text"
+                          value={newMember.member_name}
+                          onChange={(e) =>
+                            setNewMember((prev) => ({
+                              ...prev,
+                              member_name: e.target.value,
+                            }))
+                          }
+                        />
+                        <label>Role</label>
+                        <select
+                          value={newMember.role_id}
+                          onChange={(e) =>
+                            setNewMember((prev) => ({
+                              ...prev,
+                              role_id: e.target.value,
+                            }))
+                          }
+                        >
+                          <option value="" disabled>
+                            Select a role
+                          </option>
+                          {roles.map((role) => (
+                            <option key={role.role_id} value={role.role_id}>
+                              {role.role_name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                    <div className="admin-member-edit-actions">
+                      <button
+                        className="save-btn"
+                        onClick={handleAddNewMemberSave}
+                      >
+                        Save
+                      </button>
+                      <button
+                        className="cancel-btn"
+                        onClick={() => {
+                          setIsAddingNewMember(false);
+                          setNewMember({
+                            member_name: "",
+                            member_image: "",
+                            role_id: "",
+                          });
+                          setNotification("");
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
             </div>
           </div>
         )}
         {activeTab === 2 && (
           <div className="admin-settings-partner-container">
             {viewMode === "table" ? (
-          <div className="admin-settings-scrollable-table">
-            <table className="admin-settings-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Name</th>
-                  <th>Description</th>
-                  <th>Email</th>
-                  <th>Contact No.</th>
-                  <th>{selectMode ? "Select" : "View"}</th>
-                </tr>
-              </thead>
-              <colgroup>
-                <col style={{ width: "100px" }} />
-                <col style={{ width: "100px" }} />
-                <col style={{ width: "150px" }} />
-                <col style={{ width: "120px" }} />
-                <col style={{ width: "100px" }} />
-                <col style={{ width: "50px" }} />
-              </colgroup>
-              <tbody>
-              {filteredPartners.length > 0 ? (
-                filteredPartners.map((partner) => (
-                    <tr
-                      className="admin-settings-table-content"
-                      key={partner.partner_id}
-                    >
-                      <td>{partner.partner_id}</td>
-                      <td>{partner.partner_name}</td>
-                      <td>{partner.partner_dec}</td>
-                      <td>{partner.partner_contact_email}</td>
-                      <td>{partner.partner_phone_number}</td>
-                      <td className="admin-settings-view-content">
-                        {selectMode ? (
-                          <input
-                            type="checkbox"
-                            checked={selectedPartnerIds.includes(
-                              partner.partner_id,
-                            )}
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                setSelectedPartnerIds((prev) => [
-                                  ...prev,
-                                  partner.partner_id,
-                                ]);
-                              } else {
-                                setSelectedPartnerIds((prev) =>
-                                  prev.filter(
-                                    (id) => id !== partner.partner_id,
-                                  ),
-                                );
-                              }
-                            }}
-                          />
-                        ) : (
-                          <button
-                            onClick={() => {
-                              setSelectedPartner(partner);
-                              setNotification("");
-                              setConfirmDeleteVisible(false);
-                            }}
-                          >
-                            <BsThreeDots />
-                          </button>
-                        )}
-                      </td>
+              <div className="admin-settings-scrollable-table">
+                <table className="admin-settings-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>Description</th>
+                      <th>Email</th>
+                      <th>Contact No.</th>
+                      <th>{selectMode ? "Select" : "View"}</th>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={6}>No Partner Data Available</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                  </thead>
+                  <colgroup>
+                    <col style={{ width: "100px" }} />
+                    <col style={{ width: "100px" }} />
+                    <col style={{ width: "150px" }} />
+                    <col style={{ width: "120px" }} />
+                    <col style={{ width: "100px" }} />
+                    <col style={{ width: "50px" }} />
+                  </colgroup>
+                  <tbody>
+                    {filteredPartners.length > 0 ? (
+                      filteredPartners.map((partner) => (
+                        <tr
+                          className="admin-settings-table-content"
+                          key={partner.partner_id}
+                        >
+                          <td>{partner.partner_id}</td>
+                          <td>{partner.partner_name}</td>
+                          <td>{partner.partner_dec}</td>
+                          <td>{partner.partner_contact_email}</td>
+                          <td>{partner.partner_phone_number}</td>
+                          <td className="admin-settings-view-content">
+                            {selectMode ? (
+                              <input
+                                type="checkbox"
+                                checked={selectedPartnerIds.includes(
+                                  partner.partner_id
+                                )}
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedPartnerIds((prev) => [
+                                      ...prev,
+                                      partner.partner_id,
+                                    ]);
+                                  } else {
+                                    setSelectedPartnerIds((prev) =>
+                                      prev.filter(
+                                        (id) => id !== partner.partner_id
+                                      )
+                                    );
+                                  }
+                                }}
+                              />
+                            ) : (
+                              <button
+                                onClick={() => {
+                                  setSelectedPartner(partner);
+                                  setNotification("");
+                                  setConfirmDeleteVisible(false);
+                                }}
+                              >
+                                <BsThreeDots />
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={6}>No Partner Data Available</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             ) : (
               <div className="admin-settings-grid-view">
-                {(filteredPartners.length > 0 ? filteredPartners : []).map((partner) => (
-                  <div className="admin-settings-grid-card" key={partner.partner_id}>
-                    <div className="settings-grid-container">
-                      <img
-                        src={getFullImageUrl(partner.partner_image)}
-                        alt="partner"
-                        className="settings-grid-img"
-                        onClick={() => setSelectedPartner(partner)}
-                      />
+                {(filteredPartners.length > 0 ? filteredPartners : []).map(
+                  (partner) => (
+                    <div
+                      className="admin-settings-grid-card"
+                      key={partner.partner_id}
+                    >
+                      <div className="settings-grid-container">
+                        <img
+                          src={getFullImageUrl(partner.partner_image)}
+                          alt="partner"
+                          className="settings-grid-img"
+                          onClick={() => setSelectedPartner(partner)}
+                        />
+                      </div>
+                      <div className="admin-settings-grid-card-info">
+                        <p className="settings-overlay-title">
+                          {partner.partner_name}
+                        </p>
+                        <p className="settings-overlay-contact">
+                          {partner.partner_contact_email}
+                        </p>
+                        <p className="settings-overlay-phone">
+                          {partner.partner_phone_number}
+                        </p>
+                      </div>
                     </div>
-                    <div className="admin-settings-grid-card-info">
-                      <p className="settings-overlay-title">{partner.partner_name}</p>
-                      <p className="settings-overlay-contact">{partner.partner_contact_email}</p>
-                      <p className="settings-overlay-phone">{partner.partner_phone_number}</p>
-                    </div>
-                  </div>
-                ))}
+                  )
+                )}
               </div>
             )}
             {selectedPartner && (
-            <div className="admin-partners-modal-layer">
-              <div className="admin-partners-modal">
-                {selectedPartner && notification && (
-                  <div
-                    className={`blogs-notification-message ${
-                      notification.includes("successfully")
-                        ? "success"
-                        : "error"
-                    } show`}
-                  >
-                    {notification}
-                  </div>
-                )}
-                <div className="admin-partners-modal-content">
-                  <div className="admin-partners-float-buttons">
-                    {isEditingPartner ? (
-                      <>
-                        <button
-                          className="save-btn"
-                          onClick={handleSavePartnerUpdate}
-                        >
-                          Save
-                        </button>
-                        <button
-                          className="cancel-btn"
-                          onClick={() => setIsEditingPartner(false)}
-                        >
-                          Cancel
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <button
-                          className="edit-btn"
-                          onClick={() => {
-                            setIsEditingPartner(true);
-                            setEditablePartner({ ...selectedPartner! });
-                            setEditImageUrl(
-                              selectedPartner?.partner_image || null,
-                            );
-                          }}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          className="delete-btn"
-                          onClick={handleSingleDelete}
-                        >
-                          Delete
-                        </button>
-                      </>
-                    )}
-                  </div>
-                  <button
-                    className="admin-partners-modal-close"
-                    onClick={() => {
-                      setSelectedPartner(null);
-                      setIsEditingPartner(false);
-                      setEditImageUrl(null);
-                      setEditablePartner(null);
-                      setNotification("");
-                      setConfirmDeleteVisible(false);
-                    }}
-                  >
-                    ✕
-                  </button>
-                  <div className="admin-partners-inner-modal">
-                    <div className="admin-partners-inner-modal-left">
-                      <h2>Partner Details</h2>
-                      <div className="admin-partners-inner-modal-id">
-                        <p>
-                          <strong>ID</strong>
-                        </p>
-                        <p className="admin-partners-inner-modal-id-content">
-                          {selectedPartner.partner_id}
-                        </p>
-                      </div>
-                      <div className="admin-partners-inner-modal-name">
-                        <p>
-                          <strong>Name</strong>
-                        </p>
-                        {isEditingPartner ? (
-                          <input
-                            className="admin-partners-inner-modal-name-content"
-                            value={editablePartner?.partner_name || ""}
-                            onChange={(e) =>
-                              setEditablePartner(
-                                (prev) =>
-                                  prev && {
-                                    ...prev,
-                                    partner_name: e.target.value,
-                                  },
-                              )
-                            }
-                          />
-                        ) : (
-                          <p className="admin-partners-inner-modal-name-content">
-                            {selectedPartner.partner_name}
+              <div className="admin-partners-modal-layer">
+                <div className="admin-partners-modal">
+                  {selectedPartner && notification && (
+                    <div
+                      className={`blogs-notification-message ${
+                        notification.includes("successfully")
+                          ? "success"
+                          : "error"
+                      } show`}
+                    >
+                      {notification}
+                    </div>
+                  )}
+                  <div className="admin-partners-modal-content">
+                    <div className="admin-partners-float-buttons">
+                      {isEditingPartner ? (
+                        <>
+                          <button
+                            className="save-btn"
+                            onClick={handleSavePartnerUpdate}
+                          >
+                            Save
+                          </button>
+                          <button
+                            className="cancel-btn"
+                            onClick={() => setIsEditingPartner(false)}
+                          >
+                            Cancel
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            className="edit-btn"
+                            onClick={() => {
+                              setIsEditingPartner(true);
+                              setEditablePartner({ ...selectedPartner! });
+                              setEditImageUrl(
+                                selectedPartner?.partner_image || null
+                              );
+                            }}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="delete-btn"
+                            onClick={handleSingleDelete}
+                          >
+                            Delete
+                          </button>
+                        </>
+                      )}
+                    </div>
+                    <button
+                      className="admin-partners-modal-close"
+                      onClick={() => {
+                        setSelectedPartner(null);
+                        setIsEditingPartner(false);
+                        setEditImageUrl(null);
+                        setEditablePartner(null);
+                        setNotification("");
+                        setConfirmDeleteVisible(false);
+                      }}
+                    >
+                      ✕
+                    </button>
+                    <div className="admin-partners-inner-modal">
+                      <div className="admin-partners-inner-modal-left">
+                        <h2>Partner Details</h2>
+                        <div className="admin-partners-inner-modal-id">
+                          <p>
+                            <strong>ID</strong>
                           </p>
-                        )}
-                      </div>
-                      <div className="admin-partners-inner-modal-image">
-                        <p>
-                          <strong>Image</strong>
-                        </p>
-                        <div className="admin-partners-image-wrapper">
-                          <div className="admin-partners-image-preview">
-                            {isEditingPartner ? (
-                              editImageUrl ? (
+                          <p className="admin-partners-inner-modal-id-content">
+                            {selectedPartner.partner_id}
+                          </p>
+                        </div>
+                        <div className="admin-partners-inner-modal-name">
+                          <p>
+                            <strong>Name</strong>
+                          </p>
+                          {isEditingPartner ? (
+                            <input
+                              className="admin-partners-inner-modal-name-content"
+                              value={editablePartner?.partner_name || ""}
+                              onChange={(e) =>
+                                setEditablePartner(
+                                  (prev) =>
+                                    prev && {
+                                      ...prev,
+                                      partner_name: e.target.value,
+                                    }
+                                )
+                              }
+                            />
+                          ) : (
+                            <p className="admin-partners-inner-modal-name-content">
+                              {selectedPartner.partner_name}
+                            </p>
+                          )}
+                        </div>
+                        <div className="admin-partners-inner-modal-image">
+                          <p>
+                            <strong>Image</strong>
+                          </p>
+                          <div className="admin-partners-image-wrapper">
+                            <div className="admin-partners-image-preview">
+                              {isEditingPartner ? (
+                                editImageUrl ? (
+                                  <img
+                                    src={getFullImageUrl(editImageUrl)}
+                                    alt="Partner"
+                                  />
+                                ) : (
+                                  <div className="admin-partners-no-image">
+                                    No Partner Image
+                                  </div>
+                                )
+                              ) : selectedPartner?.partner_image ? (
                                 <img
-                                  src={getFullImageUrl(editImageUrl)}
+                                  src={getFullImageUrl(
+                                    selectedPartner.partner_image
+                                  )}
                                   alt="Partner"
+                                  onClick={() =>
+                                    setFullscreenImageUrl(
+                                      getFullImageUrl(
+                                        selectedPartner.partner_image
+                                      )
+                                    )
+                                  }
+                                  style={{ cursor: "zoom-in" }}
                                 />
                               ) : (
                                 <div className="admin-partners-no-image">
                                   No Partner Image
                                 </div>
-                              )
-                            ) : selectedPartner?.partner_image ? (
-                              <img
-                                src={getFullImageUrl(selectedPartner.partner_image)}
-                                alt="Partner"
-                                onClick={() => setFullscreenImageUrl(getFullImageUrl(selectedPartner.partner_image))}
-                                style={{ cursor: "zoom-in" }} 
-                              />
-                            ) : (
-                              <div className="admin-partners-no-image">
-                                No Partner Image
-                              </div>
-                            )}
-                          </div>
+                              )}
+                            </div>
 
-                          <div className="admin-partners-image-buttons">
-                            <input
-                              type="file"
-                              accept="image/*"
-                              style={{ display: "none" }}
-                              id="partner-image-upload"
-                              onChange={(e) => handleImageUpload(e, "edit")}
-                            />
-                            <button
-                              className="partners-upload-btn"
-                              disabled={!isEditingPartner}
-                              onClick={() =>
-                                document
-                                  .getElementById("partner-image-upload")
-                                  ?.click()
-                              }
-                            >
-                              Upload
-                            </button>
-                            <button
-                              className="partners-remove-btn"
-                              disabled={!isEditingPartner}
-                              onClick={() => handleImageRemove("edit")}
-                            >
-                              Remove
-                            </button>
+                            <div className="admin-partners-image-buttons">
+                              <input
+                                type="file"
+                                accept="image/*"
+                                style={{ display: "none" }}
+                                id="partner-image-upload"
+                                onChange={(e) => handleImageUpload(e, "edit")}
+                              />
+                              <button
+                                className="partners-upload-btn"
+                                disabled={!isEditingPartner}
+                                onClick={() =>
+                                  document
+                                    .getElementById("partner-image-upload")
+                                    ?.click()
+                                }
+                              >
+                                Upload
+                              </button>
+                              <button
+                                className="partners-remove-btn"
+                                disabled={!isEditingPartner}
+                                onClick={() => handleImageRemove("edit")}
+                              >
+                                Remove
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="admin-partners-inner-modal-right">
-                      <div className="admin-partners-inner-modal-email">
-                        <p>
-                          <strong>Email</strong>
-                        </p>
-                        {isEditingPartner ? (
-                          <input
-                            className="admin-partners-inner-modal-email-content"
-                            value={editablePartner?.partner_contact_email || ""}
-                            onChange={(e) =>
-                              setEditablePartner(
-                                (prev) =>
-                                  prev && {
-                                    ...prev,
-                                    partner_contact_email: e.target.value,
-                                  },
-                              )
-                            }
-                          />
-                        ) : (
-                          <p className="admin-partners-inner-modal-email-content">
-                            {selectedPartner.partner_contact_email}
+                      <div className="admin-partners-inner-modal-right">
+                        <div className="admin-partners-inner-modal-email">
+                          <p>
+                            <strong>Email</strong>
                           </p>
-                        )}
-                      </div>
-                      <div className="admin-partners-inner-modal-contact">
-                        <p>
-                          <strong>Contact</strong>
-                        </p>
-                        {isEditingPartner ? (
-                          <input
-                            className="admin-partners-inner-modal-contact-content"
-                            value={editablePartner?.partner_phone_number || ""}
-                            onChange={(e) =>
-                              setEditablePartner(
-                                (prev) =>
-                                  prev && {
-                                    ...prev,
-                                    partner_phone_number: e.target.value,
-                                  },
-                              )
-                            }
-                          />
-                        ) : (
-                          <p className="admin-partners-inner-modal-contact-content">
-                            {selectedPartner.partner_phone_number}
+                          {isEditingPartner ? (
+                            <input
+                              className="admin-partners-inner-modal-email-content"
+                              value={
+                                editablePartner?.partner_contact_email || ""
+                              }
+                              onChange={(e) =>
+                                setEditablePartner(
+                                  (prev) =>
+                                    prev && {
+                                      ...prev,
+                                      partner_contact_email: e.target.value,
+                                    }
+                                )
+                              }
+                            />
+                          ) : (
+                            <p className="admin-partners-inner-modal-email-content">
+                              {selectedPartner.partner_contact_email}
+                            </p>
+                          )}
+                        </div>
+                        <div className="admin-partners-inner-modal-contact">
+                          <p>
+                            <strong>Contact</strong>
                           </p>
-                        )}
-                      </div>
-                      <div className="admin-partners-inner-modal-desc">
-                        <p>
-                          <strong>Description</strong>
-                        </p>
-                        {isEditingPartner ? (
-                          <textarea
-                            className="admin-partners-inner-modal-desc-content"
-                            value={editablePartner?.partner_dec || ""}
-                            onChange={(e) =>
-                              setEditablePartner(
-                                (prev) =>
-                                  prev && {
-                                    ...prev,
-                                    partner_dec: e.target.value,
-                                  },
-                              )
-                            }
-                          />
-                        ) : (
-                          <p className="admin-partners-inner-modal-desc-content">
-                            {selectedPartner.partner_dec}
+                          {isEditingPartner ? (
+                            <input
+                              className="admin-partners-inner-modal-contact-content"
+                              value={
+                                editablePartner?.partner_phone_number || ""
+                              }
+                              onChange={(e) =>
+                                setEditablePartner(
+                                  (prev) =>
+                                    prev && {
+                                      ...prev,
+                                      partner_phone_number: e.target.value,
+                                    }
+                                )
+                              }
+                            />
+                          ) : (
+                            <p className="admin-partners-inner-modal-contact-content">
+                              {selectedPartner.partner_phone_number}
+                            </p>
+                          )}
+                        </div>
+                        <div className="admin-partners-inner-modal-desc">
+                          <p>
+                            <strong>Description</strong>
                           </p>
-                        )}
+                          {isEditingPartner ? (
+                            <textarea
+                              className="admin-partners-inner-modal-desc-content"
+                              value={editablePartner?.partner_dec || ""}
+                              onChange={(e) =>
+                                setEditablePartner(
+                                  (prev) =>
+                                    prev && {
+                                      ...prev,
+                                      partner_dec: e.target.value,
+                                    }
+                                )
+                              }
+                            />
+                          ) : (
+                            <p className="admin-partners-inner-modal-desc-content">
+                              {selectedPartner.partner_dec}
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
             )}
             {isAddingNewPartner && (
               <div className="admin-partners-modal">
@@ -2399,8 +2714,8 @@ const AdminSettings = () => {
                         </p>
                         <div className="admin-partners-image-wrapper">
                           <div className="admin-partners-image-preview">
-                          {newImageUrl ? (
-                          <img src={newImageUrl} alt="Partner" />
+                            {newImageUrl ? (
+                              <img src={newImageUrl} alt="Partner" />
                             ) : (
                               <div className="admin-partners-no-image">
                                 No Partner Image
@@ -2524,10 +2839,18 @@ const AdminSettings = () => {
           </div>
         )}
         {fullscreenImageUrl && (
-          <div className="fullscreen-image-modal" onClick={() => setFullscreenImageUrl(null)}>
+          <div
+            className="fullscreen-image-modal"
+            onClick={() => setFullscreenImageUrl(null)}
+          >
             <div className="fullscreen-image-wrapper">
               <img src={fullscreenImageUrl} alt="Full view" />
-              <button className="close-fullscreen-btn" onClick={() => setFullscreenImageUrl(null)}>✕</button>
+              <button
+                className="close-fullscreen-btn"
+                onClick={() => setFullscreenImageUrl(null)}
+              >
+                ✕
+              </button>
             </div>
           </div>
         )}

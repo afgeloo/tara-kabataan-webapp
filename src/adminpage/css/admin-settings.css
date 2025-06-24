@@ -46,6 +46,35 @@
     margin-left: auto;
 }
 
+.admin-settings-create-user {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #1299ED;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.admin-settings-create-user:hover {
+  background-color: #0f85cc;
+}
+
+.admin-settings-create-user:active {
+  transform: translateY(0);
+}
+
+.create-user-icon {
+  font-size: 16px;
+}
+
+
 .admin-settings-bell-wrapper {
     position: relative;
     cursor: pointer;
@@ -95,6 +124,7 @@
   display: flex;
   align-items: center;
   width: 100%;
+  justify-content: space-between;
 }
 
 .admin-settings-lower-header h1{
@@ -1322,5 +1352,85 @@
 
 .admin-member-edit-fields select option {
   padding: 10px;
+}
+
+.create-user-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+  z-index: 1001;
+}
+
+.create-user-modal-content {
+  background: #fff;
+  border-radius: 1rem;
+  padding: 2rem;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+  position: relative;
+  animation: slideDown 0.3s ease;
+}
+
+.create-user-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  color: #666;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.create-user-modal-close:hover {
+  color: #333;
+}
+
+.create-user-modal-content h2 {
+  margin: 0 0 1rem;
+  font-size: 1.5rem;
+  text-align: center;
+  font-family: 'Bogart Trial', sans-serif;
+}
+
+.create-user-modal-content form label {
+  display: block;
+  font-weight: bold;
+}
+
+.create-user-modal-content form input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-top: 0.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 0.6rem;
+  transition: border-color 0.2s;
+}
+
+.create-user-modal-content form input:focus {
+  border-color: #1299ED;
+  outline: none;
+}
+
+.create-user-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; } 
+  to   { opacity: 1; }
+}
+@keyframes slideDown {
+  from { transform: translateY(-20px); opacity: 0; }
+  to   { transform: translateY(0);       opacity: 1; }
 }
 
