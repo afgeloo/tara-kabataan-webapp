@@ -1014,6 +1014,55 @@ const AdminSettings = () => {
   );
   const [viewMode, setViewMode] = useState<"table" | "grid">("table");
 
+  const [newUserForm, setNewUserForm] = useState<{
+    member_id: string;
+    phone: string;
+    email: string;
+  }>({
+    member_id: "",
+    phone: "",
+    email: "",
+  });
+
+  const handleNewUserSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const payload = {
+      member_id: newUserForm.member_id,
+      phone: newUserForm.phone,
+      email: newUserForm.email,
+    };
+
+    try {
+      const res = await fetch(
+        "http://localhost/tara-kabataan/tara-kabataan-backend/api/new-user.php",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
+      const data = await res.json();
+      if (data.success) {
+        toast.success("User created!");
+        setNewUserForm({ member_id: "", phone: "", email: "" });
+        setShowNewUserModal(false);
+      } else {
+        toast.error(data.error || "Failed to create user");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Server error, please try again.");
+    }
+  };
+
+  const initialNewUserForm = { member_id: "", phone: "", email: "" };
+
+  const closeNewUserModal = () => {
+    setNewUserForm(initialNewUserForm);
+    setShowNewUserModal(false);
+  };
+
   return (
     <div className="admin-settings">
       {notification && (
@@ -1049,44 +1098,100 @@ const AdminSettings = () => {
           />
         </div>
         <div className="admin-settings-header-right">
-          <button className="admin-settings-create-user" onClick={() => {setShowNewUserModal(true)}}>
+          <button
+            className="admin-settings-create-user"
+            onClick={() => {
+              setShowNewUserModal(true);
+            }}
+          >
             <FaPlus className="create-user-icon" />
             <span>Create New User</span>
           </button>
           {showNewUserModal && (
-          <div className="create-user-modal-backdrop" onClick={() => setShowNewUserModal(false)}>
-            <div className="create-user-modal-content" onClick={e => e.stopPropagation()}>
-              <button className="create-user-modal-close" onClick={() => setShowNewUserModal(false)}>✕</button>
-              <h2>New User</h2>
-              <form onSubmit={e => { e.preventDefault(); setShowNewUserModal(false); }}>
-                <label className="create-user-modal-label">
-                  Name
-                  <input type="text" name="name" required />
-                </label>
-                <label className="create-user-modal-label">
-                  Phone Number
-                  <input type="text" name="phone" required />
-                </label>
-                <label className="create-user-modal-label">
-                  Email
-                  <input type="email" name="email" required />
-                </label>
-                <label className="create-user-modal-label">
-                  Password
-                  <input type="password" name="password" required />
-                </label>
-                <label className="create-user-modal-label">
-                  Confirm Password
-                  <input type="password" name="confirmPassword" required />
-                </label>
-                <div className="create-user-modal-actions">
-                  <button type="button" className="cancel-btn" onClick={() => setShowNewUserModal(false)}>Cancel</button>
-                  <button type="submit" className="save-btn">Save</button>
-                </div>
-              </form>
+            <div
+              className="create-user-modal-backdrop"
+              onClick={closeNewUserModal}
+            >
+              <div
+                className="create-user-modal-content"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button
+                  className="create-user-modal-close"
+                  onClick={closeNewUserModal}
+                >
+                  ✕
+                </button>
+                <h2>New User</h2>
+                <form
+                  onSubmit={(e) => {
+                    handleNewUserSubmit(e);
+                  }}
+                >
+                  <label className="create-user-label">
+                    Name
+                    <div className="create-user-select-wrapper">
+                      <select
+                        className="create-user-select"
+                        name="member_id"
+                        value={newUserForm.member_id}
+                        required
+                        onChange={(e) =>
+                          setNewUserForm((f) => ({
+                            ...f,
+                            member_id: e.target.value,
+                          }))
+                        }
+                      >
+                        <option value="">Select a member…</option>
+                        {members.map((m) => (
+                          <option key={m.member_id} value={m.member_id}>
+                            {m.member_name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </label>
+                  <label className="create-user-modal-label">
+                    Phone Number
+                    <input
+                      type="text"
+                      name="phone"
+                      value={newUserForm.phone}
+                      required
+                      onChange={(e) =>
+                        setNewUserForm((f) => ({ ...f, phone: e.target.value }))
+                      }
+                    />
+                  </label>
+                  <label className="create-user-modal-label">
+                    Email
+                    <input
+                      type="email"
+                      name="email"
+                      value={newUserForm.email}
+                      required
+                      onChange={(e) =>
+                        setNewUserForm((f) => ({ ...f, email: e.target.value }))
+                      }
+                    />
+                  </label>
+                  <div className="create-user-modal-actions">
+                    <button
+                      type="button"
+                      className="cancel-btn"
+                      onClick={closeNewUserModal}
+                    >
+                      Cancel
+                    </button>
+                    <button type="submit" className="save-btn">
+                      Save
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
-          </div>
-        )}
+          )}
           <div
             className="admin-blogs-userinfo"
             onClick={() => setShowProfileModal(true)}
@@ -1115,15 +1220,15 @@ const AdminSettings = () => {
                 <h2>Change Password</h2>
                 <label>Email:</label>
                 <input type="email" value={profileEmail} disabled />
+                <label>Phone:</label>
+                <input
+                  type="tel"
+                  value={profilePhone}
+                  disabled
+                  onChange={(e) => setProfilePhone(e.target.value)}
+                />
                 {isEditingProfile && (
                   <>
-                    <label>Phone:</label>
-                    <input
-                      type="tel"
-                      value={profilePhone}
-                      disabled={!isEditingProfile}
-                      onChange={(e) => setProfilePhone(e.target.value)}
-                    />
                     <div style={{ position: "relative" }}>
                       <label>Old Password:</label>
                       <input

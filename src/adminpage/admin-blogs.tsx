@@ -994,16 +994,15 @@ const AdminBlogs = () => {
                 <h2>Change Password</h2>
                 <label>Email:</label>
                 <input type="email" value={profileEmail} disabled />
+                <label>Phone:</label>
+                <input
+                  type="tel"
+                  value={profilePhone}
+                  disabled
+                  onChange={(e) => setProfilePhone(e.target.value)}
+                />
                 {isEditingProfile && (
                   <>
-                    <label>Phone:</label>
-                    <input
-                      type="tel"
-                      value={profilePhone}
-                      disabled={!isEditingProfile}
-                      onChange={(e) => setProfilePhone(e.target.value)}
-                    />
-
                     <div style={{ position: "relative" }}>
                       <label>Old Password:</label>
                       <input
