@@ -83,21 +83,14 @@ const Chatbot: React.FC = () => {
         const lowerCaseMessage = message.toLowerCase();
         let reply = '';
 
-        if (lowerCaseMessage.includes("what is tara kabataan")) {
+        if (lowerCaseMessage.includes("ano ang tara kabataan")) {
             reply = "Ang Tara Kabataan (TK) ay isang organisasyon ng mga kabataan sa Maynila na itinatag para isulong ang kaginhawaan ng bawat kabataan at Manilenyo. Pinapahalagahan ng samahan ang pakikipagkapwa ng mga Pilipino na nakasandig sa ating karapatan at pagkakapantay-pantay. Naniniwala ang TK sa kakayahan ng bawat kabataan, sa loob at labas ng paaralan, na siyang higit na dapat mabigyan ng oportunidad na malinang at mapaunlad. Mula rito, mas makikilala ng kabataan ang kaniyang sarili at matatanaw ang kaniyang mahalagang papel sa komunidad, lipunan, at bayan. Mula sa sarili tungo sa bayan ang siyang hinihikayat ng Tara Kabataan sa kaniyang kapwa.";
             displayReply(reply);
-        } else if (lowerCaseMessage.includes("how to join tara kabataan")) {
-            reply = "To join Tara Kabataan, you can visit our website and fill out the membership form. You can also attend our events and meetings to learn more about our organization and how you can get involved.";
+        } else if (lowerCaseMessage.includes("paano sumali sa tara kabataan")) {
+            reply = "Upang sumali sa Tara Kabataan, maaari mong bisitahin ang aming website at punan ang form para sa pagiging miyembro. Maaari ka ring dumalo sa aming mga kaganapan at pagpupulong upang mas makilala mo ang aming organisasyon at malaman kung paano ka makakasali.";
             displayReply(reply);
-        } else if (lowerCaseMessage.includes("what are the advocacies")) {
-            reply = `The advocacies of Tara Kabataan (5 K) are:
-    - *Kalusugan*: Promoting accessible and humane healthcare services for all.
-    - *Kalikasan*: Leading the call for climate justice and environmental protection.
-    - *Karunungan*: Advocating for comprehensive and liberating education.
-    - *Kultura*: Strengthening national identity and creative thinking.
-    - *Kasarian*: Valuing gender equality and inclusive society.
-    
-    Visit the About page to learn more.`;
+        } else if (lowerCaseMessage.includes("ano ang mga adbokasiya ng tara kabataan") || lowerCaseMessage.includes("ano ang advocacies ng tara kabataan")) {
+            reply = `Ang mga adbokasiya ng Tara Kabataan (5 K) ay:\n\n1. KALUSUGAN\n   Pagtataguyod ng abot-kaya at makataong serbisyong pangkalusugan para sa lahat.\n\n2. KALIKASAN\n   Pangunguna sa pagkilos para sa katarungang pangklima at pangangalaga sa kapaligiran.\n\n3. KARUNUNGAN\n   Pagsusulong ng komprehensibo at nagpapalaya na edukasyon.\n\n4. KULTURA\n   Pagtitibay ng pambansang pagkakakilanlan at malikhaing pag-iisip.\n\n5. KASARIAN\n   Pagpapahalaga sa pagkakapantay-pantay ng kasarian at inklusibong lipunan.\n\nBisitahin ang pahina ng "About" para sa karagdagang impormasyon.`;
             displayReply(reply);
         } else {
             // Forward to Gemini
@@ -123,7 +116,7 @@ const Chatbot: React.FC = () => {
             }
 
             const data = await res.json();
-            const reply = data.reply || "I'm sorry, I couldn't get an answer.";
+            const reply = data.reply || "Paumanhin, hindi ko masasagot ang iyong katanungan.";
 
             displayReply(reply);
         } catch (err) {
@@ -178,9 +171,9 @@ const Chatbot: React.FC = () => {
     }, [messages]);
 
     const predefinedMessages = [
-        "What is Tara Kabataan?",
-        "How to join Tara Kabataan?",
-        "What are the advocacies of Tara Kabataan?"
+        "Ano ang Tara Kabataan?",
+        "Paano sumali sa Tara Kabataan?",
+        "Ano ang mga adbokasiya ng Tara Kabataan?"
     ];
 
     return (
