@@ -80,6 +80,8 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
+  justify-self: left;
+  width: 100%;
 }
 
 .event-details-title {
