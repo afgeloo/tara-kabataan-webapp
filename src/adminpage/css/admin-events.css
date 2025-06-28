@@ -577,6 +577,7 @@
 
 .admin-events-inner-content-modal-bot-right{
   width: 100%;
+  word-break: break-word;
 }
 
 .admin-events-inner-content-modal-top-left p,
@@ -750,6 +751,7 @@
   color: inherit;
   min-height: 180px;
   text-align: justify;
+  word-break: break-word;
 }
 
 .admin-events-inner-content-modal-desc-content
@@ -949,6 +951,7 @@
 
 .admin-new-event-inner-content-modal-bot-right{
   width: 100%;
+  word-break: break-word;
 }
 
 .admin-new-event-inner-content-modal-image img{
