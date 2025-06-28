@@ -11,19 +11,34 @@ const Chatbot: React.FC = () => {
     const [strictProductSearch, setStrictProductSearch] = useState(false);
     const [isTyping, setIsTyping] = useState(false);
     const [isDisplayingMessage, setIsDisplayingMessage] = useState(false);
+    const [sessionId, setSessionId] = useState<string>('');
     const textBoxRef = useRef<HTMLDivElement>(null);
     const messagesEndRef = useRef<HTMLUListElement>(null);
 
     useEffect(() => {
         const myStorage = localStorage;
 
+        // Initialize or retrieve existing session ID
+        let existingSessionId = myStorage.getItem('chatbot_session');
+        if (!existingSessionId) {
+            existingSessionId = generateSessionId();
+            myStorage.setItem('chatbot_session', existingSessionId);
+        }
+        setSessionId(existingSessionId);
+
+        // Keep the existing chatID logic if needed for other purposes
         if (!myStorage.getItem('chatID')) {
             myStorage.setItem('chatID', createUUID());
         }
+
         setTimeout(() => {
             setHasEntered(true);
         }, 300); 
     }, []);
+
+    const generateSessionId = (): string => {
+        return 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    };
 
     const createUUID = () => {
         let s: string[] = [];
@@ -93,7 +108,7 @@ const Chatbot: React.FC = () => {
             reply = `Ang mga adbokasiya ng Tara Kabataan (5 K) ay:\n\n1. KALUSUGAN\n   Pagtataguyod ng abot-kaya at makataong serbisyong pangkalusugan para sa lahat.\n\n2. KALIKASAN\n   Pangunguna sa pagkilos para sa katarungang pangklima at pangangalaga sa kapaligiran.\n\n3. KARUNUNGAN\n   Pagsusulong ng komprehensibo at nagpapalaya na edukasyon.\n\n4. KULTURA\n   Pagtitibay ng pambansang pagkakakilanlan at malikhaing pag-iisip.\n\n5. KASARIAN\n   Pagpapahalaga sa pagkakapantay-pantay ng kasarian at inklusibong lipunan.\n\nBisitahin ang pahina ng "About" para sa karagdagang impormasyon.`;
             displayReply(reply);
         } else {
-            // Forward to Gemini
+            // Forward to Gemini with session ID
             askGemini(message);
         }
     };
@@ -103,21 +118,30 @@ const Chatbot: React.FC = () => {
         setIsDisplayingMessage(true);
 
         try {
-            const res = await fetch('http://localhost/tara-kabataan/tara-kabataan-backend/api/askGemini.php', {
+            const response = await fetch('http://localhost/tara-kabataan/tara-kabataan-backend/api/askGemini.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ message })
+                body: JSON.stringify({
+                    message: message,
+                    session_id: sessionId
+                })
             });
 
-            if (!res.ok) {
-                throw new Error(`HTTP error! status: ${res.status}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const data = await res.json();
-            const reply = data.reply || "Paumanhin, hindi ko masasagot ang iyong katanungan.";
+            const data = await response.json();
+            
+            // Update session ID if backend provides a new one
+            if (data.session_id && data.session_id !== sessionId) {
+                setSessionId(data.session_id);
+                localStorage.setItem('chatbot_session', data.session_id);
+            }
 
+            const reply = data.reply || "Paumanhin, hindi ko masasagot ang iyong katanungan.";
             displayReply(reply);
         } catch (err) {
             console.error("Error contacting Gemini:", err);
@@ -152,7 +176,10 @@ const Chatbot: React.FC = () => {
         $.ajax({
             url: 'searchProduct.php',
             method: 'POST',
-            data: { productName },
+            data: { 
+                productName,
+                session_id: sessionId 
+            },
             success: res => {
                 setMessages(prev => [...prev, { text: res, type: 'other' }]);
                 setIsDisplayingMessage(false);
