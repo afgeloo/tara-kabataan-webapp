@@ -61,6 +61,8 @@
   font-size: 1.1rem;
   font-weight: 500;
   color: #333;
+  width: 100%;
+  word-break: break-word;
 }
 
 .event-info-category {
@@ -136,6 +138,8 @@
   line-height: 1.8;
   text-align: justify;
   color: #333;
+  width: 100%;
+  word-break: break-word;
 }
 
 .event-about img {
