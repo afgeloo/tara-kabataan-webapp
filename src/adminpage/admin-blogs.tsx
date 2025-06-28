@@ -47,7 +47,7 @@ const AdminBlogs = () => {
   const [newBlogTitle, setNewBlogTitle] = useState("");
   const [newBlogCategory, setNewBlogCategory] = useState("KALUSUGAN");
   const [newBlogStatus, setNewBlogStatus] = useState("DRAFT");
-  const [newBlogAuthor, setNewBlogAuthor] = useState("users-2025-000001");
+  const [newBlogAuthor, setNewBlogAuthor] = useState("");
   const [newBlogAuthorName, setNewBlogAuthorName] = useState("");
   const [bulkConfirmVisible, setBulkConfirmVisible] = useState(false);
   const [bulkActionType, setBulkActionType] = useState<
@@ -70,6 +70,13 @@ const AdminBlogs = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [otpRequired, setOtpRequired] = useState(false);
   const [oldPassword, setOldPassword] = useState("");
+
+  useEffect(() => {
+    if (newBlogModalOpen && loggedInUser) {
+      setNewBlogAuthor(loggedInUser.user_id);
+      setNewBlogAuthorName(loggedInUser.user_name);
+    }
+  }, [newBlogModalOpen, loggedInUser]);
 
   const handleSendOTP = async () => {
     if (!profileEmail) {
@@ -728,19 +735,6 @@ const AdminBlogs = () => {
       alert("Error occurred during bulk delete.");
     }
   };
-
-  useEffect(() => {
-    fetch(
-      `http://localhost/tara-kabataan/tara-kabataan-backend/api/get_user_name.php?user_id=${newBlogAuthor}`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.user_name) {
-          setNewBlogAuthorName(data.user_name);
-        }
-      })
-      .catch((err) => console.error("Failed to fetch user name:", err));
-  }, [newBlogAuthor]);
 
   useEffect(() => {
     fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/blogs.php")
