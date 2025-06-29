@@ -161,12 +161,25 @@ function EventDetails() {
             <img src={imageUrl} alt="Event" className="event-details-image" />
             <div className="event-details-info">
               <div className="event-detail-section-going">
-                <p className="event-info-label-going">Event Going:</p>
-                <p className="event-info-value-going">{event.event_going}</p>
+                {(() => {
+                  const status = event.event_status.toLowerCase();
+                  const label =
+                    status === "upcoming" || status === "ongoing"
+                      ? "Event Going"
+                      : "Attendees";
+                  return (
+                    <>
+                      <p className="event-info-label-going">{label}:</p>
+                      <p className="event-info-value-going">
+                        {event.event_going}
+                      </p>
+                    </>
+                  );
+                })()}
               </div>
               <div className="event-detail-section">
                 <p className="event-info-label">Speakers</p>
-                <br/>
+                <br />
                 <div
                   className="event-info-value"
                   dangerouslySetInnerHTML={{
