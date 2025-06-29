@@ -6,13 +6,13 @@ function Council() {
     const [councilText, setCouncilText] = useState("Loading...");
 
     useEffect(() => {
-        fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/aboutus.php")
+        fetch(`${import.meta.env.VITE_API_BASE_URL}/aboutus.php`)
             .then(res => res.json())
             .then(data => {
                 setCouncilText(data.council || "No data.");
             });
 
-        fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/council.php")
+        fetch(`${import.meta.env.VITE_API_BASE_URL}/council.php`)
             .then(res => res.json())
             .then(data => setCouncilData(data))
             .catch(err => console.error("Council API error:", err));

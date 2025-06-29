@@ -18,7 +18,7 @@ function Footer() {
   const [email, setEmail] = useState<string>("Loading...");
 
   useEffect(() => {
-    fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/aboutus.php")
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/aboutus.php`)
       .then((res) => res.json())
       .then((data) => {
         if (data.contact_no) setContactNo(data.contact_no);

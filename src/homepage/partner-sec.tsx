@@ -18,7 +18,7 @@ const PartnerSec: React.FC = () => {
   }, [partnerLogos]);
 
   useEffect(() => {
-    fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/partners.php")
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/partners.php`)
       .then((res) => res.json())
       .then((data) => {
         const logos = (data.partners || [])

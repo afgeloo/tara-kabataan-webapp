@@ -12,7 +12,7 @@ function GetInTouch() {
   const [facebookLink, setFacebookLink] = useState<string>("https://www.facebook.com/TaraKabataanMNL");
 
   useEffect(() => {
-    fetch("http://localhost/tara-kabataan/tara-kabataan-backend/api/aboutus.php")
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/aboutus.php`)
       .then((res) => res.json())
       .then((data) => {
         if (data.contact_no) setContactNo(data.contact_no);
