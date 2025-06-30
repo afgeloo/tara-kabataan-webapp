@@ -1,3 +1,4 @@
+// src/components/AboutAdvocacies.tsx
 import "./css/advocacies-sec.css";
 import healthIconDefault from "../assets/eventspage/health-icon.png";
 import healthIconHover from "../assets/eventspage/health-hover.png";
@@ -11,13 +12,14 @@ import kulturaIconDefault from "../assets/eventspage/kultura-icon.png";
 import kulturaIconHover from "../assets/eventspage/kultura-hover.png";
 import { useState, useEffect } from "react";
 
-function getFullImageUrl(src: string) {
-  if (!src) return "";
-  if (src.startsWith("http")) return src;
-  return `${import.meta.env.VITE_API_BASE_URL}/${src.replace(/^\/+/, "")}`;
-}
+type Member = {
+  member_id: string;
+  member_name: string;
+  member_image: string;
+  role_name: string;
+};
 
-const slidesadvocacies = [
+const slides = [
   {
     defaultImage: healthIconDefault,
     hoverImage: healthIconHover,
@@ -55,15 +57,19 @@ const slidesadvocacies = [
   },
 ];
 
+function getFullImageUrl(src: string) {
+  if (!src) return "";
+  if (src.startsWith("http")) return src;
+  return `${import.meta.env.VITE_API_BASE_URL}/${src.replace(/^\/+/, "")}`;
+}
+
 export default function AboutAdvocacies() {
-  const [members, setMembers] = useState<
-    { member_id: string; member_name: string; member_image: string; role_name: string }[]
-  >([]);
+  const [members, setMembers] = useState<Member[]>([]);
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_BASE_URL}/members.php`)
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         if (data.success) setMembers(data.members);
       })
       .catch(console.error);
@@ -74,8 +80,8 @@ export default function AboutAdvocacies() {
       <hr className="advocacies-line" />
       <h1 className="advocacies-header">Advocacies</h1>
       <div className="advocacies-slider">
-        {slidesadvocacies.map((slide, idx) => {
-          const slideLeads = members.filter(m => m.role_name === slide.category);
+        {slides.map((slide, idx) => {
+          const leads = members.filter((m) => m.role_name === slide.category);
 
           return (
             <div
@@ -98,44 +104,29 @@ export default function AboutAdvocacies() {
               <h2 className="advocacy-category">{slide.category}</h2>
               <p className="advocacy-title">{slide.title}</p>
 
-              {slideLeads.length > 0 && (
+              {leads.length > 0 && (
                 <h2 className="advocacy-category">
-                  {slideLeads.length > 1 ? "Leads" : "Lead"}
+                  {leads.length > 1 ? "Leads" : "Lead"}
                 </h2>
               )}
 
-              <div
-                style={{
-                  display: "flex",
-                  gap: "20px",
-                  justifyContent: "center",
-                  marginBottom: "10px",
-                }}
-              >
-                {slideLeads.length > 0 ? (
-                  slideLeads.map(lead => (
-                    <div
-                      key={lead.member_id}
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
+              <div className="advocacy-leads">
+                {leads.map((lead) => (
+                  <div key={lead.member_id} className="advocacy-lead-container">
+                    <img
+                      className="lead-photo"
+                      src={getFullImageUrl(lead.member_image)}
+                      alt={lead.member_name}
+                      onError={(e) => {
+                        // try fallback to .jpg if missing extension
+                        const img = e.target as HTMLImageElement;
+                        img.onerror = null;
+                        img.src = `http://localhost/tara-kabataan/tara-kabataan-webapp/uploads/members-images/${lead.member_id}.jpg`;
                       }}
-                    >
-                      <img
-                        className="lead-photo"
-                        src={getFullImageUrl(lead.member_image)}
-                        alt={lead.member_name}
-                        onError={e => {
-                          (e.target as HTMLImageElement).src = `http://localhost/tara-kabataan/tara-kabataan-webapp/uploads/members-images/${lead.member_id}.jpg`
-                        }}
-                      />
-                      <p className="advocacy-lead">{lead.member_name}</p>
-                    </div>
-                  ))
-                ) : (
-                  <p className="advocacy-lead"></p>
-                )}
+                    />
+                    <p className="advocacy-lead">{lead.member_name}</p>
+                  </div>
+                ))}
               </div>
             </div>
           );
