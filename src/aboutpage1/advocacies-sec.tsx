@@ -9,86 +9,138 @@ import kasarianIconDefault from "../assets/eventspage/kasarian-icon.png";
 import kasarianIconHover from "../assets/eventspage/kasarian-hover.png";
 import kulturaIconDefault from "../assets/eventspage/kultura-icon.png";
 import kulturaIconHover from "../assets/eventspage/kultura-hover.png";
+import { useState, useEffect } from "react";
 
-const slidesadvocacies = [
-    { 
-        defaultImage: healthIconDefault,
-        hoverImage: healthIconHover,
-        category: "Kalusugan",
-        title: "Itinataguyod ang abot-kamay at makataong serbisyong pangkalusugan para sa lahat sa pamamagitan ng paglaban sa pribatisasyon ng healthcare, pagtugon sa mga salik panlipunan na nakakaapekto sa kalusugan, at pagsasaayos sa kakulangan ng health workers at pasilidad.",
-        leads: ["Juan Dela Cruz"]
-    },
-    { 
-        defaultImage: natureIconDefault,
-        hoverImage: natureIconHover,
-        category: "Kalikasan",
-        title: "Nangunguna sa panawagan para sa katarungang pangklima at pangangalaga sa kalikasan sa pamamagitan ng makatarungang paglipat sa sustenableng pamumuhay, paghahanda sa sakuna, at pagprotekta sa mga komunidad laban sa mapaminsalang proyekto tulad ng reclamation.",
-        leads: ["Alex Reyes", "Jamie Santos"]
-    },
-    { 
-        defaultImage: bookIconDefault,
-        hoverImage: bookIconHover,
-        category: "Karunungan",
-        title: "Isinusulong ang kabuuang pagkatuto at mapagpalayang edukasyon sa pamamagitan ng mga programang nakabatay sa laro, pagpapalalim ng kamalayang panlipunan, at pagtataguyod ng mabuting pamamahala.",
-    },
-    { 
-        defaultImage: kulturaIconDefault,
-        hoverImage: kulturaIconHover,
-        category: "Kultura",
-        title: "Pinapalakas ang pambansang identidad at malikhaing kaisipan habang nilalabanan ang historikal na distorsyon sa pamamagitan ng sining bilang sandata ng paglaban at adbokasiya.",
-    },
-    { 
-        defaultImage: kasarianIconDefault,
-        hoverImage: kasarianIconHover,
-        category: "Kasarian",
-        title: "Pinapahalagahan ang pagkakapantay-pantay ng kasarian at inklusibong lipunan sa pamamagitan ng pagsusulong ng mga polisiya tulad ng SOGIESC Bill, Divorce Bill, at pagtatanggol sa karapatan ng kababaihan.",
-    },
-];
-
-function AboutAdvocacies() {
-    return (
-        <div>
-            <hr className="advocacies-line" />
-            <h1 className="advocacies-header">Advocacies</h1>
-            <div className="advocacies-slider">
-            {slidesadvocacies.map((slide, index) => (
-                <div
-                    className={`advocacy-card ${slide.category.toLowerCase()}`}
-                    key={index}
-                >
-                    <div className="advocacy-icon-container">
-                        <img src={slide.defaultImage} alt={slide.category} className="default-icon" />
-                        <img src={slide.hoverImage} alt={slide.category} className="hover-icon" />
-                    </div>
-                    <h2 className="advocacy-category">{slide.category}</h2>
-                    <p className="advocacy-title">{slide.title}</p>
-                    <h2 className="advocacy-category">
-                    {(slide.leads && slide.leads.length >= 2) ? "Leads" : "Lead"}
-                    </h2>
-
-                    <div style={{ display: "flex", gap: "20px", justifyContent: "center", marginBottom: "10px" }}>
-                    {(slide.leads && slide.leads.length > 0) ? (
-                        slide.leads.map((lead, idx) => (
-                        <div
-                            key={idx}
-                            style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
-                        >
-                            <div className="lead-placeholder" />
-                            <p className="advocacy-lead">{lead}</p>
-                        </div>
-                        ))
-                    ) : (
-                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                        <div className="lead-placeholder" />
-                        <p className="advocacy-lead">No Current Lead</p>
-                        </div>
-                    )}
-                    </div>
-                </div>
-            ))}
-            </div>
-        </div>
-    );
+function getFullImageUrl(src: string) {
+  if (!src) return "";
+  if (src.startsWith("http")) return src;
+  return `${import.meta.env.VITE_API_BASE_URL}/${src.replace(/^\/+/, "")}`;
 }
 
-export default AboutAdvocacies;
+const slidesadvocacies = [
+  {
+    defaultImage: healthIconDefault,
+    hoverImage: healthIconHover,
+    category: "Kalusugan",
+    title:
+      "Itinataguyod ang abot-kamay at makataong serbisyong pangkalusugan para sa lahat sa pamamagitan ng paglaban sa pribatisasyon ng healthcare, pagtugon sa mga salik panlipunan na nakakaapekto sa kalusugan, at pagsasaayos sa kakulangan ng health workers at pasilidad.",
+  },
+  {
+    defaultImage: natureIconDefault,
+    hoverImage: natureIconHover,
+    category: "Kalikasan",
+    title:
+      "Nangunguna sa panawagan para sa katarungang pangklima at pangangalaga sa kalikasan sa pamamagitan ng makatarungang paglipat sa sustenableng pamumuhay, paghahanda sa sakuna, at pagprotekta sa mga komunidad laban sa mapaminsalang proyekto tulad ng reclamation.",
+  },
+  {
+    defaultImage: bookIconDefault,
+    hoverImage: bookIconHover,
+    category: "Karunungan",
+    title:
+      "Isinusulong ang kabuuang pagkatuto at mapagpalayang edukasyon sa pamamagitan ng mga programang nakabatay sa laro, pagpapalalim ng kamalayang panlipunan, at pagtataguyod ng mabuting pamamahala.",
+  },
+  {
+    defaultImage: kulturaIconDefault,
+    hoverImage: kulturaIconHover,
+    category: "Kultura",
+    title:
+      "Pinapalakas ang pambansang identidad at malikhaing kaisipan habang nilalabanan ang historikal na distorsyon sa pamamagitan ng sining bilang sandata ng paglaban at adbokasiya.",
+  },
+  {
+    defaultImage: kasarianIconDefault,
+    hoverImage: kasarianIconHover,
+    category: "Kasarian",
+    title:
+      "Pinapahalagahan ang pagkakapantay-pantay ng kasarian at inklusibong lipunan sa pamamagitan ng pagsusulong ng mga polisiya tulad ng SOGIESC Bill, Divorce Bill, at pagtatanggol sa karapatan ng kababaihan.",
+  },
+];
+
+export default function AboutAdvocacies() {
+  const [members, setMembers] = useState<
+    { member_id: string; member_name: string; member_image: string; role_name: string }[]
+  >([]);
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/members.php`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) setMembers(data.members);
+      })
+      .catch(console.error);
+  }, []);
+
+  return (
+    <div>
+      <hr className="advocacies-line" />
+      <h1 className="advocacies-header">Advocacies</h1>
+      <div className="advocacies-slider">
+        {slidesadvocacies.map((slide, idx) => {
+          const slideLeads = members.filter(m => m.role_name === slide.category);
+
+          return (
+            <div
+              key={idx}
+              className={`advocacy-card ${slide.category.toLowerCase()}`}
+            >
+              <div className="advocacy-icon-container">
+                <img
+                  src={slide.defaultImage}
+                  alt={slide.category}
+                  className="default-icon"
+                />
+                <img
+                  src={slide.hoverImage}
+                  alt={slide.category}
+                  className="hover-icon"
+                />
+              </div>
+
+              <h2 className="advocacy-category">{slide.category}</h2>
+              <p className="advocacy-title">{slide.title}</p>
+
+              {slideLeads.length > 0 && (
+                <h2 className="advocacy-category">
+                  {slideLeads.length > 1 ? "Leads" : "Lead"}
+                </h2>
+              )}
+
+              <div
+                style={{
+                  display: "flex",
+                  gap: "20px",
+                  justifyContent: "center",
+                  marginBottom: "10px",
+                }}
+              >
+                {slideLeads.length > 0 ? (
+                  slideLeads.map(lead => (
+                    <div
+                      key={lead.member_id}
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                      }}
+                    >
+                      <img
+                        className="lead-photo"
+                        src={getFullImageUrl(lead.member_image)}
+                        alt={lead.member_name}
+                        onError={e => {
+                          (e.target as HTMLImageElement).src = "";
+                        }}
+                      />
+                      <p className="advocacy-lead">{lead.member_name}</p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="advocacy-lead"></p>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}

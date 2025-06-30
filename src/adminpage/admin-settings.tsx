@@ -1614,7 +1614,7 @@ const AdminSettings = () => {
                   <hr style={{ margin: "1.5rem 0", borderColor: "#eee" }} />
                   <div className="admin-contact-edit-fields">
                     <label>
-                      Add Role
+                      Role Name
                       <input
                         type="text"
                         value={newRoleName}
