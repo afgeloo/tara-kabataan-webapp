@@ -69,12 +69,16 @@ const EmailUs = () => {
 
     if (!isEmailValid || !isContactValid) return;
 
+    const SERVICE_ID = import.meta.env.VITE_SERVICE_ID;
+    const TEMPLATE_ID = import.meta.env.VITE_TEMPLATE_ID;
+    const PUBLIC_KEY = import.meta.env.VITE_PUBLIC_KEY;
+
     emailjs
       .sendForm(
-        "service_w0c2a9c",
-        "template_oem6l2b",
+        SERVICE_ID,
+        TEMPLATE_ID,
         form.current,
-        "3a9dLP6EzzCge5l5G"
+        PUBLIC_KEY
       )
       .then(
         (result) => {
