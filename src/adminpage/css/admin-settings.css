@@ -1478,3 +1478,86 @@
   margin-bottom: 2em;
   font-weight: 500;
 }
+
+.roles-modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+.roles-modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 100%;
+  position: relative;
+}
+.modal-close-btn {
+  position: absolute;
+  top: 0.5rem; right: 0.5rem;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+.roles-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+}
+.roles-list li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.role-item-content{
+  display: flex;
+  justify-content: space-between;
+}
+
+.role-edit-icon{
+  color: #b5b5b5;
+  cursor: pointer;
+}
+
+.role-trash-icon{
+  color: #b5b5b5;
+  cursor: pointer;
+}
+
+.roles-list-buttons{
+  gap: 0.8rem;
+  display: flex;
+}
+
+.role-item-actions{
+  gap: 0.8rem;
+  display: flex;
+}
+
+.roles-confirmation-popup {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: linear-gradient(145deg, #fce4ec, #f8bbd0);
+  border-radius: 20px;
+  padding: 20px 24px;
+  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  width: 320px;
+  z-index: 9999;
+  animation: iosSlideIn 0.35s ease-out;
+  border: 1px solid rgba(255, 182, 193, 0.3);
+  backdrop-filter: blur(12px);
+}
+
+.roles-confirmation-popup p {
+  font-size: 16px;
+  font-weight: 600;
+  color: #3b3b3b;
+  margin: 0 0 18px;
+  text-align: center;
+}

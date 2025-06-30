@@ -10,6 +10,7 @@ import {
   FaFacebookF,
   FaInstagram,
   FaTimes,
+  FaTrash
 } from "react-icons/fa";
 import president from "../assets/aboutpage/council/president.jpg";
 import { BsThreeDots } from "react-icons/bs";
@@ -31,9 +32,7 @@ const AdminSettings = () => {
   const [members, setMembers] = useState<Member[]>([]);
 
   useEffect(() => {
-    fetch(
-      `$1`
-    )
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/members.php`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
@@ -44,6 +43,7 @@ const AdminSettings = () => {
   }, []);
 
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
+  const [showRolesModal, setShowRolesModal] = useState(false);
   const [isEditingMember, setIsEditingMember] = useState(false);
   const [editableMember, setEditableMember] = useState<Member | null>(null);
   const [memberImageUrl, setMemberImageUrl] = useState<string | null>(null);
@@ -283,9 +283,7 @@ const AdminSettings = () => {
   >(null);
 
   useEffect(() => {
-    fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/partners.php`
-    )
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/partners.php`)
       .then((res) => res.json())
       .then((data) => {
         console.log("PARTNERS DATA:", data);
@@ -764,8 +762,7 @@ const AdminSettings = () => {
     }
 
     try {
-      const uploadUrl =
-        `${import.meta.env.VITE_API_BASE_URL}/upload_partner_image.php`;
+      const uploadUrl = `${import.meta.env.VITE_API_BASE_URL}/upload_partner_image.php`;
 
       const res = await fetch(uploadUrl, {
         method: "POST",
@@ -884,9 +881,7 @@ const AdminSettings = () => {
   const [aboutData, setAboutData] = useState<AboutUs | null>(null);
 
   useEffect(() => {
-    fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/aboutus.php`
-    )
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/aboutus.php`)
       .then((res) => res.json())
       .then((data) => {
         if (!data.error) {
@@ -1062,6 +1057,147 @@ const AdminSettings = () => {
     setNewUserForm(initialNewUserForm);
     setShowNewUserModal(false);
   };
+
+  const [newRoleName, setNewRoleName] = useState("");
+
+  const handleAddRole = async () => {
+    if (!newRoleName.trim()) {
+      setNotification("Role name is required.");
+      setTimeout(() => setNotification(""), 3000);
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/add_role.php`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ role_name: newRoleName }),
+        }
+      );
+      const data = await res.json();
+
+      if (data.success) {
+        // data.role is { role_id, role_name }
+        setRoles((prev) => [...prev, data.role]);
+        setNewRoleName("");
+        setNotification("Role added successfully!");
+      } else {
+        setNotification(data.message || "Failed to add role.");
+      }
+    } catch (err) {
+      console.error(err);
+      setNotification("Error adding role.");
+    }
+
+    setTimeout(() => setNotification(""), 3000);
+  };
+
+  // which role is currently being edited
+  const [editingRoleId, setEditingRoleId] = useState<string | null>(null);
+  // the draft name while editing
+  const [editingRoleName, setEditingRoleName] = useState<string>("");
+
+  const handleEditRole = (role_id: string, role_name: string) => {
+    setEditingRoleId(role_id);
+    setEditingRoleName(role_name);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingRoleId(null);
+    setEditingRoleName("");
+  };
+
+  const handleUpdateRole = async () => {
+    if (!editingRoleId || !editingRoleName.trim()) return;
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/update_role.php`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            role_id: editingRoleId,
+            role_name: editingRoleName.trim(),
+          }),
+        }
+      );
+      const data = await res.json();
+      if (data.success) {
+        setRoles((rs) =>
+          rs.map((r) =>
+            r.role_id === editingRoleId
+              ? { ...r, role_name: editingRoleName.trim() }
+              : r
+          )
+        );
+        setNotification("Role updated successfully!");
+      } else {
+        setNotification(data.message || "Failed to update role.");
+      }
+    } catch (err) {
+      console.error(err);
+      setNotification("Error updating role.");
+    }
+    setTimeout(() => setNotification(""), 3000);
+    handleCancelEdit();
+  };
+
+  const [roleToDelete, setRoleToDelete] = useState<string | null>(null);
+  const [confirmRoleDeleteVisible, setConfirmRoleDeleteVisible] = useState(false);
+
+
+  const handleDeleteRole = async (role_id: string) => {
+    if (!confirm("Are you sure you want to delete this role?")) return;
+
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/delete_role.php`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ role_id }),
+        }
+      );
+      const data = await res.json();
+      if (data.success) {
+        // remove it from state
+        setRoles((prev) => prev.filter((r) => r.role_id !== role_id));
+        setNotification("Role deleted successfully!");
+      } else {
+        setNotification(data.message || "Failed to delete role.");
+      }
+    } catch (err) {
+      console.error("Delete role error:", err);
+      setNotification("An error occurred while deleting role.");
+    }
+    setTimeout(() => setNotification(""), 4000);
+  };
+
+  const deleteRole = async (role_id: string) => {
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/delete_role.php`,
+        { method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ role_id }) }
+      );
+      const data = await res.json();
+      if (data.success) {
+        setRoles((prev) => prev.filter((r) => r.role_id !== role_id));
+        setNotification("Role deleted successfully!");
+      } else {
+        setNotification(data.message || "Failed to delete role.");
+      }
+    } catch (err) {
+      console.error(err);
+      setNotification("Error deleting role.");
+    }
+    setTimeout(() => setNotification(""), 4000);
+  };
+
+
 
   return (
     <div className="admin-settings">
@@ -1359,6 +1495,144 @@ const AdminSettings = () => {
         <h1>Settings</h1>
         <div className="admin-settings-lower-header-right">
           <div className="admin-settings-tabs-wrapper">
+            {activeTab === 1 && (
+              <button
+                className="add-new-partner-btn"
+                onClick={() => setShowRolesModal(true)}
+              >
+                See Roles
+              </button>
+            )}
+            {showRolesModal && (
+              <div
+                className="admin-contact-modal"
+                onClick={() => setShowRolesModal(false)}
+              >
+                <div
+                  className="admin-contact-modal-content"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <button
+                    className="admin-contact-modal-close"
+                    onClick={() => setShowRolesModal(false)}
+                  >
+                    ✕
+                  </button>
+                  <h1>All Roles</h1>
+
+                  <ul className="roles-list">
+                    {roles.map((r) => (
+                      <li key={r.role_id} className="role-item">
+                        {editingRoleId === r.role_id ? (
+                          <>
+                            <input
+                              type="text"
+                              value={editingRoleName}
+                              onChange={(e) =>
+                                setEditingRoleName(e.target.value)
+                              }
+                              className="role-edit-input"
+                            />
+                            <div className="roles-list-buttons">
+                              <div>
+                                <button
+                                  className="save-btn"
+                                  onClick={handleUpdateRole}
+                                >
+                                  Save
+                                </button>
+                              </div>
+                              <div>
+                                <button
+                                  className="cancel-btn"
+                                  onClick={handleCancelEdit}
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div className="role-item-content">
+                              <div>
+                                <span className="role-name">{r.role_name}</span>
+                              </div>
+                              <div className="role-item-actions">
+                                <div>
+                                  <FaEdit
+                                    className="role-edit-icon"
+                                    onClick={() =>
+                                      handleEditRole(r.role_id, r.role_name)
+                                    }
+                                  />
+                                </div>
+                                <div>
+                                  <FaTrash
+                                    className="role-trash-icon"
+                                    onClick={() => {
+                                      setRoleToDelete(r.role_id);
+                                      setConfirmRoleDeleteVisible(true);
+                                    }}
+                                  />
+                                  {confirmRoleDeleteVisible && (
+                                    <div className="roles-confirmation-popup show">
+                                      <div className="blogs-confirmation-box">
+                                        <p>Are you sure you want to delete this role?</p>
+                                        <div className="blogs-confirmation-actions">
+                                          <button
+                                            className="confirm-yes"
+                                            onClick={() => {
+                                              if (roleToDelete) deleteRole(roleToDelete);
+                                              setConfirmRoleDeleteVisible(false);
+                                              setRoleToDelete(null);
+                                            }}
+                                          >
+                                            Yes
+                                          </button>
+                                          <button
+                                            className="confirm-no"
+                                            onClick={() => {
+                                              setConfirmRoleDeleteVisible(false);
+                                              setRoleToDelete(null);
+                                            }}
+                                          >
+                                            No
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                  <hr style={{ margin: "1.5rem 0", borderColor: "#eee" }} />
+                  <div className="admin-contact-edit-fields">
+                    <label>
+                      Add Role
+                      <input
+                        type="text"
+                        value={newRoleName}
+                        onChange={(e) => setNewRoleName(e.target.value)}
+                      />
+                    </label>
+                  </div>
+                  <div
+                    className="admin-contact-edit-actions"
+                    style={{ marginTop: "0" }}
+                  >
+                    <button className="save-btn" onClick={handleAddRole}>
+                      <FaPlus style={{ marginRight: 6 }} /> Add Role
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
             {activeTab === 2 && (
               <>
                 {viewMode === "table" && (
@@ -2943,6 +3217,7 @@ const AdminSettings = () => {
             )}
           </div>
         )}
+
         {fullscreenImageUrl && (
           <div
             className="fullscreen-image-modal"
