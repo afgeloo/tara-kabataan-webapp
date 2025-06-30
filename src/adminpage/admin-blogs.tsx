@@ -988,13 +988,6 @@ const AdminBlogs = () => {
                 <h2>Change Password</h2>
                 <label>Email:</label>
                 <input type="email" value={profileEmail} disabled />
-                <label>Phone:</label>
-                <input
-                  type="tel"
-                  value={profilePhone}
-                  disabled
-                  onChange={(e) => setProfilePhone(e.target.value)}
-                />
                 {isEditingProfile && (
                   <>
                     <div style={{ position: "relative" }}>

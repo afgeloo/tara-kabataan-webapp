@@ -375,7 +375,6 @@ const AdminLogin: React.FC = () => {
                   setPhoneOtpSent(false);
                 }}
               >
-                {isPhoneLogin ? "Login via email" : "Login via phone number"}
               </a>
             </div>
           </div>
@@ -591,15 +590,12 @@ const AdminLogin: React.FC = () => {
                   <FaTimes />
                 </div>
                 <h3>Reset Password</h3>
-                <div className="modal-buttons">
+                <div className="admin-reset-button">
                   <button
                     className="admin-login-button"
                     onClick={() => setResetStep("email")}
                   >
                     Reset via Email
-                  </button>
-                  <button className="admin-cancel-button" disabled>
-                    Reset via Phone
                   </button>
                 </div>
               </>
