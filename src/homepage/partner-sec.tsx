@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import partnerLogo from "../assets/logos/tklogo1.png";
 import memberLogo from "../assets/logos/tklogo2.png";
 import tklogo from "../assets/logos/tklogo3.png";
+import tkdonate from "../assets/homepage/qr-code.jpg";
 import donateicon from "../assets/logos/donateicon.png";
 
 const PartnerSec: React.FC = () => {
@@ -115,7 +116,8 @@ const PartnerSec: React.FC = () => {
         <div className="qr-popup-overlay" onClick={() => setShowQR(false)}>
           <div className="qr-popup" onClick={(e) => e.stopPropagation()}>
             <button className="close-qr-btn" onClick={() => setShowQR(false)}>×</button>
-            <img src={tklogo} alt="QR Code" className="qr-code-img" />
+            <p>Open GCash, Maya, or any app with a built-in QR scanner to scan:</p>
+            <img src={tkdonate} alt="QR Code" className="qr-code-img" />
             <p>Or message us directly on Messenger:</p>
             <a
               href="https://www.facebook.com/messages/t/105536985395406"
