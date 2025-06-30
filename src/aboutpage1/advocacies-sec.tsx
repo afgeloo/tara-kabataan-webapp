@@ -127,7 +127,7 @@ export default function AboutAdvocacies() {
                         src={getFullImageUrl(lead.member_image)}
                         alt={lead.member_name}
                         onError={e => {
-                          (e.target as HTMLImageElement).src = "";
+                          (e.target as HTMLImageElement).src = `http://localhost/tara-kabataan/tara-kabataan-webapp/uploads/members-images/${lead.member_id}.jpg`
                         }}
                       />
                       <p className="advocacy-lead">{lead.member_name}</p>
