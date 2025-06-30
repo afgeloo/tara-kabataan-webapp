@@ -262,6 +262,10 @@
     margin-bottom: -30px;
   }
 
+  .advocacy-leads {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .advocacy-category {
     font-size: 14px;
   }

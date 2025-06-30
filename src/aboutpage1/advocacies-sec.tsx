@@ -10,12 +10,13 @@ import kasarianIconDefault from "../assets/eventspage/kasarian-icon.png";
 import kasarianIconHover from "../assets/eventspage/kasarian-hover.png";
 import kulturaIconDefault from "../assets/eventspage/kultura-icon.png";
 import kulturaIconHover from "../assets/eventspage/kultura-hover.png";
+import placeholderImg from "../assets/aboutpage/img-placeholder-guy.png";
 import { useState, useEffect } from "react";
 
 type Member = {
   member_id: string;
   member_name: string;
-  member_image: string;
+  member_image: string | null;
   role_name: string;
 };
 
@@ -57,11 +58,17 @@ const slides = [
   },
 ];
 
-function getFullImageUrl(src: string) {
-  if (!src) return "";
-  if (src.startsWith("http")) return src;
-  return `${import.meta.env.VITE_API_BASE_URL}/${src.replace(/^\/+/, "")}`;
-}
+const getFullImageUrlCouncil = (url: string | null) => {
+  if (!url || url.trim() === "") return placeholderImg;
+  if (url.startsWith("http")) return url;
+
+  const [path, query] = url.split("?");
+  const fullPath = path.includes("/tara-kabataan/")
+    ? `http://localhost${path}`
+    : `http://localhost/tara-kabataan/${path.startsWith("/") ? "" : "/"}${path}`;
+
+  return query ? `${fullPath}?${query}` : fullPath;
+};
 
 export default function AboutAdvocacies() {
   const [members, setMembers] = useState<Member[]>([]);
@@ -112,17 +119,14 @@ export default function AboutAdvocacies() {
 
               <div className="advocacy-leads">
                 {leads.map((lead) => (
-                  <div key={lead.member_id} className="advocacy-lead-container">
+                  <div
+                    key={lead.member_id}
+                    className="advocacy-lead-container"
+                  >
                     <img
                       className="lead-photo"
-                      src={getFullImageUrl(lead.member_image)}
+                      src={getFullImageUrlCouncil(lead.member_image)}
                       alt={lead.member_name}
-                      onError={(e) => {
-                        // try fallback to .jpg if missing extension
-                        const img = e.target as HTMLImageElement;
-                        img.onerror = null;
-                        img.src = `http://localhost/tara-kabataan/tara-kabataan-webapp/uploads/members-images/${lead.member_id}.jpg`;
-                      }}
                     />
                     <p className="advocacy-lead">{lead.member_name}</p>
                   </div>
