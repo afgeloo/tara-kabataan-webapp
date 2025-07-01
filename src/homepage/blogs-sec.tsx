@@ -59,7 +59,7 @@ const BlogsSec: React.FC = () => {
                   <div className="blogs-image-container">
                   {image_url ? (
                     <img
-                      src={`http://localhost${image_url}`}
+                      src={`${import.meta.env.VITE_API_BASE_URL}${image_url}`}
                       alt={`Blog ${blog_id}`}
                       onError={(e) => {
                         (e.target as HTMLImageElement).style.display = "none";

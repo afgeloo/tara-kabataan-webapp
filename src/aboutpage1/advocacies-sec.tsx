@@ -64,8 +64,8 @@ const getFullImageUrlCouncil = (url: string | null) => {
 
   const [path, query] = url.split("?");
   const fullPath = path.includes("/tara-kabataan/")
-    ? `http://localhost${path}`
-    : `http://localhost/tara-kabataan/${path.startsWith("/") ? "" : "/"}${path}`;
+    ? `${import.meta.env.VITE_API_BASE_URL}${path}`
+    : `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/${path.startsWith("/") ? "" : "/"}${path}`;
 
   return query ? `${fullPath}?${query}` : fullPath;
 };

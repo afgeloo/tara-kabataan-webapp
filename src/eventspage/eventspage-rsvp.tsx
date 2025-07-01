@@ -25,7 +25,7 @@ export interface Event {
 const getFullImageUrl = (imageUrl: string) => {
   if (!imageUrl) return "";
   if (imageUrl.startsWith("http")) return imageUrl;
-  return `http://localhost${imageUrl}`;
+  return `${import.meta.env.VITE_API_BASE_URL}${imageUrl}`;
 };
 
 const formatDateRSVP = (dateString: string) => {

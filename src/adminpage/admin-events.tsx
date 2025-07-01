@@ -805,9 +805,9 @@ const AdminEvents = () => {
     if (!url) return "";
     if (url.startsWith("http")) return url;
     if (url.includes("/tara-kabataan/")) {
-      return `http://localhost${url}`;
+      return `${import.meta.env.VITE_API_BASE_URL}${url}`;
     }
-    return `http://localhost/tara-kabataan${url.startsWith("/") ? "" : "/"}${url}`;
+    return `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan${url.startsWith("/") ? "" : "/"}${url}`;
   };
 
   const saveSelection = () => {
@@ -1978,7 +1978,7 @@ const AdminEvents = () => {
 
                                   const data = await res.json();
                                   if (data.success && data.image_url) {
-                                    const img = `<img src="http://localhost${data.image_url}" alt="event image" style="max-width:100%; margin: 10px 0; display:block;" />`;
+                                    const img = `<img src="${import.meta.env.VITE_API_BASE_URL}${data.image_url}" alt="event image" style="max-width:100%; margin: 10px 0; display:block;" />`;
                                     const div = document.getElementById(
                                       "new-event-content-editor"
                                     );
@@ -2492,7 +2492,7 @@ const AdminEvents = () => {
 
                               const data = await res.json();
                               if (data.success && data.image_url) {
-                                const img = `<img src="http://localhost${data.image_url}" alt="event image" style="max-width:100%; margin: 10px 0; display:block;" />`;
+                                const img = `<img src="${import.meta.env.VITE_API_BASE_URL}${data.image_url}" alt="event image" style="max-width:100%; margin: 10px 0; display:block;" />`;
                                 const div = document.getElementById(
                                   "add-event-content-editor"
                                 );

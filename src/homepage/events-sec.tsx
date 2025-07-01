@@ -32,7 +32,7 @@ const EventsSec: React.FC = memo(() => {
             });
 
             return {
-              image: `http://localhost${event.event_image}`,
+              image: `${import.meta.env.VITE_API_BASE_URL}${event.event_image}`,
               category: event.event_category,
               title: event.event_title,
               date: formattedDate,

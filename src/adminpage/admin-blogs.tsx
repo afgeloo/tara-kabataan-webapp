@@ -588,7 +588,7 @@ const AdminBlogs = () => {
       const data = await res.json();
 
       if (data.success && data.image_url) {
-        const imageTag = `<img src="http://localhost${data.image_url}" alt="inserted image" style="max-width:100%;" />`;
+        const imageTag = `<img src="${import.meta.env.VITE_API_BASE_URL}${data.image_url}" alt="inserted image" style="max-width:100%;" />`;
         setEditableBlog((prev) =>
           prev
             ? { ...prev, content: (prev.content || "") + `\n${imageTag}\n` }
@@ -1438,7 +1438,7 @@ const AdminBlogs = () => {
                       onClick={() => setSelectedBlog(blog)}
                     >
                       <img
-                        src={`http://localhost${blog.image_url}`}
+                        src={`${import.meta.env.VITE_API_BASE_URL}${blog.image_url}`}
                         alt={blog.title}
                         className="blog-grid-image"
                       />
@@ -1704,12 +1704,12 @@ const AdminBlogs = () => {
                           : selectedBlog.image_url
                       ) ? (
                         <img
-                          src={`http://localhost${isEditing ? editableBlog?.image_url : selectedBlog.image_url}`}
+                          src={`${import.meta.env.VITE_API_BASE_URL}${isEditing ? editableBlog?.image_url : selectedBlog.image_url}`}
                           alt="Blog"
                           style={{ cursor: "zoom-in" }}
                           onClick={() =>
                             setFullImageUrl(
-                              `http://localhost${isEditing ? editableBlog?.image_url : selectedBlog.image_url}`
+                              `${import.meta.env.VITE_API_BASE_URL}${isEditing ? editableBlog?.image_url : selectedBlog.image_url}`
                             )
                           }
                         />
@@ -1766,11 +1766,11 @@ const AdminBlogs = () => {
                               return (
                                 <div key={i} className="blog-image-preview">
                                   <img
-                                    src={`http://localhost${image}`}
+                                    src={`${import.meta.env.VITE_API_BASE_URL}${image}`}
                                     alt={`More Image ${i}`}
                                     onClick={() =>
                                       setFullImageUrl(
-                                        `http://localhost${image}`
+                                        `${import.meta.env.VITE_API_BASE_URL}${image}`
                                       )
                                     }
                                     style={{ cursor: "zoom-in" }}
@@ -1983,7 +1983,7 @@ const AdminBlogs = () => {
 
                                 const data = await res.json();
                                 if (data.success && data.image_url) {
-                                  const img = `<img src="http://localhost${data.image_url}" alt="event image" style="max-width:100%; margin: 10px 0; display:block;" />`;
+                                  const img = `<img src="${import.meta.env.VITE_API_BASE_URL}${data.image_url}" alt="event image" style="max-width:100%; margin: 10px 0; display:block;" />`;
                                   const div = document.getElementById(
                                     "new-event-content-editor"
                                   );
@@ -2162,7 +2162,7 @@ const AdminBlogs = () => {
                       </p>
                       {newBlogImage ? (
                         <img
-                          src={`http://localhost${newBlogImage}`}
+                          src={`${import.meta.env.VITE_API_BASE_URL}${newBlogImage}`}
                           alt="Preview"
                           style={{
                             maxWidth: "100%",
@@ -2171,7 +2171,7 @@ const AdminBlogs = () => {
                             cursor: "zoom-in",
                           }}
                           onClick={() =>
-                            setFullImageUrl(`http://localhost${newBlogImage}`)
+                            setFullImageUrl(`${import.meta.env.VITE_API_BASE_URL}${newBlogImage}`)
                           }
                         />
                       ) : (
@@ -2233,10 +2233,10 @@ const AdminBlogs = () => {
                             return (
                               <div key={i} className="blog-image-preview">
                                 <img
-                                  src={`http://localhost${image}`}
+                                  src={`${import.meta.env.VITE_API_BASE_URL}${image}`}
                                   alt={`More Image ${i}`}
                                   onClick={() =>
-                                    setFullImageUrl(`http://localhost${image}`)
+                                    setFullImageUrl(`${import.meta.env.VITE_API_BASE_URL}${image}`)
                                   }
                                   style={{ cursor: "zoom-in" }}
                                 />
@@ -2406,7 +2406,7 @@ const AdminBlogs = () => {
                               );
                               const data = await res.json();
                               if (data.success && data.image_url) {
-                                const img = `<img src="http://localhost${data.image_url}" alt="blog image" style="max-width:100%;" />`;
+                                const img = `<img src="${import.meta.env.VITE_API_BASE_URL}${data.image_url}" alt="blog image" style="max-width:100%;" />`;
                                 const div = document.getElementById(
                                   "new-blog-content-editor"
                                 );
@@ -2466,10 +2466,10 @@ const AdminBlogs = () => {
                 >
                   <div
                     className="thumb-image-wrapper"
-                    onClick={() => setFullImageUrl(`http://localhost${img}`)}
+                    onClick={() => setFullImageUrl(`${import.meta.env.VITE_API_BASE_URL}${img}`)}
                   >
                     <img
-                      src={`http://localhost${img}`}
+                      src={`${import.meta.env.VITE_API_BASE_URL}${img}`}
                       alt={`More Image ${index}`}
                     />
 

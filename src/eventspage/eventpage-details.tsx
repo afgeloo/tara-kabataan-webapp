@@ -138,7 +138,7 @@ function EventDetails() {
     return <Preloader />;
   }
 
-  const imageUrl = `http://localhost/${event.event_image}`;
+  const imageUrl = `${import.meta.env.VITE_API_BASE_URL}/${event.event_image}`;
 
   function formatContent(content: string) {
     if (!content) return "";

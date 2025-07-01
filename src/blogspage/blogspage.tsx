@@ -22,7 +22,7 @@ interface Blog {
 
 const getSafeImageUrl = (url: string | null | undefined): string => {
   if (!url) return "";
-  return url.startsWith("http") || url.startsWith("/") ? `http://localhost${url}` : url;
+  return url.startsWith("http") || url.startsWith("/") ? `${import.meta.env.VITE_API_BASE_URL}${url}` : url;
 };
 
 function BlogsPage() {

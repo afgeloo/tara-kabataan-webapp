@@ -582,9 +582,9 @@ const AdminSettings = () => {
     if (!url) return "";
     if (url.startsWith("http")) return url;
     if (url.includes("/tara-kabataan/")) {
-      return `http://localhost${url}`;
+      return `${import.meta.env.VITE_API_BASE_URL}${url}`;
     }
-    return `http://localhost/tara-kabataan${url.startsWith("/") ? "" : "/"}${url}`;
+    return `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan${url.startsWith("/") ? "" : "/"}${url}`;
   };
 
   const getFullImageUrlCouncil = (url: string | null) => {
@@ -593,8 +593,8 @@ const AdminSettings = () => {
 
     const [path, query] = url.split("?");
     const fullPath = path.includes("/tara-kabataan/")
-      ? `http://localhost${path}`
-      : `http://localhost/tara-kabataan/${path.startsWith("/") ? "" : "/"}${path}`;
+      ? `${import.meta.env.VITE_API_BASE_URL}${path}`
+      : `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/${path.startsWith("/") ? "" : "/"}${path}`;
 
     return query ? `${fullPath}?${query}` : fullPath;
   };

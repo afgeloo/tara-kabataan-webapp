@@ -109,8 +109,8 @@ function SingleBlog() {
 
   const getFullImageUrl = (path: string): string => {
     return path.startsWith("/") 
-      ? `http://localhost${path}` 
-      : `http://localhost/tara-kabataan/tara-kabataan-webapp/uploads/blogs-images/${path}`;
+      ? `${import.meta.env.VITE_API_BASE_URL}${path}` 
+      : `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-webapp/uploads/blogs-images/${path}`;
   };  
 
   return (
