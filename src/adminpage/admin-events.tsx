@@ -1157,8 +1157,8 @@ const AdminEvents = () => {
         </div>
       </div>
       <div className="admin-events-lower-header">
-        <h1>Events</h1>
-        <div className="admin-events-lower-header-right">
+        <div className="admin-events-lower-header-left">
+          <h1>Events</h1>
           {viewMode === "table" ? (
             <>
               <div className="admin-events-lower-header-select">
@@ -1211,25 +1211,29 @@ const AdminEvents = () => {
               </div>
             </div>
           )}
-          <div className="admin-blogs-toggle-wrapper">
-            <button
-              className={`admin-blogs-toggle-button ${viewMode === "table" ? "active" : ""}`}
-              onClick={() => setViewMode("table")}
-            >
-              Table View
-            </button>
-            <button
-              className={`admin-blogs-toggle-button ${viewMode === "grid" ? "active" : ""}`}
-              onClick={() => setViewMode("grid")}
-            >
-              Grid View
-            </button>
-          </div>
-          <div className="admin-events-lower-header-new-event">
-            <button onClick={() => setIsAddingNew(true)}>
-              <FaPlus className="admin-icon-left" />
-              Add New Event
-            </button>
+        </div>
+        <div className="admin-events-lower-header-right">
+          <div className="admin-blogs-toggle-newblog">
+            <div className="admin-blogs-toggle-wrapper">
+              <button
+                className={`admin-blogs-toggle-button ${viewMode === "table" ? "active" : ""}`}
+                onClick={() => setViewMode("table")}
+              >
+                Table View
+              </button>
+              <button
+                className={`admin-blogs-toggle-button ${viewMode === "grid" ? "active" : ""}`}
+                onClick={() => setViewMode("grid")}
+              >
+                Grid View
+              </button>
+            </div>
+            <div className="admin-events-lower-header-new-event">
+              <button onClick={() => setIsAddingNew(true)}>
+                <FaPlus className="admin-icon-left" />
+                Add New Event
+              </button>
+            </div>
           </div>
         </div>
       </div>

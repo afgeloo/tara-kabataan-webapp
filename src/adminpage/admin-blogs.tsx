@@ -737,7 +737,9 @@ const AdminBlogs = () => {
   };
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/blogs.php`)
+    fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/blogs.php`
+    )
       .then((res) => res.json())
       .then((data) => {
         if (data.blogs && Array.isArray(data.blogs)) {
@@ -1129,33 +1131,10 @@ const AdminBlogs = () => {
         )}
       </div>
       <div className="admin-blogs-lower-header">
-        <h1>Blogs</h1>
-        <div className="admin-blogs-lower-header-right">
+        <div className="admin-blogs-lower-header-left">
+          <h1>Blogs</h1>
           {viewMode === "table" ? (
             <>
-              {/* <div className="admin-blogs-lower-header-show">
-            <p>Showing</p>
-            <div className="admin-blogs-lower-header-count" onClick={() => setOpen(!open)}>
-              {count === -1 ? 'All' : count}
-              <span className="dropdown-arrow">▾</span>
-              {open && (
-                <div className="admin-blogs-dropdown-menu">
-                  {[-1, ...Array.from({ length: 20 }, (_, i) => i + 1)].map((val) => (
-                    <div
-                      key={val}
-                      className="admin-blogs-dropdown-item"
-                      onClick={() => {
-                        setCount(val);
-                        setOpen(false);
-                      }}
-                    >
-                      {val === -1 ? 'All' : val}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div> */}
               <div className="admin-blogs-lower-header-select">
                 <button onClick={() => setSelectMode(!selectMode)}>
                   <img
@@ -1201,34 +1180,38 @@ const AdminBlogs = () => {
               </div>
             </div>
           )}
-          <div className="admin-blogs-toggle-wrapper">
-            <button
-              className={`admin-blogs-toggle-button ${viewMode === "table" ? "active" : ""}`}
-              onClick={() => setViewMode("table")}
-            >
-              Table View
-            </button>
-            <button
-              className={`admin-blogs-toggle-button ${viewMode === "grid" ? "active" : ""}`}
-              onClick={() => setViewMode("grid")}
-            >
-              Grid View
-            </button>
-          </div>
-          <div className="admin-blogs-lower-header-new-blog">
-            <button
-              onClick={() => {
-                resetNewBlogForm();
-                setNewBlogMoreImages([]);
-                setNewBlogImage("");
-                setNewBlogContent("");
-                setShowAllImagesModal(false);
-                setNewBlogModalOpen(true);
-              }}
-            >
-              <FaPlus className="admin-icon-left" />
-              Add New Blog
-            </button>
+        </div>
+        <div className="admin-blogs-lower-header-right">
+          <div className="admin-blogs-toggle-newblog">
+            <div className="admin-blogs-toggle-wrapper">
+              <button
+                className={`admin-blogs-toggle-button ${viewMode === "table" ? "active" : ""}`}
+                onClick={() => setViewMode("table")}
+              >
+                Table View
+              </button>
+              <button
+                className={`admin-blogs-toggle-button ${viewMode === "grid" ? "active" : ""}`}
+                onClick={() => setViewMode("grid")}
+              >
+                Grid View
+              </button>
+            </div>
+            <div className="admin-blogs-lower-header-new-blog">
+              <button
+                onClick={() => {
+                  resetNewBlogForm();
+                  setNewBlogMoreImages([]);
+                  setNewBlogImage("");
+                  setNewBlogContent("");
+                  setShowAllImagesModal(false);
+                  setNewBlogModalOpen(true);
+                }}
+              >
+                <FaPlus className="admin-icon-left" />
+                Add New Blog
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -2171,7 +2154,9 @@ const AdminBlogs = () => {
                             cursor: "zoom-in",
                           }}
                           onClick={() =>
-                            setFullImageUrl(`${import.meta.env.VITE_API_BASE_URL}${newBlogImage}`)
+                            setFullImageUrl(
+                              `${import.meta.env.VITE_API_BASE_URL}${newBlogImage}`
+                            )
                           }
                         />
                       ) : (
@@ -2236,7 +2221,9 @@ const AdminBlogs = () => {
                                   src={`${import.meta.env.VITE_API_BASE_URL}${image}`}
                                   alt={`More Image ${i}`}
                                   onClick={() =>
-                                    setFullImageUrl(`${import.meta.env.VITE_API_BASE_URL}${image}`)
+                                    setFullImageUrl(
+                                      `${import.meta.env.VITE_API_BASE_URL}${image}`
+                                    )
                                   }
                                   style={{ cursor: "zoom-in" }}
                                 />
@@ -2466,7 +2453,11 @@ const AdminBlogs = () => {
                 >
                   <div
                     className="thumb-image-wrapper"
-                    onClick={() => setFullImageUrl(`${import.meta.env.VITE_API_BASE_URL}${img}`)}
+                    onClick={() =>
+                      setFullImageUrl(
+                        `${import.meta.env.VITE_API_BASE_URL}${img}`
+                      )
+                    }
                   >
                     <img
                       src={`${import.meta.env.VITE_API_BASE_URL}${img}`}
