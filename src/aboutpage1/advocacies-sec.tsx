@@ -64,8 +64,8 @@ const getFullImageUrlCouncil = (url: string | null) => {
 
   const [path, query] = url.split("?");
   const fullPath = path.includes("/tara-kabataan/")
-    ? `http://localhost${path}`
-    : `http://localhost/tara-kabataan/${path.startsWith("/") ? "" : "/"}${path}`;
+    ? `${import.meta.env.VITE_API_BASE_URL}${path}`
+    : `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/${path.startsWith("/") ? "" : "/"}${path}`;
 
   return query ? `${fullPath}?${query}` : fullPath;
 };
@@ -74,7 +74,7 @@ export default function AboutAdvocacies() {
   const [members, setMembers] = useState<Member[]>([]);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/members.php`)
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/members.php`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success) setMembers(data.members);
@@ -83,7 +83,7 @@ export default function AboutAdvocacies() {
   }, []);
 
   return (
-    <div>
+    <div className="advocacies-section">
       <hr className="advocacies-line" />
       <h1 className="advocacies-header">Advocacies</h1>
       <div className="advocacies-slider">

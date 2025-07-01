@@ -121,15 +121,17 @@
     object-fit: contain;
 }
 
-.content-section-main{
-    background-color: #4DB1E3; 
-    width: 100%;
-    justify-content: center; 
-    justify-items: center;
-    align-items: center;
-    z-index: 1;
-    text-align: center;
-    color: white;
+.content-section-main {
+  background-color: #4DB1E3;
+  width: 100%;
+  display: flex;              
+  justify-content: center;    
+  align-items: center;        
+  padding: 2rem 0;            
+  box-sizing: border-box;
+  z-index: 1;
+  color: white;
+  text-align: center;
 }
 
 .content-grid {

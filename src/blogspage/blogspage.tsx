@@ -22,7 +22,7 @@ interface Blog {
 
 const getSafeImageUrl = (url: string | null | undefined): string => {
   if (!url) return "";
-  return url.startsWith("http") || url.startsWith("/") ? `http://localhost${url}` : url;
+  return url.startsWith("http") || url.startsWith("/") ? `${import.meta.env.VITE_API_BASE_URL}${url}` : url;
 };
 
 function BlogsPage() {
@@ -60,7 +60,7 @@ function BlogsPage() {
     setLoading(true);
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/blogs.php?category=ALL`
+        `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/blogs.php?category=ALL`
       );
       const data = await response.json();
   

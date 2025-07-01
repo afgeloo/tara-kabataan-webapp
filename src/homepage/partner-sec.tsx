@@ -19,7 +19,7 @@ const PartnerSec: React.FC = () => {
   }, [partnerLogos]);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/partners.php`)
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/partners.php`)
       .then((res) => res.json())
       .then((data) => {
         const logos = (data.partners || [])
@@ -28,7 +28,7 @@ const PartnerSec: React.FC = () => {
           .map((fullPath: string) => {
             const parts = fullPath.split(/[/\\]/); 
             const filename = parts[parts.length - 1];
-            return `http://localhost/tara-kabataan/tara-kabataan-webapp/uploads/partners-images/${filename}`;
+            return `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-webapp/uploads/partners-images/${filename}`;
           });
         setPartnerLogos(logos);
       })

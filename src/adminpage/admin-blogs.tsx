@@ -97,7 +97,7 @@ const AdminBlogs = () => {
 
       try {
         const verifyRes = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/verify_old_password.php`,
+          `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/verify_old_password.php`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -140,7 +140,7 @@ const AdminBlogs = () => {
 
       try {
         const prevRes = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/check_previous_password.php`,
+          `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/check_previous_password.php`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -167,7 +167,7 @@ const AdminBlogs = () => {
 
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/send_otp.php`,
+        `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/send_otp.php`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -216,7 +216,7 @@ const AdminBlogs = () => {
 
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/verify_otp.php`,
+        `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/verify_otp.php`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -285,7 +285,7 @@ const AdminBlogs = () => {
 
       try {
         const prevRes = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/check_previous_password.php`,
+          `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/check_previous_password.php`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -310,7 +310,7 @@ const AdminBlogs = () => {
 
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/update_profile.php`,
+        `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/update_profile.php`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -463,7 +463,7 @@ const AdminBlogs = () => {
     };
 
     fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/update_blogs.php`,
+      `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/update_blogs.php`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -503,7 +503,7 @@ const AdminBlogs = () => {
 
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/upload_blog_image.php`,
+        `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/upload_blog_image.php`,
         {
           method: "POST",
           body: formData,
@@ -531,7 +531,7 @@ const AdminBlogs = () => {
     if (!selectedBlog) return;
 
     fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/delete_blogs.php`,
+      `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/delete_blogs.php`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -579,7 +579,7 @@ const AdminBlogs = () => {
 
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/upload_blog_image.php`,
+        `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/upload_blog_image.php`,
         {
           method: "POST",
           body: formData,
@@ -588,7 +588,7 @@ const AdminBlogs = () => {
       const data = await res.json();
 
       if (data.success && data.image_url) {
-        const imageTag = `<img src="http://localhost${data.image_url}" alt="inserted image" style="max-width:100%;" />`;
+        const imageTag = `<img src="${import.meta.env.VITE_API_BASE_URL}${data.image_url}" alt="inserted image" style="max-width:100%;" />`;
         setEditableBlog((prev) =>
           prev
             ? { ...prev, content: (prev.content || "") + `\n${imageTag}\n` }
@@ -668,7 +668,7 @@ const AdminBlogs = () => {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/update_bulk_blog_status.php`,
+        `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/update_bulk_blog_status.php`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -711,7 +711,7 @@ const AdminBlogs = () => {
   const handleBulkDelete = async () => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/delete_bulk_blogs.php`,
+        `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/delete_bulk_blogs.php`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -737,7 +737,7 @@ const AdminBlogs = () => {
   };
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/blogs.php`)
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/blogs.php`)
       .then((res) => res.json())
       .then((data) => {
         if (data.blogs && Array.isArray(data.blogs)) {
@@ -772,7 +772,7 @@ const AdminBlogs = () => {
 
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/add_new_blog_image.php`,
+        `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/add_new_blog_image.php`,
         {
           method: "POST",
           body: formData,
@@ -822,7 +822,7 @@ const AdminBlogs = () => {
 
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/add_new_blog.php`,
+        `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/add_new_blog.php`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -836,7 +836,7 @@ const AdminBlogs = () => {
         setBlogs((prev) => [...prev, data.blog]);
 
         const fresh = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/blogs.php`
+          `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/blogs.php`
         ).then((r) => r.json());
         setBlogs(fresh.blogs);
 
@@ -866,7 +866,7 @@ const AdminBlogs = () => {
     }
 
     fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/update_blog_pin_status.php`,
+      `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/update_blog_pin_status.php`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -1438,7 +1438,7 @@ const AdminBlogs = () => {
                       onClick={() => setSelectedBlog(blog)}
                     >
                       <img
-                        src={`http://localhost${blog.image_url}`}
+                        src={`${import.meta.env.VITE_API_BASE_URL}${blog.image_url}`}
                         alt={blog.title}
                         className="blog-grid-image"
                       />
@@ -1514,7 +1514,7 @@ const AdminBlogs = () => {
                         className="confirm-yes"
                         onClick={() => {
                           fetch(
-                            `${import.meta.env.VITE_API_BASE_URL}/delete_blogs.php`,
+                            `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/delete_blogs.php`,
                             {
                               method: "POST",
                               headers: { "Content-Type": "application/json" },
@@ -1704,12 +1704,12 @@ const AdminBlogs = () => {
                           : selectedBlog.image_url
                       ) ? (
                         <img
-                          src={`http://localhost${isEditing ? editableBlog?.image_url : selectedBlog.image_url}`}
+                          src={`${import.meta.env.VITE_API_BASE_URL}${isEditing ? editableBlog?.image_url : selectedBlog.image_url}`}
                           alt="Blog"
                           style={{ cursor: "zoom-in" }}
                           onClick={() =>
                             setFullImageUrl(
-                              `http://localhost${isEditing ? editableBlog?.image_url : selectedBlog.image_url}`
+                              `${import.meta.env.VITE_API_BASE_URL}${isEditing ? editableBlog?.image_url : selectedBlog.image_url}`
                             )
                           }
                         />
@@ -1766,11 +1766,11 @@ const AdminBlogs = () => {
                               return (
                                 <div key={i} className="blog-image-preview">
                                   <img
-                                    src={`http://localhost${image}`}
+                                    src={`${import.meta.env.VITE_API_BASE_URL}${image}`}
                                     alt={`More Image ${i}`}
                                     onClick={() =>
                                       setFullImageUrl(
-                                        `http://localhost${image}`
+                                        `${import.meta.env.VITE_API_BASE_URL}${image}`
                                       )
                                     }
                                     style={{ cursor: "zoom-in" }}
@@ -1853,7 +1853,7 @@ const AdminBlogs = () => {
 
                               try {
                                 const res = await fetch(
-                                  `${import.meta.env.VITE_API_BASE_URL}/upload_blog_image.php`,
+                                  `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/upload_blog_image.php`,
                                   {
                                     method: "POST",
                                     body: formData,
@@ -1974,7 +1974,7 @@ const AdminBlogs = () => {
 
                               try {
                                 const res = await fetch(
-                                  `${import.meta.env.VITE_API_BASE_URL}/upload_event_image.php`,
+                                  `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/upload_event_image.php`,
                                   {
                                     method: "POST",
                                     body: formData,
@@ -1983,7 +1983,7 @@ const AdminBlogs = () => {
 
                                 const data = await res.json();
                                 if (data.success && data.image_url) {
-                                  const img = `<img src="http://localhost${data.image_url}" alt="event image" style="max-width:100%; margin: 10px 0; display:block;" />`;
+                                  const img = `<img src="${import.meta.env.VITE_API_BASE_URL}${data.image_url}" alt="event image" style="max-width:100%; margin: 10px 0; display:block;" />`;
                                   const div = document.getElementById(
                                     "new-event-content-editor"
                                   );
@@ -2162,7 +2162,7 @@ const AdminBlogs = () => {
                       </p>
                       {newBlogImage ? (
                         <img
-                          src={`http://localhost${newBlogImage}`}
+                          src={`${import.meta.env.VITE_API_BASE_URL}${newBlogImage}`}
                           alt="Preview"
                           style={{
                             maxWidth: "100%",
@@ -2171,7 +2171,7 @@ const AdminBlogs = () => {
                             cursor: "zoom-in",
                           }}
                           onClick={() =>
-                            setFullImageUrl(`http://localhost${newBlogImage}`)
+                            setFullImageUrl(`${import.meta.env.VITE_API_BASE_URL}${newBlogImage}`)
                           }
                         />
                       ) : (
@@ -2233,10 +2233,10 @@ const AdminBlogs = () => {
                             return (
                               <div key={i} className="blog-image-preview">
                                 <img
-                                  src={`http://localhost${image}`}
+                                  src={`${import.meta.env.VITE_API_BASE_URL}${image}`}
                                   alt={`More Image ${i}`}
                                   onClick={() =>
-                                    setFullImageUrl(`http://localhost${image}`)
+                                    setFullImageUrl(`${import.meta.env.VITE_API_BASE_URL}${image}`)
                                   }
                                   style={{ cursor: "zoom-in" }}
                                 />
@@ -2296,7 +2296,7 @@ const AdminBlogs = () => {
                             formData.append("image", file);
                             try {
                               const res = await fetch(
-                                `${import.meta.env.VITE_API_BASE_URL}/upload_blog_image.php`,
+                                `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/upload_blog_image.php`,
                                 {
                                   method: "POST",
                                   body: formData,
@@ -2398,7 +2398,7 @@ const AdminBlogs = () => {
                             formData.append("image", file);
                             try {
                               const res = await fetch(
-                                `${import.meta.env.VITE_API_BASE_URL}/upload_blog_image.php`,
+                                `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/upload_blog_image.php`,
                                 {
                                   method: "POST",
                                   body: formData,
@@ -2406,7 +2406,7 @@ const AdminBlogs = () => {
                               );
                               const data = await res.json();
                               if (data.success && data.image_url) {
-                                const img = `<img src="http://localhost${data.image_url}" alt="blog image" style="max-width:100%;" />`;
+                                const img = `<img src="${import.meta.env.VITE_API_BASE_URL}${data.image_url}" alt="blog image" style="max-width:100%;" />`;
                                 const div = document.getElementById(
                                   "new-blog-content-editor"
                                 );
@@ -2466,10 +2466,10 @@ const AdminBlogs = () => {
                 >
                   <div
                     className="thumb-image-wrapper"
-                    onClick={() => setFullImageUrl(`http://localhost${img}`)}
+                    onClick={() => setFullImageUrl(`${import.meta.env.VITE_API_BASE_URL}${img}`)}
                   >
                     <img
-                      src={`http://localhost${img}`}
+                      src={`${import.meta.env.VITE_API_BASE_URL}${img}`}
                       alt={`More Image ${index}`}
                     />
 
