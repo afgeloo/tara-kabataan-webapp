@@ -96,27 +96,28 @@ function EventDetails() {
     }
   };
 
-  useEffect(() => {
-    if (!id) return;
-    const fetchEvent = async () => {
-      try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/events.php`
-        );
-        const data = await response.json();
-        const selected = data.find((e: Event) => e.event_id === id);
-        setEvent(selected || null);
+useEffect(() => {
+  if (!id) return;
 
-        setTimeout(() => {
-          setLoading(false);
-        }, 500);
-      } catch (error) {
-        console.error("Error fetching event:", error);
-        setLoading(false);
-      }
-    };
-    fetchEvent();
-  }, [id]);
+  const fetchEvent = async () => {
+    setLoading(true); // start loading before fetch
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/events.php`
+      );
+      const data = await response.json();
+      const selected = data.find((e: Event) => e.event_id === id);
+      setEvent(selected || null);
+    } catch (error) {
+      console.error("Error fetching event:", error);
+    } finally {
+      setLoading(false); // end loading after data is set or error
+    }
+  };
+
+  fetchEvent();
+}, [id]);
+
 
   const copyEventLink = async () => {
     const link = window.location.href;
