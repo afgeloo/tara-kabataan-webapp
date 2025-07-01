@@ -35,7 +35,7 @@ function SingleBlog() {
   useEffect(() => {
     const fetchBlog = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/blogs.php?blog_id=${id}`);
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/blogs.php?blog_id=${id}`);
         const data = await response.json();
         if (data && data.blog_id) {
           setBlog(data);
@@ -55,7 +55,7 @@ function SingleBlog() {
   useEffect(() => {
     const fetchMoreImages = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/get_blog_images.php?blog_id=${id}`);
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/get_blog_images.php?blog_id=${id}`);
         const data = await response.json();
         if (data.success && Array.isArray(data.images)) {
           setMoreImages(data.images);

@@ -16,7 +16,7 @@ const EventsSec: React.FC = memo(() => {
   const [slides, setSlides] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/events.php`)
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/events.php`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {

@@ -97,7 +97,7 @@ const AdminBlogs = () => {
 
       try {
         const verifyRes = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/verify_old_password.php`,
+          `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/verify_old_password.php`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -140,7 +140,7 @@ const AdminBlogs = () => {
 
       try {
         const prevRes = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/check_previous_password.php`,
+          `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/check_previous_password.php`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -167,7 +167,7 @@ const AdminBlogs = () => {
 
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/send_otp.php`,
+        `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/send_otp.php`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -216,7 +216,7 @@ const AdminBlogs = () => {
 
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/verify_otp.php`,
+        `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/verify_otp.php`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -285,7 +285,7 @@ const AdminBlogs = () => {
 
       try {
         const prevRes = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/check_previous_password.php`,
+          `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/check_previous_password.php`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -310,7 +310,7 @@ const AdminBlogs = () => {
 
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/update_profile.php`,
+        `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/update_profile.php`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -463,7 +463,7 @@ const AdminBlogs = () => {
     };
 
     fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/update_blogs.php`,
+      `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/update_blogs.php`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -503,7 +503,7 @@ const AdminBlogs = () => {
 
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/upload_blog_image.php`,
+        `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/upload_blog_image.php`,
         {
           method: "POST",
           body: formData,
@@ -531,7 +531,7 @@ const AdminBlogs = () => {
     if (!selectedBlog) return;
 
     fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/delete_blogs.php`,
+      `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/delete_blogs.php`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -579,7 +579,7 @@ const AdminBlogs = () => {
 
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/upload_blog_image.php`,
+        `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/upload_blog_image.php`,
         {
           method: "POST",
           body: formData,
@@ -668,7 +668,7 @@ const AdminBlogs = () => {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/update_bulk_blog_status.php`,
+        `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/update_bulk_blog_status.php`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -711,7 +711,7 @@ const AdminBlogs = () => {
   const handleBulkDelete = async () => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/delete_bulk_blogs.php`,
+        `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/delete_bulk_blogs.php`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -737,7 +737,7 @@ const AdminBlogs = () => {
   };
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/blogs.php`)
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/blogs.php`)
       .then((res) => res.json())
       .then((data) => {
         if (data.blogs && Array.isArray(data.blogs)) {
@@ -772,7 +772,7 @@ const AdminBlogs = () => {
 
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/add_new_blog_image.php`,
+        `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/add_new_blog_image.php`,
         {
           method: "POST",
           body: formData,
@@ -822,7 +822,7 @@ const AdminBlogs = () => {
 
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/add_new_blog.php`,
+        `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/add_new_blog.php`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -836,7 +836,7 @@ const AdminBlogs = () => {
         setBlogs((prev) => [...prev, data.blog]);
 
         const fresh = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/blogs.php`
+          `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/blogs.php`
         ).then((r) => r.json());
         setBlogs(fresh.blogs);
 
@@ -866,7 +866,7 @@ const AdminBlogs = () => {
     }
 
     fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/update_blog_pin_status.php`,
+      `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/update_blog_pin_status.php`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -1514,7 +1514,7 @@ const AdminBlogs = () => {
                         className="confirm-yes"
                         onClick={() => {
                           fetch(
-                            `${import.meta.env.VITE_API_BASE_URL}/delete_blogs.php`,
+                            `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/delete_blogs.php`,
                             {
                               method: "POST",
                               headers: { "Content-Type": "application/json" },
@@ -1853,7 +1853,7 @@ const AdminBlogs = () => {
 
                               try {
                                 const res = await fetch(
-                                  `${import.meta.env.VITE_API_BASE_URL}/upload_blog_image.php`,
+                                  `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/upload_blog_image.php`,
                                   {
                                     method: "POST",
                                     body: formData,
@@ -1974,7 +1974,7 @@ const AdminBlogs = () => {
 
                               try {
                                 const res = await fetch(
-                                  `${import.meta.env.VITE_API_BASE_URL}/upload_event_image.php`,
+                                  `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/upload_event_image.php`,
                                   {
                                     method: "POST",
                                     body: formData,
@@ -2296,7 +2296,7 @@ const AdminBlogs = () => {
                             formData.append("image", file);
                             try {
                               const res = await fetch(
-                                `${import.meta.env.VITE_API_BASE_URL}/upload_blog_image.php`,
+                                `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/upload_blog_image.php`,
                                 {
                                   method: "POST",
                                   body: formData,
@@ -2398,7 +2398,7 @@ const AdminBlogs = () => {
                             formData.append("image", file);
                             try {
                               const res = await fetch(
-                                `${import.meta.env.VITE_API_BASE_URL}/upload_blog_image.php`,
+                                `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/upload_blog_image.php`,
                                 {
                                   method: "POST",
                                   body: formData,

@@ -74,7 +74,7 @@ export default function AboutAdvocacies() {
   const [members, setMembers] = useState<Member[]>([]);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/members.php`)
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/members.php`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success) setMembers(data.members);

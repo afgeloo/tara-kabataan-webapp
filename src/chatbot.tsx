@@ -118,7 +118,7 @@ const Chatbot: React.FC = () => {
         setIsDisplayingMessage(true);
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/askGemini.php`, {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/askGemini.php`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

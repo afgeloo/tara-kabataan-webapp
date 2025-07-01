@@ -67,7 +67,7 @@ function EventDetails() {
     }
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/event_participants.php`,
+        `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/event_participants.php`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -101,7 +101,7 @@ function EventDetails() {
     const fetchEvent = async () => {
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/events.php`
+          `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/events.php`
         );
         const data = await response.json();
         const selected = data.find((e: Event) => e.event_id === id);

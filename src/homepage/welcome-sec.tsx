@@ -82,7 +82,7 @@ function WelcomeSec() {
     const [overview, setOverview] = useState<string>("Loading...");
 
     useEffect(() => {
-        fetch(`${import.meta.env.VITE_API_BASE_URL}/aboutus.php`)
+        fetch(`${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/aboutus.php`)
             .then((res) => res.json())
             .then((data) => {
                 if (data.overview) {

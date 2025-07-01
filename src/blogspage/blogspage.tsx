@@ -60,7 +60,7 @@ function BlogsPage() {
     setLoading(true);
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/blogs.php?category=ALL`
+        `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/blogs.php?category=ALL`
       );
       const data = await response.json();
   

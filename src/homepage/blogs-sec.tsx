@@ -16,7 +16,7 @@ const BlogsSec: React.FC = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
 
   useEffect(() => {
-  fetch(`${import.meta.env.VITE_API_BASE_URL}/blogs.php`)
+  fetch(`${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/blogs.php`)
     .then((res) => res.json())
     .then((data) => {
       if (data.blogs) {
