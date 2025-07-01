@@ -162,9 +162,9 @@
   background-color: white;
   padding: 20px;
   border-radius: 30px;
-  overflow: hidden;
-  min-height: 480px;
-  max-height: 520px;
+  min-height: 0;
+  max-height: none;
+  overflow: visible;
 }
 
 .admin-events-table-header{
@@ -200,10 +200,10 @@
 }
 
 .admin-events-table-content td {
-  height: 40px; 
+  height: 40px;
   line-height: 40px;
-  padding: 13px 20px;
-  font-size: 12px;
+  padding: 10px 18px;
+  font-size: 13px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -261,28 +261,41 @@
   top: 0;
   z-index: 10;
   text-align: left;
-  padding: 5px 20px;
-  font-size: 16px;
+  padding: 8px 18px;
+  font-size: 15px;
   font-weight: 600;
   background-color: white;
   white-space: nowrap;
+  letter-spacing: 0.01em;
 }
 
 .admin-events-scrollable-table {
   height: auto;
-  max-height: 400px; 
-  min-height: 500px; 
+  max-height: calc(100vh - 270px);
+  min-height: 120px;
   overflow-y: auto;
+  overflow-x: auto;
   margin-top: 10px;
   display: block;
+  box-sizing: border-box;
 }
 
+/* Consistent scrollbar styling for both axes */
 .admin-events-scrollable-table::-webkit-scrollbar {
-  width: 6px;
+  height: 8px;
+  width: 8px;
+  background: #f1f1f1;
 }
 .admin-events-scrollable-table::-webkit-scrollbar-thumb {
-  background-color: #ccc;
-  border-radius: 4px;
+  background-color: #bbb;
+  border-radius: 6px;
+}
+.admin-events-scrollable-table::-webkit-scrollbar-corner {
+  background: #f1f1f1;
+}
+.admin-events-scrollable-table {
+  scrollbar-width: thin;
+  scrollbar-color: #bbb #f1f1f1;
 }
 
 .admin-events-lower-header-show {
@@ -359,21 +372,24 @@
 }
 
 .admin-header-dropdown-arrow {
-  position: relative;
-  font-size: 16px;    
+  font-size: 1em; /* Match parent font size */
   color: #666;
+  display: inline-flex;
   align-items: center;
+  position: static; /* Remove relative/offset */
+  left: 0;
+  top: 0;
+  transform: none;
+  vertical-align: middle;
 }
 
 .admin-events-dropdown-trigger {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
   gap: 6px;
-  white-space: nowrap;
-  font-size: 16px;
-  position: relative;
+  font-size: inherit; /* Match th */
   cursor: pointer;
+  /* Remove any font-size override */
 }
 
 .admin-header-dropdown-menu {
@@ -578,12 +594,6 @@
 .admin-events-inner-content-modal-bot-right{
   width: 100%;
   word-break: break-word;
-}
-
-.admin-events-inner-content-modal-top-left p,
-.admin-events-inner-content-modal-top-right p {
-  word-wrap: break-word;
-  margin-bottom: 10px;
 }
 
 .admin-events-inner-content-modal-image img{
@@ -1167,4 +1177,163 @@
   max-width: 90%;
   max-height: 90%;
   border-radius: 8px;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 1024px) {
+  .admin-events-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+  }
+
+  .admin-events-search-container {
+    max-width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .admin-events-header-right {
+    gap: 15px;
+    margin-left: 0;
+    justify-content: center;
+  }
+
+  .admin-events-lower-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+
+  .admin-events-lower-header h1 {
+    font-size: 24px;
+    text-align: center;
+  }
+
+  .admin-events-lower-header-right {
+    gap: 15px;
+    margin-left: 0;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .admin-events-main-content {
+    padding: 15px;
+    border-radius: 20px;
+    min-height: 0;
+    max-height: none;
+  }
+  .admin-events-scrollable-table {
+    min-height: 80px;
+    max-height: calc(100vh - 260px);
+  }
+  .admin-events-table thead th {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+  .admin-events-table-content td {
+    padding: 7px 10px;
+    font-size: 11px;
+    height: 32px;
+    line-height: 32px;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-events-header {
+    gap: 10px;
+  }
+
+  .admin-events-search-container {
+    padding: 8px 12px;
+    max-height: 45px;
+  }
+
+  .admin-events-search-container input {
+    font-size: 14px;
+    margin-top: 15px;
+  }
+
+  .admin-events-bell-icon {
+    font-size: 24px;
+  }
+
+  .admin-events-lower-header h1 {
+    font-size: 20px;
+  }
+
+  .admin-events-lower-header-right {
+    gap: 10px;
+  }
+
+  .admin-events-lower-header-new-event button {
+    padding: 10px 15px;
+    font-size: 12px;
+  }
+
+  .admin-events-main-content {
+    padding: 10px;
+    border-radius: 15px;
+    min-height: 0;
+    max-height: none;
+  }
+  .admin-events-scrollable-table {
+    min-height: 60px;
+    max-height: calc(100vh - 220px);
+  }
+  .admin-events-table thead th {
+    padding: 5px 8px;
+    font-size: 12px;
+  }
+  .admin-events-table-content td {
+    padding: 6px 8px;
+    font-size: 10px;
+    height: 28px;
+    line-height: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-events-search-container {
+    padding: 6px 10px;
+    max-height: 40px;
+  }
+
+  .admin-events-search-container input {
+    font-size: 12px;
+    margin-top: 12px;
+  }
+
+  .admin-events-bell-icon {
+    font-size: 20px;
+  }
+
+  .admin-events-lower-header h1 {
+    font-size: 18px;
+  }
+
+  .admin-events-lower-header-new-event button {
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+
+  .admin-events-main-content {
+    padding: 8px;
+    border-radius: 12px;
+    min-height: 0;
+    max-height: none;
+  }
+  .admin-events-scrollable-table {
+    min-height: 40px;
+    max-height: calc(100vh - 180px);
+  }
+  .admin-events-table thead th {
+    padding: 4px 6px;
+    font-size: 11px;
+  }
+  .admin-events-table-content td {
+    padding: 4px 6px;
+    font-size: 9px;
+    height: 24px;
+    line-height: 24px;
+  }
 }

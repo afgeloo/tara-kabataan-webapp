@@ -1709,48 +1709,51 @@ const AdminSettings = () => {
           <div className="admin-settings-tab-placeholder">
             <div className="admin-settings-aboutus">
               <div className="admin-settings-aboutus-contact-info">
-                <div className="admin-settings-aboutus-contact-info-left">
-                  <h1 className="admin-settings-aboutus-contact-info-left-h1">
-                    Contact Information
-                  </h1>
-                  <div className="admin-settings-aboutus-contact-info-phone">
-                    <div className="admin-settings-aboutus-contact-info-phone-icon">
-                      <FaPhone />
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                  <div className="admin-settings-aboutus-contact-info-left">
+                    <h1 className="admin-settings-aboutus-contact-info-left-h1">
+                      Contact Information
+                    </h1>
+                    <div className="admin-settings-aboutus-contact-info-phone">
+                      <div className="admin-settings-aboutus-contact-info-phone-icon">
+                        <FaPhone />
+                      </div>
+                      <div className="admin-settings-aboutus-contact-info-phone-desc">
+                        <h1>Phone</h1>
+                        <p>{aboutData?.contact_no || "N/A"}</p>
+                      </div>
                     </div>
-                    <div className="admin-settings-aboutus-contact-info-phone-desc">
-                      <h1>Phone</h1>
-                      <p>{aboutData?.contact_no || "N/A"}</p>
+                    <div className="admin-settings-aboutus-contact-info-email">
+                      <div className="admin-settings-aboutus-contact-info-email-icon">
+                        <FaEnvelope />
+                      </div>
+                      <div className="admin-settings-aboutus-contact-info-email-desc">
+                        <h1>Email</h1>
+                        <p>{aboutData?.about_email || "N/A"}</p>
+                      </div>
+                    </div>
+                    <div className="admin-settings-aboutus-contact-info-address">
+                      <div className="admin-settings-aboutus-contact-info-address-icon">
+                        <FaMapMarkerAlt />
+                      </div>
+                      <div className="admin-settings-aboutus-contact-info-address-desc">
+                        <h1>Address</h1>
+                        <p>{aboutData?.address || "N/A"}</p>
+                      </div>
                     </div>
                   </div>
-                  <div className="admin-settings-aboutus-contact-info-email">
-                    <div className="admin-settings-aboutus-contact-info-email-icon">
-                      <FaEnvelope />
-                    </div>
-                    <div className="admin-settings-aboutus-contact-info-email-desc">
-                      <h1>Email</h1>
-                      <p>{aboutData?.about_email || "N/A"}</p>
-                    </div>
-                  </div>
-                  <div className="admin-settings-aboutus-contact-info-address">
-                    <div className="admin-settings-aboutus-contact-info-address-icon">
-                      <FaMapMarkerAlt />
-                    </div>
-                    <div className="admin-settings-aboutus-contact-info-address-desc">
-                      <h1>Address</h1>
-                      <p>{aboutData?.address || "N/A"}</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="admin-settings-aboutus-contact-info-right">
-                  <div className="admin-settings-aboutus-contact-info-right-edit">
+                  <div style={{ marginLeft: "2rem" }}>
                     <FaEdit
                       className="aboutus-edit-icon"
                       onClick={() => {
                         setEditableContact({ ...aboutData! });
                         setIsEditingContact(true);
                       }}
+                      style={{ cursor: "pointer" }}
                     />
                   </div>
+                </div>
+                <div className="admin-settings-aboutus-contact-info-right">
                   <div className="admin-settings-aboutus-contact-info-facebook">
                     <div className="admin-settings-aboutus-contact-info-facebook-icon">
                       <FaFacebookF />

@@ -26,4 +26,38 @@ font-style: normal;
   flex: 1;
   padding: 40px;
   user-select: none;
+  overflow-y: auto;
+}
+
+@media (max-width: 1024px) {
+  .admin-container {
+    position: relative;
+    height: 100vh;
+  }
+
+  .admin-content {
+    padding: 20px;
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-container {
+    position: relative;
+    height: 100vh;
+  }
+
+  .admin-content {
+    padding: 15px;
+    margin-left: 0;
+    width: 100%;
+    overflow-x: hidden;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-content {
+    padding: 10px;
+  }
 }
