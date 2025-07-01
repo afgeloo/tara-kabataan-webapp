@@ -156,6 +156,7 @@
   display: block;
   overflow-y: auto;
   overflow-x: auto;
+  max-height: calc(100vh - 260px)
 }
 
 /* Consistent scrollbar styling for both axes */
@@ -513,6 +514,7 @@
   font-weight: 500;
   cursor: pointer;
   transition: background 0.2s;
+  height: 50%;
 }
 
 .add-new-partner-btn:hover {
@@ -845,26 +847,7 @@
   flex-wrap: wrap;
   width: 100%;
   box-sizing: border-box;
-  gap: 32px;
-  align-items: flex-start;
-}
-
-.admin-settings-aboutus-contact-info-left,
-.admin-settings-aboutus-contact-info-right {
-  flex: 1 1 0;
-  min-width: 280px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.admin-settings-aboutus-contact-info-left {
-  max-width: 60%;
-  flex: 2 1 0;
-}
-
-.admin-settings-aboutus-contact-info-right {
-  max-width: 40%;
-  flex: 1 1 0;
+  gap: 10px;
 }
 
 .admin-settings-aboutus-contact-info-phone,
@@ -877,9 +860,19 @@
   align-items: center;
   gap: 0px;
   width: 100%;
-  min-width: 0;
-  margin-bottom: 12px;
   box-sizing: border-box;
+}
+
+.admin-settings-lower-header-left{
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-settings-toggle-newpartner{
+  display: flex;
+  gap: 20px;
 }
 
 @media (max-width: 1024px) {
@@ -887,14 +880,16 @@
     flex-direction: column;
     gap: 0px;
     align-items: stretch;
-    padding: 12px;
   }
-  .admin-settings-aboutus-contact-info-left,
-  .admin-settings-aboutus-contact-info-right {
-    max-width: 100%;
-    flex: 1 1 100%;
-    width: 100%;
-  }
+
+  
+.admin-settings-lower-header-left{
+  flex-direction: column;
+}
+
+.admin-settings-toggle-newpartner{
+  align-items: center;
+}
 }
 
 @media (max-width: 768px) {
@@ -904,36 +899,7 @@
     align-items: stretch;
     padding: 12px;
   }
-  .admin-settings-aboutus-contact-info-left,
-  .admin-settings-aboutus-contact-info-right {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-  }
-  .admin-settings-aboutus-contact-info-phone,
-  .admin-settings-aboutus-contact-info-email,
-  .admin-settings-aboutus-contact-info-address,
-  .admin-settings-aboutus-contact-info-facebook,
-  .admin-settings-aboutus-contact-info-instagram {
-    flex-direction: row;
-    gap: 0px;
-    margin-bottom: 8px;
-    flex-wrap: wrap;
-    width: 100%;
-  }
-  /* Stack socmeds below address/email/phone */
-  .admin-settings-aboutus-contact-info-facebook,
-  .admin-settings-aboutus-contact-info-instagram {
-    order: 2;
-    width: 100%;
-    margin-bottom: 0;
-  }
-  .admin-settings-aboutus-contact-info-phone,
-  .admin-settings-aboutus-contact-info-email,
-  .admin-settings-aboutus-contact-info-address {
-    order: 1;
-    width: 100%;
-  }
+
   .admin-settings-aboutus-contact-info-right-edit {
     justify-content: flex-end;
     align-items: flex-start;
@@ -941,6 +907,7 @@
     width: 100%;
     position: static;
   }
+
   .aboutus-edit-icon {
     position: static !important;
     margin-left: auto;
@@ -953,7 +920,6 @@
   }
 }
 
-/* Extra small screens: tighter spacing */
 @media (max-width: 480px) {
   .admin-settings-aboutus-contact-info {
     padding: 8px;
@@ -1096,6 +1062,7 @@
   padding: 2px 20px;
   border-radius: 15px; 
   margin-top: 10px;
+  height: 80px;
 }
 
 .admin-settings-aboutus-core-val-left,
@@ -1137,7 +1104,7 @@
   display: flex;
   cursor: pointer;
   width: 18px;
-  height: 18px;
+  height: auto;
 }
 
 .admin-contact-modal{
@@ -1705,8 +1672,36 @@
   text-align: center;
 }
 
-/* Responsive Styles */
 @media (max-width: 1024px) {
+
+  .admin-settings-aboutus-core-val,
+  .admin-settings-aboutus-mission,
+  .admin-settings-aboutus-vision,
+  .admin-settings-aboutus-background-text,
+  .admin-settings-aboutus-council-text,
+  .admin-settings-aboutus-advocacies
+  {
+    height: 100px;
+  }
+
+  .aboutus-page-contents-edit-icon {
+    width: 28px;
+  }
+
+  .admin-settings-aboutus-core-val h1,
+  .admin-settings-aboutus-mission h1,
+  .admin-settings-aboutus-vision h1,
+  .admin-settings-aboutus-background-text h1,
+  .admin-settings-aboutus-council-text h1,
+  .admin-settings-aboutus-advocacies h1
+  {
+    font-size: 12px;
+  }
+
+  .admin-settings-aboutus-page-contents p{
+    font-size: 10px;
+  }
+
 
   .admin-settings-tabs {
       margin-bottom: 10px;
@@ -1906,7 +1901,6 @@
     padding: 8px;
     border-radius: 12px;
     min-height: 300px;
-    max-height: calc(100vh - 260px);
   }
 
   .admin-settings-table thead th {

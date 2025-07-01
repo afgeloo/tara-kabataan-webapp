@@ -1485,10 +1485,62 @@ const AdminSettings = () => {
         </div>
       </div>
       <div className="admin-settings-lower-header">
+        <div className="admin-settings-lower-header-left">
         <h1>Settings</h1>
-        <div className="admin-settings-lower-header-right">
-          <div className="admin-settings-tabs-wrapper">
-            {activeTab === 1 && (
+        {activeTab === 2 && (
+              <>
+                {viewMode === "table" && (
+                  <div className="admin-events-lower-header-select">
+                    <button
+                      onClick={() => {
+                        setSelectMode(!selectMode);
+                        setSelectedPartnerIds([]);
+                      }}
+                    >
+                      <img
+                        src={select}
+                        className="admin-blogs-lower-header-select-img"
+                      />
+                      {selectMode ? "Cancel" : "Select"}
+                    </button>
+                  </div>
+                )}
+                <div className="admin-settings-toggle-newpartner">
+                  <button
+                  className="add-new-partner-btn"
+                  onClick={() => {
+                    setIsAddingNewPartner(true);
+                    setNewPartner({
+                      partner_image: "",
+                      partner_name: "",
+                      partner_dec: "",
+                      partner_contact_email: "",
+                      partner_phone_number: "",
+                    });
+                    setNewImageUrl(null);
+                  }}
+                >
+                  <FaPlus className="admin-icon-left" />
+                  Add New Partner
+                </button>
+                <div className="admin-blogs-toggle-wrapper">
+                  <button
+                    className={`admin-blogs-toggle-button ${viewMode === "table" ? "active" : ""}`}
+                    onClick={() => setViewMode("table")}
+                  >
+                    Table View
+                  </button>
+                  <button
+                    className={`admin-blogs-toggle-button ${viewMode === "grid" ? "active" : ""}`}
+                    onClick={() => setViewMode("grid")}
+                  >
+                    Grid View
+                  </button>
+                </div>
+                </div>
+              </>
+            )}
+        {activeTab === 1 && (
               <button
                 className="add-new-partner-btn"
                 onClick={() => setShowRolesModal(true)}
@@ -1626,57 +1678,9 @@ const AdminSettings = () => {
                 </div>
               </div>
             )}
-            {activeTab === 2 && (
-              <>
-                {viewMode === "table" && (
-                  <div className="admin-events-lower-header-select">
-                    <button
-                      onClick={() => {
-                        setSelectMode(!selectMode);
-                        setSelectedPartnerIds([]);
-                      }}
-                    >
-                      <img
-                        src={select}
-                        className="admin-blogs-lower-header-select-img"
-                      />
-                      {selectMode ? "Cancel" : "Select"}
-                    </button>
-                  </div>
-                )}
-                <button
-                  className="add-new-partner-btn"
-                  onClick={() => {
-                    setIsAddingNewPartner(true);
-                    setNewPartner({
-                      partner_image: "",
-                      partner_name: "",
-                      partner_dec: "",
-                      partner_contact_email: "",
-                      partner_phone_number: "",
-                    });
-                    setNewImageUrl(null);
-                  }}
-                >
-                  <FaPlus className="admin-icon-left" />
-                  Add New Partner
-                </button>
-                <div className="admin-blogs-toggle-wrapper">
-                  <button
-                    className={`admin-blogs-toggle-button ${viewMode === "table" ? "active" : ""}`}
-                    onClick={() => setViewMode("table")}
-                  >
-                    Table View
-                  </button>
-                  <button
-                    className={`admin-blogs-toggle-button ${viewMode === "grid" ? "active" : ""}`}
-                    onClick={() => setViewMode("grid")}
-                  >
-                    Grid View
-                  </button>
-                </div>
-              </>
-            )}
+        </div>
+        <div className="admin-settings-lower-header-right">
+          <div className="admin-settings-tabs-wrapper">
             <div className="admin-settings-tabs">
               {tabs.map((tab, index) => (
                 <button
