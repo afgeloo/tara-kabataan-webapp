@@ -1945,8 +1945,20 @@
     margin: 50px auto 0;
   }
 
+  .admin-blogs-modal-inner-content-top h2{
+    margin: 50px auto 0;
+  }
+
   .admin-blogs-new-blog-modal-inner-content-top{
     flex-direction: column;
+  }
+
+  .admin-blogs-modal-inner-content-top{
+    flex-direction: column;
+  }
+
+  .admin-blogs-modal-right{
+    margin-top: 0;
   }
 
   .admin-blogs-new-blog-modal-right{
