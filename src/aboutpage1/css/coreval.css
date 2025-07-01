@@ -126,13 +126,14 @@
 }
 
 @media screen and (max-width: 768px) {
+
     .coreval-cow {
         display: none;
     }
 
     .corevalues-cards {
         position: relative;
-        margin-left: 0;
+        margin: 50px auto 0;
         width: 80%;
         justify-self: center;
         margin-top: 10px;

@@ -67,7 +67,7 @@
 .contact-form label {
     font-family: 'Helvetic', sans-serif;
     font-weight: bold;
-    margin-top: 1rem;
+    margin-top: 0.1rem;
     color: #050505;
 }
 
@@ -83,7 +83,7 @@
     background: rgba(255, 255, 255, 0.6);
     box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease-in-out;
-    margin-top: 8px;;
+    margin-top: 8px;
 }
 
 .contact-form input:focus,
@@ -263,7 +263,6 @@
     flex-direction: column;
     padding: 10px;
     align-items: center;
-    margin-top: -30px;
   }
 
   .emailus-content {
@@ -308,7 +307,7 @@
 
   .contact-form label {
       font-size: 12px;
-
+      margin-top: 0.1rem;
   }
 
   .contact-form input,

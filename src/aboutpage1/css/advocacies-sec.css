@@ -34,8 +34,8 @@
     font-weight: bold;
     margin-bottom: 10px;
     margin-top: 50px;
-    margin-left: 100px;
     color: Black;
+    justify-self: center;
 }
 
 .advocacies-slider {
@@ -44,7 +44,7 @@
   gap: 20px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  padding: 50px;
+  padding: 0 50px;
   scrollbar-width: none; 
   justify-content: center;
   margin-bottom: 30px;
@@ -257,9 +257,7 @@
 @media screen and (max-width: 768px) {
   .advocacies-header {
     font-size: 24px;
-    justify-self: center;
-    margin-left: 0;
-    margin-bottom: -30px;
+    margin: 0 120px;
   }
 
   .advocacy-leads {

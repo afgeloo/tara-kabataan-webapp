@@ -83,7 +83,7 @@ export default function AboutAdvocacies() {
   }, []);
 
   return (
-    <div>
+    <div className="advocacies-section">
       <hr className="advocacies-line" />
       <h1 className="advocacies-header">Advocacies</h1>
       <div className="advocacies-slider">
