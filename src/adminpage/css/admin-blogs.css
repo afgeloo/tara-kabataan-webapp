@@ -1368,7 +1368,7 @@ button:disabled {
 
 .blog-image-preview img {
   width: 100%;
-  height: auto;
+  height: 120px;
   object-fit: cover;
   border-radius: 8px;
 }
@@ -1567,7 +1567,8 @@ button:disabled {
 
 .thumb-image-wrapper img {
   width: 100%;
-  height: auto;
+  height: 250px;
+  object-fit: cover;
   display: block;
   transition: filter 0.3s ease;
   border-radius: 14px;
