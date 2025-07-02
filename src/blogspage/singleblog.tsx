@@ -97,7 +97,6 @@ function SingleBlog() {
     }
   }, [loading, blog]);  
 
-  if (loading || restoringScroll) return <Preloader />;
   if (notFound) return <div className="single-blog-not-found">Blog does not exist.</div>;
   if (!blog) return null;
 

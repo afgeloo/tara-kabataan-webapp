@@ -98,28 +98,26 @@ function BlogsPage() {
     fetchBlogs(); 
   }, []);
   
+  // after fetch completes you do setLoading(false)
   useEffect(() => {
-    const savedScroll = sessionStorage.getItem("blogScrollY");
-  
-    if (!loading && blogs.length > 0) {
+    if (!loading) {
+      const savedScroll = sessionStorage.getItem("blogScrollY");
       if (savedScroll) {
-        requestAnimationFrame(() => {
-          setTimeout(() => {
-            window.scrollTo({ top: parseInt(savedScroll), behavior: "auto" });
-  
-            sessionStorage.removeItem("blogScrollY");
-            sessionStorage.removeItem("blogCategory");
-            sessionStorage.removeItem("blogSearchQuery");
-            sessionStorage.removeItem("blogShowAll");
-  
-            setRestoringScroll(false);
-          }, 500);
-        });
-      } else {
-        setRestoringScroll(false);
+        window.scrollTo(
+          { top: parseInt(savedScroll, 10), behavior: "auto" }
+        );
+        sessionStorage.removeItem("blogScrollY");
       }
+
+      // clear any other stored state if needed
+      sessionStorage.removeItem("blogCategory");
+      sessionStorage.removeItem("blogSearchQuery");
+      sessionStorage.removeItem("blogShowAll");
+
+      // ALWAYS turn off restoringScroll
+      setRestoringScroll(false);
     }
-  }, [loading, blogs]);   
+  }, [loading]);
 
   useEffect(() => {
     setBlogs(
