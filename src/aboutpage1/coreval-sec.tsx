@@ -83,7 +83,9 @@ function CoreValue() {
                     </div>
                   ))}
                 </div>
-                <div className="pagination-dots">
+                
+              </div>
+              <div className="pagination-dots">
                   {coreValues.map((_, idx) => (
                     <span
                       key={idx}
@@ -92,7 +94,6 @@ function CoreValue() {
                     />
                   ))}
                 </div>
-              </div>
             </div>
           </div>
         </div>

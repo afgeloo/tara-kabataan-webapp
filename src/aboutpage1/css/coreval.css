@@ -1,4 +1,10 @@
 
+.slider-container,
+.card {
+  background: transparent !important;
+  box-shadow: none !important; 
+}
+
 .coreval-sec {
     max-width: 100%;
     overflow: hidden;
@@ -57,13 +63,16 @@
     max-width: 650px;
     margin-left: 750px;
     margin-top: 50px;
+    background-color: #ffffff;
+    border-radius: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .slider-container {
     width: 100%;
     overflow: hidden;
     border-radius: 20px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1)
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .slider {
@@ -75,10 +84,8 @@
 .card {
     flex: 0 0 100%;
     box-sizing: border-box;
-    background: rgb(255, 255, 255);
     font-family: 'Segoe UI', sans-serif;
     color: #333;
-    background: #ffffff;
     min-height: 300px;
     padding: 30px;
     padding-top: 10px;
@@ -105,7 +112,6 @@
     justify-content: center;
     gap: 10px;
     z-index: 1;
-    background: #ffffff;
     padding-bottom: 20px;
 }
 
