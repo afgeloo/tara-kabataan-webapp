@@ -1349,64 +1349,68 @@ const AdminBlogs = () => {
                 <col style={{ width: "40px" }} />
               </colgroup>
               <tbody>
-                {filteredBlogs.length > 0 ? (
-                  filteredBlogs.map((blog) => (
-                    <tr
-                      className="admin-blogs-table-content"
-                      key={blog.blog_id}
-                    >
-                      <td className="admin-blogs-id-content">{blog.blog_id}</td>
-                      <td className="admin-blogs-category-content category-tag">
-                        {blog.category}
-                      </td>
-                      <td className="admin-blogs-title-content">
-                        {blog.title}
-                      </td>
-                      <td className="admin-blogs-author-content">
-                        {blog.author}
-                      </td>
-                      <td
-                        className={`admin-blogs-status-content status-${blog.blog_status.toLowerCase()}`}
-                      >
-                        {blog.blog_status}
-                      </td>
-                      <td className="admin-blogs-created-at-content">
-                        {formatDate(blog.created_at)}
-                      </td>
-                      <td className="admin-blogs-more-button">
-                        {selectMode ? (
-                          <input
-                            type="checkbox"
-                            checked={selectedBlogIds.includes(blog.blog_id)}
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                setSelectedBlogIds((prev) => [
-                                  ...prev,
-                                  blog.blog_id,
-                                ]);
-                              } else {
-                                setSelectedBlogIds((prev) =>
-                                  prev.filter((id) => id !== blog.blog_id)
-                                );
-                              }
-                            }}
-                          />
-                        ) : (
-                          <button onClick={() => setSelectedBlog(blog)}>
-                            <BsThreeDots />
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr className="admin-blogs-table-content no-blogs-row">
-                    <td colSpan={7} className="no-blogs-message">
-                      No Blog Found.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
+  {filteredBlogs.length > 0 ? (
+    filteredBlogs.map((blog) => (
+      <tr
+        key={blog.blog_id}
+        className="admin-blogs-table-content"
+        style={{ cursor: selectMode ? 'default' : 'pointer' }}
+        onClick={() => {
+          if (!selectMode) setSelectedBlog(blog);
+        }}
+      >
+        <td className="admin-blogs-id-content">{blog.blog_id}</td>
+        <td className="admin-blogs-category-content category-tag">
+          {blog.category}
+        </td>
+        <td className="admin-blogs-title-content">{blog.title}</td>
+        <td className="admin-blogs-author-content">{blog.author}</td>
+        <td
+          className={`admin-blogs-status-content status-${blog.blog_status.toLowerCase()}`}
+        >
+          {blog.blog_status}
+        </td>
+        <td className="admin-blogs-created-at-content">
+          {formatDate(blog.created_at)}
+        </td>
+        <td className="admin-blogs-more-button">
+          {selectMode ? (
+            <input
+              type="checkbox"
+              checked={selectedBlogIds.includes(blog.blog_id)}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  setSelectedBlogIds((prev) => [...prev, blog.blog_id]);
+                } else {
+                  setSelectedBlogIds((prev) =>
+                    prev.filter((id) => id !== blog.blog_id)
+                  );
+                }
+              }}
+              onClick={(e) => e.stopPropagation()}
+            />
+          ) : (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedBlog(blog);
+              }}
+            >
+              <BsThreeDots />
+            </button>
+          )}
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr className="admin-blogs-table-content no-blogs-row">
+      <td colSpan={7} className="no-blogs-message">
+        No Blog Found.
+      </td>
+    </tr>
+  )}
+</tbody>
+
             </table>
           </div>
         ) : (

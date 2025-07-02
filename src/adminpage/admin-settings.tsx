@@ -10,7 +10,7 @@ import {
   FaFacebookF,
   FaInstagram,
   FaTimes,
-  FaTrash
+  FaTrash,
 } from "react-icons/fa";
 import president from "../assets/aboutpage/council/president.jpg";
 import { BsThreeDots } from "react-icons/bs";
@@ -32,7 +32,9 @@ const AdminSettings = () => {
   const [members, setMembers] = useState<Member[]>([]);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/members.php`)
+    fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/members.php`
+    )
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
@@ -69,7 +71,9 @@ const AdminSettings = () => {
   const [showNewUserModal, setShowNewUserModal] = useState(false);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/roles.php`)
+    fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/roles.php`
+    )
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
@@ -283,7 +287,9 @@ const AdminSettings = () => {
   >(null);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/partners.php`)
+    fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/partners.php`
+    )
       .then((res) => res.json())
       .then((data) => {
         console.log("PARTNERS DATA:", data);
@@ -881,7 +887,9 @@ const AdminSettings = () => {
   const [aboutData, setAboutData] = useState<AboutUs | null>(null);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/aboutus.php`)
+    fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/aboutus.php`
+    )
       .then((res) => res.json())
       .then((data) => {
         if (!data.error) {
@@ -1145,8 +1153,8 @@ const AdminSettings = () => {
   };
 
   const [roleToDelete, setRoleToDelete] = useState<string | null>(null);
-  const [confirmRoleDeleteVisible, setConfirmRoleDeleteVisible] = useState(false);
-
+  const [confirmRoleDeleteVisible, setConfirmRoleDeleteVisible] =
+    useState(false);
 
   const handleDeleteRole = async (role_id: string) => {
     if (!confirm("Are you sure you want to delete this role?")) return;
@@ -1179,9 +1187,11 @@ const AdminSettings = () => {
     try {
       const res = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/delete_role.php`,
-        { method: "POST",
+        {
+          method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ role_id }) }
+          body: JSON.stringify({ role_id }),
+        }
       );
       const data = await res.json();
       if (data.success) {
@@ -1196,8 +1206,6 @@ const AdminSettings = () => {
     }
     setTimeout(() => setNotification(""), 4000);
   };
-
-
 
   return (
     <div className="admin-settings">
@@ -1486,27 +1494,27 @@ const AdminSettings = () => {
       </div>
       <div className="admin-settings-lower-header">
         <div className="admin-settings-lower-header-left">
-        <h1>Settings</h1>
-        {activeTab === 2 && (
-              <>
-                {viewMode === "table" && (
-                  <div className="admin-events-lower-header-select">
-                    <button
-                      onClick={() => {
-                        setSelectMode(!selectMode);
-                        setSelectedPartnerIds([]);
-                      }}
-                    >
-                      <img
-                        src={select}
-                        className="admin-blogs-lower-header-select-img"
-                      />
-                      {selectMode ? "Cancel" : "Select"}
-                    </button>
-                  </div>
-                )}
-                <div className="admin-settings-toggle-newpartner">
+          <h1>Settings</h1>
+          {activeTab === 2 && (
+            <>
+              {viewMode === "table" && (
+                <div className="admin-events-lower-header-select">
                   <button
+                    onClick={() => {
+                      setSelectMode(!selectMode);
+                      setSelectedPartnerIds([]);
+                    }}
+                  >
+                    <img
+                      src={select}
+                      className="admin-blogs-lower-header-select-img"
+                    />
+                    {selectMode ? "Cancel" : "Select"}
+                  </button>
+                </div>
+              )}
+              <div className="admin-settings-toggle-newpartner">
+                <button
                   className="add-new-partner-btn"
                   onClick={() => {
                     setIsAddingNewPartner(true);
@@ -1537,147 +1545,149 @@ const AdminSettings = () => {
                     Grid View
                   </button>
                 </div>
-                </div>
-              </>
-            )}
-        {activeTab === 1 && (
-              <button
-                className="add-new-partner-btn"
-                onClick={() => setShowRolesModal(true)}
-              >
-                See Roles
-              </button>
-            )}
-            {showRolesModal && (
+              </div>
+            </>
+          )}
+          {activeTab === 1 && (
+            <button
+              className="add-new-partner-btn"
+              onClick={() => setShowRolesModal(true)}
+            >
+              See Roles
+            </button>
+          )}
+          {showRolesModal && (
+            <div
+              className="admin-contact-modal"
+              onClick={() => setShowRolesModal(false)}
+            >
               <div
-                className="admin-contact-modal"
-                onClick={() => setShowRolesModal(false)}
+                className="admin-contact-modal-content"
+                onClick={(e) => e.stopPropagation()}
               >
-                <div
-                  className="admin-contact-modal-content"
-                  onClick={(e) => e.stopPropagation()}
+                <button
+                  className="admin-contact-modal-close"
+                  onClick={() => setShowRolesModal(false)}
                 >
-                  <button
-                    className="admin-contact-modal-close"
-                    onClick={() => setShowRolesModal(false)}
-                  >
-                    ✕
-                  </button>
-                  <h1>All Roles</h1>
+                  ✕
+                </button>
+                <h1>All Roles</h1>
 
-                  <ul className="roles-list">
-                    {roles.map((r) => (
-                      <li key={r.role_id} className="role-item">
-                        {editingRoleId === r.role_id ? (
-                          <>
-                            <input
-                              type="text"
-                              value={editingRoleName}
-                              onChange={(e) =>
-                                setEditingRoleName(e.target.value)
-                              }
-                              className="role-edit-input"
-                            />
-                            <div className="roles-list-buttons">
-                              <div>
-                                <button
-                                  className="save-btn"
-                                  onClick={handleUpdateRole}
-                                >
-                                  Save
-                                </button>
-                              </div>
-                              <div>
-                                <button
-                                  className="cancel-btn"
-                                  onClick={handleCancelEdit}
-                                >
-                                  Cancel
-                                </button>
-                              </div>
+                <ul className="roles-list">
+                  {roles.map((r) => (
+                    <li key={r.role_id} className="role-item">
+                      {editingRoleId === r.role_id ? (
+                        <>
+                          <input
+                            type="text"
+                            value={editingRoleName}
+                            onChange={(e) => setEditingRoleName(e.target.value)}
+                            className="role-edit-input"
+                          />
+                          <div className="roles-list-buttons">
+                            <div>
+                              <button
+                                className="save-btn"
+                                onClick={handleUpdateRole}
+                              >
+                                Save
+                              </button>
                             </div>
-                          </>
-                        ) : (
-                          <>
-                            <div className="role-item-content">
+                            <div>
+                              <button
+                                className="cancel-btn"
+                                onClick={handleCancelEdit}
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="role-item-content">
+                            <div>
+                              <span className="role-name">{r.role_name}</span>
+                            </div>
+                            <div className="role-item-actions">
                               <div>
-                                <span className="role-name">{r.role_name}</span>
+                                <FaEdit
+                                  className="role-edit-icon"
+                                  onClick={() =>
+                                    handleEditRole(r.role_id, r.role_name)
+                                  }
+                                />
                               </div>
-                              <div className="role-item-actions">
-                                <div>
-                                  <FaEdit
-                                    className="role-edit-icon"
-                                    onClick={() =>
-                                      handleEditRole(r.role_id, r.role_name)
-                                    }
-                                  />
-                                </div>
-                                <div>
-                                  <FaTrash
-                                    className="role-trash-icon"
-                                    onClick={() => {
-                                      setRoleToDelete(r.role_id);
-                                      setConfirmRoleDeleteVisible(true);
-                                    }}
-                                  />
-                                  {confirmRoleDeleteVisible && (
-                                    <div className="roles-confirmation-popup show">
-                                      <div className="blogs-confirmation-box">
-                                        <p>Are you sure you want to delete this role?</p>
-                                        <div className="blogs-confirmation-actions">
-                                          <button
-                                            className="confirm-yes"
-                                            onClick={() => {
-                                              if (roleToDelete) deleteRole(roleToDelete);
-                                              setConfirmRoleDeleteVisible(false);
-                                              setRoleToDelete(null);
-                                            }}
-                                          >
-                                            Yes
-                                          </button>
-                                          <button
-                                            className="confirm-no"
-                                            onClick={() => {
-                                              setConfirmRoleDeleteVisible(false);
-                                              setRoleToDelete(null);
-                                            }}
-                                          >
-                                            No
-                                          </button>
-                                        </div>
+                              <div>
+                                <FaTrash
+                                  className="role-trash-icon"
+                                  onClick={() => {
+                                    setRoleToDelete(r.role_id);
+                                    setConfirmRoleDeleteVisible(true);
+                                  }}
+                                />
+                                {confirmRoleDeleteVisible && (
+                                  <div className="roles-confirmation-popup show">
+                                    <div className="blogs-confirmation-box">
+                                      <p>
+                                        Are you sure you want to delete this
+                                        role?
+                                      </p>
+                                      <div className="blogs-confirmation-actions">
+                                        <button
+                                          className="confirm-yes"
+                                          onClick={() => {
+                                            if (roleToDelete)
+                                              deleteRole(roleToDelete);
+                                            setConfirmRoleDeleteVisible(false);
+                                            setRoleToDelete(null);
+                                          }}
+                                        >
+                                          Yes
+                                        </button>
+                                        <button
+                                          className="confirm-no"
+                                          onClick={() => {
+                                            setConfirmRoleDeleteVisible(false);
+                                            setRoleToDelete(null);
+                                          }}
+                                        >
+                                          No
+                                        </button>
                                       </div>
                                     </div>
-                                  )}
-                                </div>
+                                  </div>
+                                )}
                               </div>
                             </div>
-                          </>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                  <hr style={{ margin: "1.5rem 0", borderColor: "#eee" }} />
-                  <div className="admin-contact-edit-fields">
-                    <label>
-                      Role Name
-                      <input
-                        type="text"
-                        value={newRoleName}
-                        onChange={(e) => setNewRoleName(e.target.value)}
-                      />
-                    </label>
-                  </div>
-                  <div
-                    className="admin-contact-edit-actions"
-                    style={{ marginTop: "0" }}
-                  >
-                    <button className="save-btn" onClick={handleAddRole}>
-                      <FaPlus style={{ marginRight: 6 }} /> Add Role
-                    </button>
-                  </div>
+                          </div>
+                        </>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+                <hr style={{ margin: "1.5rem 0", borderColor: "#eee" }} />
+                <div className="admin-contact-edit-fields">
+                  <label>
+                    Role Name
+                    <input
+                      type="text"
+                      value={newRoleName}
+                      onChange={(e) => setNewRoleName(e.target.value)}
+                    />
+                  </label>
+                </div>
+                <div
+                  className="admin-contact-edit-actions"
+                  style={{ marginTop: "0" }}
+                >
+                  <button className="save-btn" onClick={handleAddRole}>
+                    <FaPlus style={{ marginRight: 6 }} /> Add Role
+                  </button>
                 </div>
               </div>
-            )}
+            </div>
+          )}
         </div>
         <div className="admin-settings-lower-header-right">
           <div className="admin-settings-tabs-wrapper">
@@ -1713,7 +1723,13 @@ const AdminSettings = () => {
           <div className="admin-settings-tab-placeholder">
             <div className="admin-settings-aboutus">
               <div className="admin-settings-aboutus-contact-info">
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-start",
+                  }}
+                >
                   <div className="admin-settings-aboutus-contact-info-left">
                     <h1 className="admin-settings-aboutus-contact-info-left-h1">
                       Contact Information
@@ -2691,8 +2707,16 @@ const AdminSettings = () => {
                     {filteredPartners.length > 0 ? (
                       filteredPartners.map((partner) => (
                         <tr
-                          className="admin-settings-table-content"
                           key={partner.partner_id}
+                          className="admin-settings-table-content"
+                          style={{ cursor: selectMode ? "default" : "pointer" }}
+                          onClick={() => {
+                            if (!selectMode) {
+                              setSelectedPartner(partner);
+                              setNotification("");
+                              setConfirmDeleteVisible(false);
+                            }
+                          }}
                         >
                           <td>{partner.partner_id}</td>
                           <td>{partner.partner_name}</td>
@@ -2720,10 +2744,12 @@ const AdminSettings = () => {
                                     );
                                   }
                                 }}
+                                onClick={(e) => e.stopPropagation()}
                               />
                             ) : (
                               <button
-                                onClick={() => {
+                                onClick={(e) => {
+                                  e.stopPropagation();
                                   setSelectedPartner(partner);
                                   setNotification("");
                                   setConfirmDeleteVisible(false);
@@ -2745,34 +2771,65 @@ const AdminSettings = () => {
               </div>
             ) : (
               <div className="admin-settings-grid-view">
-                {(filteredPartners.length > 0 ? filteredPartners : []).map(
-                  (partner) => (
-                    <div
-                      className="admin-settings-grid-card"
-                      key={partner.partner_id}
-                    >
-                      <div className="settings-grid-container">
-                        <img
-                          src={getFullImageUrl(partner.partner_image)}
-                          alt="partner"
-                          className="settings-grid-img"
-                          onClick={() => setSelectedPartner(partner)}
+                {filteredPartners.map((partner) => (
+                  <div
+                    key={partner.partner_id}
+                    className="admin-settings-grid-card"
+                    style={{ cursor: selectMode ? "default" : "pointer" }}
+                    onClick={() => {
+                      if (!selectMode) {
+                        setSelectedPartner(partner);
+                        setNotification("");
+                        setConfirmDeleteVisible(false);
+                      }
+                    }}
+                  >
+                    {/* Checkbox overlay in select mode */}
+                    {selectMode && (
+                      <div className="grid-select-checkbox">
+                        <input
+                          type="checkbox"
+                          checked={selectedPartnerIds.includes(
+                            partner.partner_id
+                          )}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedPartnerIds((prev) => [
+                                ...prev,
+                                partner.partner_id,
+                              ]);
+                            } else {
+                              setSelectedPartnerIds((prev) =>
+                                prev.filter((id) => id !== partner.partner_id)
+                              );
+                            }
+                          }}
+                          onClick={(e) => e.stopPropagation()}
                         />
                       </div>
-                      <div className="admin-settings-grid-card-info">
-                        <p className="settings-overlay-title">
-                          {partner.partner_name}
-                        </p>
-                        <p className="settings-overlay-contact">
-                          {partner.partner_contact_email}
-                        </p>
-                        <p className="settings-overlay-phone">
-                          {partner.partner_phone_number}
-                        </p>
-                      </div>
+                    )}
+
+                    <div className="settings-grid-container">
+                      <img
+                        src={getFullImageUrl(partner.partner_image)}
+                        alt="partner"
+                        className="settings-grid-img"
+                      />
                     </div>
-                  )
-                )}
+
+                    <div className="admin-settings-grid-card-info">
+                      <p className="settings-overlay-title">
+                        {partner.partner_name}
+                      </p>
+                      <p className="settings-overlay-contact">
+                        {partner.partner_contact_email}
+                      </p>
+                      <p className="settings-overlay-phone">
+                        {partner.partner_phone_number}
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
             {selectedPartner && (

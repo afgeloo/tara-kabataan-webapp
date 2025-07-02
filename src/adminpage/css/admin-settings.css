@@ -8,7 +8,6 @@
   
 .admin-settings-search-container {
   display: flex;
-  align-items: center;
   background-color: white;
   padding: 10px 15px;
   border-radius: 50px;
@@ -21,20 +20,20 @@
   justify-items: center;
   justify-self: center;
   align-items: center;
+  justify-content: flex-start !important;
 }
 
 .admin-settings-search-container input {
-  margin-top: 20px;
   border: none;
   outline: none;
   width: 100%;
   font-size: 16px;
-  margin-left: 10px;
+  margin: 0 !important;
 }
 
 .admin-settings-search-icon {
-    color: #aaa;
-    font-size: 18px;
+  color: #aaa;
+  font-size: 18px;
 }
 
 .admin-settings-header-right {

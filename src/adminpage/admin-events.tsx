@@ -1369,16 +1369,18 @@ const AdminEvents = () => {
                     : filteredEvents.slice(0, count)
                   ).map((event) => (
                     <tr
-                      className="admin-events-table-content"
                       key={event.event_id}
+                      className="admin-events-table-content"
+                      style={{ cursor: selectMode ? "default" : "pointer" }}
+                      onClick={() => {
+                        if (!selectMode) setSelectedEvent(event);
+                      }}
                     >
                       <td className="admin-events-id-content">
                         {event.event_id}
                       </td>
                       <td className="admin-events-category-content category-tag">
-                        {event.category
-                          ? event.category.toUpperCase()
-                          : "UNSPECIFIED"}
+                        {event.category?.toUpperCase() || "UNSPECIFIED"}
                       </td>
                       <td className="admin-events-title-content">
                         {event.title}
@@ -1411,9 +1413,15 @@ const AdminEvents = () => {
                                 );
                               }
                             }}
+                            onClick={(e) => e.stopPropagation()}
                           />
                         ) : (
-                          <button onClick={() => setSelectedEvent(event)}>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedEvent(event);
+                            }}
+                          >
                             <BsThreeDots />
                           </button>
                         )}

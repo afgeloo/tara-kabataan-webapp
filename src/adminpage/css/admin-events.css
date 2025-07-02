@@ -15,7 +15,6 @@
 
 .admin-events-search-container {
   display: flex;
-  align-items: center;
   background-color: white;
   padding: 10px 15px;
   border-radius: 50px;
@@ -28,15 +27,15 @@
   justify-items: center;
   justify-self: center;
   align-items: center;
+  justify-content: flex-start !important;
 }
 
 .admin-events-search-container input {
-  margin-top: 20px;
   border: none;
   outline: none;
   width: 100%;
   font-size: 16px;
-  margin-left: 10px;
+  margin: 0 !important;
 }
 
 .admin-events-search-icon {
@@ -1180,6 +1179,11 @@
 
 /* Mobile Responsive Styles */
 @media (max-width: 1024px) {
+  .admin-new-event-modal-content, .admin-events-modal-content{
+    width: 90%;
+    height: 90%;
+  }
+
   .admin-events-lower-header-left {
     justify-content: center;
   }

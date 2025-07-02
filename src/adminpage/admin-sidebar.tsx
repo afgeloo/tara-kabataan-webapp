@@ -5,7 +5,7 @@ import {
   FaRegNewspaper,
   FaCalendarAlt,
   FaCog,
-  FaSignOutAlt
+  FaSignOutAlt,
 } from "react-icons/fa";
 import "./css/admin-sidebar.css";
 import logo from "../assets/header/tarakabataanlogo2.png";
@@ -23,7 +23,9 @@ const AdminSidebar = () => {
         <FaBars />
       </button>
 
-      <div className={`admin-sidebar ${isOpen ? "open" : ""} ${isEventsPage ? "events-page" : ""}`}>
+      <div
+        className={`admin-sidebar ${isOpen ? "open" : ""} ${isEventsPage ? "events-page" : ""}`}
+      >
         <header className="admin-sidebar-header">
           <Link to="/">
             <img src={logo} alt="Tarakabataan Logo" className="admin-logo" />
@@ -65,15 +67,21 @@ const AdminSidebar = () => {
           className="admin-logout-link"
           onClick={(e) => {
             e.preventDefault();
-            localStorage.removeItem("admin-auth"); 
+            localStorage.removeItem("admin-auth");
             setIsOpen(false);
-            window.location.href = "/admin-login"; 
+            window.location.href = "/admin-login";
           }}
         >
           <FaSignOutAlt className="admin-logout-icon" />
           Logout
         </NavLink>
       </div>
+      {isOpen && (
+        <div
+          className="admin-sidebar-backdrop"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
     </>
   );
 };

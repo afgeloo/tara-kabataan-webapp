@@ -15,7 +15,6 @@
 
 .admin-blogs-search-container {
   display: flex;
-  align-items: center;
   background-color: white;
   padding: 10px 15px;
   border-radius: 50px;
@@ -28,15 +27,15 @@
   justify-items: center;
   justify-self: center;
   align-items: center;
+  justify-content: flex-start !important;
 }
 
 .admin-blogs-search-container input {
-  margin-top: 20px;
   border: none;
   outline: none;
   width: 100%;
   font-size: 16px;
-  margin-left: 10px;
+  margin: 0 !important;
 }
 
 .admin-blogs-search-icon {
@@ -1973,6 +1972,12 @@ button:disabled {
 }
 
 @media (max-width: 1024px) {
+  
+  .admin-blogs-new-blog-modal-content, .admin-blogs-modal-content {
+    width: 90%;
+    height: 90%;
+  }
+
   .admin-blogs-lower-header-left {
     justify-content: center;
   }
