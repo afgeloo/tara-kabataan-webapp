@@ -1529,7 +1529,7 @@ const AdminSettings = () => {
                   }}
                 >
                   <FaPlus className="admin-icon-left" />
-                  Add New Partner
+                  New Partner
                 </button>
                 <div className="admin-blogs-toggle-wrapper">
                   <button

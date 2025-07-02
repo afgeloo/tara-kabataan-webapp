@@ -1972,6 +1972,10 @@ button:disabled {
 }
 
 @media (max-width: 1024px) {
+
+  .admin-profile-modal-box {
+    width: 90%;
+  }
   
   .admin-blogs-new-blog-modal-content, .admin-blogs-modal-content {
     width: 90%;
