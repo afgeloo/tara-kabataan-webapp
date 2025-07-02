@@ -974,6 +974,29 @@ const AdminEvents = () => {
     });
   }, [selectedEvent]);
 
+  interface Participant {
+    participant_id: string;
+    event_id: string;
+    name: string;
+    email: string;
+    contact: string | null;
+    expectations: string | null;
+    created_at: string;
+  }
+
+  const [participants, setParticipants] = useState<Participant[]>([]);
+
+  useEffect(() => {
+    if (!selectedEvent) return;
+    fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/event_attendees.php?event_id=${selectedEvent.event_id}`
+    )
+      .then(res => res.json())
+      .then(data => setParticipants(data.participants || []))
+      .catch(err => console.error("Failed to load participants:", err));
+  }, [selectedEvent]);
+
+
   return (
     <div className="admin-events">
       <div className="admin-events-header">
@@ -2043,6 +2066,22 @@ const AdminEvents = () => {
                       )}
                     </div>
                   </div>
+                </div>
+                <div className="event-participants">
+                  <h3>Participants</h3>
+                  {participants.length > 0 ? (
+                    <ul className="participants-list">
+                      {participants.map(p => (
+                        <li key={p.participant_id} className="participant-item">
+                          <strong>{p.name}</strong> &mdash; {p.email}
+                          {p.contact && <> • {p.contact}</>}
+                          {p.expectations && <p className="participant-expectations">{p.expectations}</p>}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>No one has signed up yet.</p>
+                  )}
                 </div>
               </div>
             </div>
