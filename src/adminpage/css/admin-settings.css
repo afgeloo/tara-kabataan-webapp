@@ -142,9 +142,9 @@
   background-color: white;
   padding: 20px;
   border-radius: 30px;
-  min-height: 480px;
+  min-height: 460px;
   overflow-y: auto;
-  max-height: calc(100vh - 260px);
+  max-height: calc(100vh - 330px);
 }
 
 .admin-settings-scrollable-table {
@@ -184,6 +184,15 @@
   table-layout: fixed;
   overflow: hidden;
   min-height: 400px;
+}
+
+.admin-settings-partner-container{
+  background-color: white;
+  padding: 20px;
+  border-radius: 30px;
+  min-height: 500px;
+  max-height: none;
+  overflow: visible;
 }
 
 .admin-settings-table thead th {
@@ -1104,10 +1113,9 @@
 
 .aboutus-page-contents-edit-icon {
   color: rgb(149, 149, 149);
-  font-size: 12px;
   display: flex;
   cursor: pointer;
-  width: 18px;
+  width: 30%;
   height: auto;
 }
 

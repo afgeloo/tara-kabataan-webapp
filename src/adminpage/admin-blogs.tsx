@@ -931,6 +931,15 @@ const AdminBlogs = () => {
 
   const [initialStatus, setInitialStatus] = useState<string>("");
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
+
+  const totalPages = Math.ceil(filteredBlogs.length / itemsPerPage);
+  const paginatedBlogs = filteredBlogs.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
   return (
     <div className="admin-blogs">
       <div className="admin-blogs-header">
@@ -1241,177 +1250,219 @@ const AdminBlogs = () => {
       )}
       <div className="admin-blogs-main-content">
         {viewMode === "table" ? (
-          <div className="admin-blogs-scrollable-table">
-            <table className="admin-blogs-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>
-                    <div
-                      className="admin-blogs-dropdown-trigger"
-                      onClick={() => setOpenCategory(!openCategory)}
-                    >
-                      Category{" "}
-                      <span className="admin-header-dropdown-arrow">▾</span>
-                      {openCategory && (
-                        <div className="admin-header-dropdown-menu">
-                          {[
-                            "All",
-                            "Kalusugan",
-                            "Kalikasan",
-                            "Karunungan",
-                            "Kultura",
-                            "Kasarian",
-                          ].map((item) => (
-                            <div
-                              key={item}
-                              className="admin-header-dropdown-item"
-                              onClick={() => {
-                                setSelectedCategory(item);
-                                setOpenCategory(false);
+          <div>
+            <div className="admin-blogs-scrollable-table">
+              <table className="admin-blogs-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>
+                      <div
+                        className="admin-blogs-dropdown-trigger"
+                        onClick={() => setOpenCategory(!openCategory)}
+                      >
+                        Category{" "}
+                        <span className="admin-header-dropdown-arrow">▾</span>
+                        {openCategory && (
+                          <div className="admin-header-dropdown-menu">
+                            {[
+                              "All",
+                              "Kalusugan",
+                              "Kalikasan",
+                              "Karunungan",
+                              "Kultura",
+                              "Kasarian",
+                            ].map((item) => (
+                              <div
+                                key={item}
+                                className="admin-header-dropdown-item"
+                                onClick={() => {
+                                  setSelectedCategory(item);
+                                  setOpenCategory(false);
+                                }}
+                              >
+                                {item}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </th>
+                    <th>Blog Title</th>
+                    <th>Author</th>
+                    <th>
+                      <div
+                        className="admin-blogs-dropdown-trigger"
+                        onClick={() => setOpenStatus(!openStatus)}
+                      >
+                        Status{" "}
+                        <span className="admin-header-dropdown-arrow">▾</span>
+                        {openStatus && (
+                          <div className="admin-header-dropdown-menu">
+                            {[
+                              "All",
+                              "Draft",
+                              "Published",
+                              "Pinned",
+                              "Archived",
+                            ].map((status) => (
+                              <div
+                                key={status}
+                                className="admin-header-dropdown-item"
+                                onClick={() => {
+                                  setSelectedStatus(status);
+                                  setOpenStatus(false);
+                                }}
+                              >
+                                {status}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </th>
+                    <th>
+                      <div
+                        className="admin-blogs-dropdown-trigger"
+                        onClick={() => setOpenCreatedAt(!openCreatedAt)}
+                      >
+                        Created At{" "}
+                        <span className="admin-header-dropdown-arrow">▾</span>
+                        {openCreatedAt && (
+                          <div className="admin-header-dropdown-menu">
+                            {["Newest First", "Oldest First"].map((order) => (
+                              <div
+                                key={order}
+                                className="admin-header-dropdown-item"
+                                onClick={() => {
+                                  setCreatedSortOrder(order);
+                                  setOpenCreatedAt(false);
+                                }}
+                              >
+                                {order}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </th>
+                    <th>{selectMode ? "Select" : "View"}</th>
+                  </tr>
+                </thead>
+                <colgroup>
+                  <col style={{ width: "80px" }} />
+                  <col style={{ width: "70px" }} />
+                  <col style={{ width: "100px" }} />
+                  <col style={{ width: "90px" }} />
+                  <col style={{ width: "70px" }} />
+                  <col style={{ width: "80px" }} />
+                  <col style={{ width: "40px" }} />
+                </colgroup>
+                <tbody>
+                  {paginatedBlogs.length > 0 ? (
+                    paginatedBlogs.map((blog) => (
+                      <tr
+                        key={blog.blog_id}
+                        className="admin-blogs-table-content"
+                        style={{ cursor: selectMode ? "default" : "pointer" }}
+                        onClick={() => !selectMode && setSelectedBlog(blog)}
+                      >
+                        <td className="admin-blogs-id-content">
+                          {blog.blog_id}
+                        </td>
+                        <td className="admin-blogs-category-content category-tag">
+                          {blog.category}
+                        </td>
+                        <td className="admin-blogs-title-content">
+                          {blog.title}
+                        </td>
+                        <td className="admin-blogs-author-content">
+                          {blog.author}
+                        </td>
+                        <td
+                          className={`admin-blogs-status-content status-${blog.blog_status.toLowerCase()}`}
+                        >
+                          {blog.blog_status}
+                        </td>
+                        <td className="admin-blogs-created-at-content">
+                          {formatDate(blog.created_at)}
+                        </td>
+                        <td className="admin-blogs-more-button">
+                          {selectMode ? (
+                            <input
+                              type="checkbox"
+                              checked={selectedBlogIds.includes(blog.blog_id)}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setSelectedBlogIds((prev) => [
+                                    ...prev,
+                                    blog.blog_id,
+                                  ]);
+                                } else {
+                                  setSelectedBlogIds((prev) =>
+                                    prev.filter((id) => id !== blog.blog_id)
+                                  );
+                                }
+                              }}
+                              onClick={(e) => e.stopPropagation()}
+                            />
+                          ) : (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedBlog(blog);
                               }}
                             >
-                              {item}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </th>
-                  <th>Blog Title</th>
-                  <th>Author</th>
-                  <th>
-                    <div
-                      className="admin-blogs-dropdown-trigger"
-                      onClick={() => setOpenStatus(!openStatus)}
-                    >
-                      Status{" "}
-                      <span className="admin-header-dropdown-arrow">▾</span>
-                      {openStatus && (
-                        <div className="admin-header-dropdown-menu">
-                          {[
-                            "All",
-                            "Draft",
-                            "Published",
-                            "Pinned",
-                            "Archived",
-                          ].map((status) => (
-                            <div
-                              key={status}
-                              className="admin-header-dropdown-item"
-                              onClick={() => {
-                                setSelectedStatus(status);
-                                setOpenStatus(false);
-                              }}
-                            >
-                              {status}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </th>
-                  <th>
-                    <div
-                      className="admin-blogs-dropdown-trigger"
-                      onClick={() => setOpenCreatedAt(!openCreatedAt)}
-                    >
-                      Created At{" "}
-                      <span className="admin-header-dropdown-arrow">▾</span>
-                      {openCreatedAt && (
-                        <div className="admin-header-dropdown-menu">
-                          {["Newest First", "Oldest First"].map((order) => (
-                            <div
-                              key={order}
-                              className="admin-header-dropdown-item"
-                              onClick={() => {
-                                setCreatedSortOrder(order);
-                                setOpenCreatedAt(false);
-                              }}
-                            >
-                              {order}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </th>
-                  <th>{selectMode ? "Select" : "View"}</th>
-                </tr>
-              </thead>
-              <colgroup>
-                <col style={{ width: "80px" }} />
-                <col style={{ width: "70px" }} />
-                <col style={{ width: "100px" }} />
-                <col style={{ width: "90px" }} />
-                <col style={{ width: "70px" }} />
-                <col style={{ width: "80px" }} />
-                <col style={{ width: "40px" }} />
-              </colgroup>
-              <tbody>
-  {filteredBlogs.length > 0 ? (
-    filteredBlogs.map((blog) => (
-      <tr
-        key={blog.blog_id}
-        className="admin-blogs-table-content"
-        style={{ cursor: selectMode ? 'default' : 'pointer' }}
-        onClick={() => {
-          if (!selectMode) setSelectedBlog(blog);
-        }}
-      >
-        <td className="admin-blogs-id-content">{blog.blog_id}</td>
-        <td className="admin-blogs-category-content category-tag">
-          {blog.category}
-        </td>
-        <td className="admin-blogs-title-content">{blog.title}</td>
-        <td className="admin-blogs-author-content">{blog.author}</td>
-        <td
-          className={`admin-blogs-status-content status-${blog.blog_status.toLowerCase()}`}
-        >
-          {blog.blog_status}
-        </td>
-        <td className="admin-blogs-created-at-content">
-          {formatDate(blog.created_at)}
-        </td>
-        <td className="admin-blogs-more-button">
-          {selectMode ? (
-            <input
-              type="checkbox"
-              checked={selectedBlogIds.includes(blog.blog_id)}
-              onChange={(e) => {
-                if (e.target.checked) {
-                  setSelectedBlogIds((prev) => [...prev, blog.blog_id]);
-                } else {
-                  setSelectedBlogIds((prev) =>
-                    prev.filter((id) => id !== blog.blog_id)
-                  );
-                }
-              }}
-              onClick={(e) => e.stopPropagation()}
-            />
-          ) : (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setSelectedBlog(blog);
-              }}
-            >
-              <BsThreeDots />
-            </button>
-          )}
-        </td>
-      </tr>
-    ))
-  ) : (
-    <tr className="admin-blogs-table-content no-blogs-row">
-      <td colSpan={7} className="no-blogs-message">
-        No Blog Found.
-      </td>
-    </tr>
-  )}
-</tbody>
+                              <BsThreeDots />
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr className="admin-blogs-table-content no-blogs-row">
+                      <td colSpan={7} className="no-blogs-message">
+                        No Blog Found.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            {totalPages > 1 && (
+              <div className="pagination-container">
+                <div className="pagination">
+                  <button
+                    onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                    disabled={currentPage === 1}
+                  >
+                    ‹ Prev
+                  </button>
 
-            </table>
+                  {[...Array(totalPages)].map((_, i) => {
+                    const page = i + 1;
+                    return (
+                      <button
+                        key={page}
+                        className={page === currentPage ? "active" : ""}
+                        onClick={() => setCurrentPage(page)}
+                      >
+                        {page}
+                      </button>
+                    );
+                  })}
+
+                  <button
+                    onClick={() =>
+                      setCurrentPage((p) => Math.min(p + 1, totalPages))
+                    }
+                    disabled={currentPage === totalPages}
+                  >
+                    Next ›
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <div className="admin-blogs-grid-view">

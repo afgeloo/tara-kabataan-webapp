@@ -991,11 +991,28 @@ const AdminEvents = () => {
     fetch(
       `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/event_attendees.php?event_id=${selectedEvent.event_id}`
     )
-      .then(res => res.json())
-      .then(data => setParticipants(data.participants || []))
-      .catch(err => console.error("Failed to load participants:", err));
+      .then((res) => res.json())
+      .then((data) => setParticipants(data.participants || []))
+      .catch((err) => console.error("Failed to load participants:", err));
   }, [selectedEvent]);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const totalPages = Math.ceil(participants.length / itemsPerPage);
+  const paginatedParticipants = participants.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const [eventsPage, setEventsPage] = useState(1);
+  const eventsPerPage = 8;
+
+  const totalEventPages = Math.ceil(filteredEvents.length / eventsPerPage);
+  const pagedEvents = filteredEvents.slice(
+    (eventsPage - 1) * eventsPerPage,
+    eventsPage * eventsPerPage
+  );
 
   return (
     <div className="admin-events">
@@ -1383,14 +1400,8 @@ const AdminEvents = () => {
                 <col style={{ width: "40px" }} />
               </colgroup>
               <tbody>
-                {(count === -1
-                  ? filteredEvents
-                  : filteredEvents.slice(0, count)
-                ).length > 0 ? (
-                  (count === -1
-                    ? filteredEvents
-                    : filteredEvents.slice(0, count)
-                  ).map((event) => (
+                {pagedEvents.length > 0 ? (
+                  pagedEvents.map((event) => (
                     <tr
                       key={event.event_id}
                       className="admin-events-table-content"
@@ -1461,10 +1472,40 @@ const AdminEvents = () => {
               </tbody>
             </table>
           </div>
+          <div className="pagination-container">
+              {totalEventPages > 1 && (
+                <div className="pagination">
+                  <button
+                    onClick={() => setEventsPage((p) => p - 1)}
+                    disabled={eventsPage === 1}
+                  >
+                    ‹ Prev
+                  </button>
+                  {[...Array(totalEventPages)].map((_, i) => {
+                    const p = i + 1;
+                    return (
+                      <button
+                        key={p}
+                        className={p === eventsPage ? "active" : ""}
+                        onClick={() => setEventsPage(p)}
+                      >
+                        {p}
+                      </button>
+                    );
+                  })}
+                  <button
+                    onClick={() => setEventsPage((p) => p + 1)}
+                    disabled={eventsPage === totalEventPages}
+                  >
+                    Next ›
+                  </button>
+                </div>
+              )}
+            </div>
         </div>
       ) : (
         <div className="admin-events-main-content">
-          <div className="admin-events-scrollable-table">
+          <div>
             <div className="admin-blogs-grid-view">
               {filteredEvents.length > 0 ? (
                 <div className="blog-grid-scrollable-wrapper">
@@ -2067,20 +2108,69 @@ const AdminEvents = () => {
                     </div>
                   </div>
                 </div>
-                <div className="event-participants">
+                <div className="event-participants card">
                   <h3>Participants</h3>
                   {participants.length > 0 ? (
-                    <ul className="participants-list">
-                      {participants.map(p => (
-                        <li key={p.participant_id} className="participant-item">
-                          <strong>{p.name}</strong> &mdash; {p.email}
-                          {p.contact && <> • {p.contact}</>}
-                          {p.expectations && <p className="participant-expectations">{p.expectations}</p>}
-                        </li>
-                      ))}
-                    </ul>
+                    <>
+                      <div className="participants-table-wrapper">
+                        <table className="participants-table">
+                          <thead>
+                            <tr>
+                              <th>Name</th>
+                              <th>Email</th>
+                              <th>Contact</th>
+                              <th>Expectations</th>
+                              <th>Signed Up</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {paginatedParticipants.map((p) => (
+                              <tr key={p.participant_id}>
+                                <td>{p.name}</td>
+                                <td>{p.email}</td>
+                                <td>{p.contact || "—"}</td>
+                                <td>{p.expectations || "—"}</td>
+                                <td>
+                                  {new Date(p.created_at).toLocaleDateString()}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+
+                      {/* pagination controls */}
+                      {totalPages > 1 && (
+                        <div className="pagination">
+                          <button
+                            onClick={() => setCurrentPage((p) => p - 1)}
+                            disabled={currentPage === 1}
+                          >
+                            ‹ Prev
+                          </button>
+                          {[...Array(totalPages)].map((_, i) => {
+                            const page = i + 1;
+                            return (
+                              <button
+                                key={page}
+                                className={page === currentPage ? "active" : ""}
+                                onClick={() => setCurrentPage(page)}
+                              >
+                                {page}
+                              </button>
+                            );
+                          })}
+                          <button
+                            onClick={() => setCurrentPage((p) => p + 1)}
+                            disabled={currentPage === totalPages}
+                          >
+                            Next ›
+                          </button>
+                        </div>
+                      )}
+                    </>
                   ) : (
-                    <p>No one has signed up yet.</p>
+                    <p className="no-participants">No one has signed up yet.</p>
                   )}
                 </div>
               </div>

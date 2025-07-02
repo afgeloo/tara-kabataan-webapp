@@ -1207,6 +1207,23 @@ const AdminSettings = () => {
     setTimeout(() => setNotification(""), 4000);
   };
 
+  // partners pagination
+  const [currentPagePartners, setCurrentPagePartners] = useState(1);
+  const partnersPerPage = 8;
+
+  // whenever filters/search change, reset to page 1:
+  useEffect(() => {
+    setCurrentPagePartners(1);
+  }, [searchQuery, partners.length]);
+
+  const totalPartnerPages = Math.ceil(
+    filteredPartners.length / partnersPerPage
+  );
+  const paginatedPartners = filteredPartners.slice(
+    (currentPagePartners - 1) * partnersPerPage,
+    currentPagePartners * partnersPerPage
+  );
+
   return (
     <div className="admin-settings">
       {notification && (
@@ -2683,91 +2700,95 @@ const AdminSettings = () => {
         {activeTab === 2 && (
           <div className="admin-settings-partner-container">
             {viewMode === "table" ? (
-              <div className="admin-settings-scrollable-table">
-                <table className="admin-settings-table">
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Name</th>
-                      <th>Description</th>
-                      <th>Email</th>
-                      <th>Contact No.</th>
-                      <th>{selectMode ? "Select" : "View"}</th>
-                    </tr>
-                  </thead>
-                  <colgroup>
-                    <col style={{ width: "100px" }} />
-                    <col style={{ width: "100px" }} />
-                    <col style={{ width: "150px" }} />
-                    <col style={{ width: "120px" }} />
-                    <col style={{ width: "100px" }} />
-                    <col style={{ width: "50px" }} />
-                  </colgroup>
-                  <tbody>
-                    {filteredPartners.length > 0 ? (
-                      filteredPartners.map((partner) => (
-                        <tr
-                          key={partner.partner_id}
-                          className="admin-settings-table-content"
-                          style={{ cursor: selectMode ? "default" : "pointer" }}
-                          onClick={() => {
-                            if (!selectMode) {
-                              setSelectedPartner(partner);
-                              setNotification("");
-                              setConfirmDeleteVisible(false);
-                            }
-                          }}
-                        >
-                          <td>{partner.partner_id}</td>
-                          <td>{partner.partner_name}</td>
-                          <td>{partner.partner_dec}</td>
-                          <td>{partner.partner_contact_email}</td>
-                          <td>{partner.partner_phone_number}</td>
-                          <td className="admin-settings-view-content">
-                            {selectMode ? (
-                              <input
-                                type="checkbox"
-                                checked={selectedPartnerIds.includes(
-                                  partner.partner_id
-                                )}
-                                onChange={(e) => {
-                                  if (e.target.checked) {
-                                    setSelectedPartnerIds((prev) => [
-                                      ...prev,
-                                      partner.partner_id,
-                                    ]);
-                                  } else {
-                                    setSelectedPartnerIds((prev) =>
-                                      prev.filter(
-                                        (id) => id !== partner.partner_id
-                                      )
-                                    );
-                                  }
-                                }}
-                                onClick={(e) => e.stopPropagation()}
-                              />
-                            ) : (
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setSelectedPartner(partner);
-                                  setNotification("");
-                                  setConfirmDeleteVisible(false);
-                                }}
-                              >
-                                <BsThreeDots />
-                              </button>
-                            )}
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
+              <div>
+                <div className="">
+                  <table className="admin-settings-table">
+                    <thead>
                       <tr>
-                        <td colSpan={6}>No Partner Data Available</td>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Email</th>
+                        <th>Contact No.</th>
+                        <th>{selectMode ? "Select" : "View"}</th>
                       </tr>
-                    )}
-                  </tbody>
-                </table>
+                    </thead>
+                    <colgroup>
+                      <col style={{ width: "100px" }} />
+                      <col style={{ width: "100px" }} />
+                      <col style={{ width: "150px" }} />
+                      <col style={{ width: "120px" }} />
+                      <col style={{ width: "100px" }} />
+                      <col style={{ width: "50px" }} />
+                    </colgroup>
+                    <tbody>
+                      {paginatedPartners.length > 0 ? (
+                        paginatedPartners.map((partner) => (
+                          <tr
+                            key={partner.partner_id}
+                            className="admin-settings-table-content"
+                            style={{
+                              cursor: selectMode ? "default" : "pointer",
+                            }}
+                            onClick={() => {
+                              if (!selectMode) {
+                                setSelectedPartner(partner);
+                                setNotification("");
+                                setConfirmDeleteVisible(false);
+                              }
+                            }}
+                          >
+                            <td>{partner.partner_id}</td>
+                            <td>{partner.partner_name}</td>
+                            <td>{partner.partner_dec}</td>
+                            <td>{partner.partner_contact_email}</td>
+                            <td>{partner.partner_phone_number}</td>
+                            <td className="admin-settings-view-content">
+                              {selectMode ? (
+                                <input
+                                  type="checkbox"
+                                  checked={selectedPartnerIds.includes(
+                                    partner.partner_id
+                                  )}
+                                  onChange={(e) => {
+                                    if (e.target.checked) {
+                                      setSelectedPartnerIds((prev) => [
+                                        ...prev,
+                                        partner.partner_id,
+                                      ]);
+                                    } else {
+                                      setSelectedPartnerIds((prev) =>
+                                        prev.filter(
+                                          (id) => id !== partner.partner_id
+                                        )
+                                      );
+                                    }
+                                  }}
+                                  onClick={(e) => e.stopPropagation()}
+                                />
+                              ) : (
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedPartner(partner);
+                                    setNotification("");
+                                    setConfirmDeleteVisible(false);
+                                  }}
+                                >
+                                  <BsThreeDots />
+                                </button>
+                              )}
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={6}>No Partner Data Available</td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             ) : (
               <div className="admin-settings-grid-view">
@@ -3304,6 +3325,42 @@ const AdminSettings = () => {
           theme="light"
         />
       </div>
+      {activeTab === 2 && viewMode === "table" && (
+        <div className="pagination-container-partners">
+          <div className="pagination">
+            <button
+              onClick={() => setCurrentPagePartners((p) => Math.max(p - 1, 1))}
+              disabled={currentPagePartners === 1}
+            >
+              ‹ Prev
+            </button>
+
+            {[...Array(totalPartnerPages)].map((_, i) => {
+              const page = i + 1;
+              return (
+                <button
+                  key={page}
+                  className={page === currentPagePartners ? "active" : ""}
+                  onClick={() => setCurrentPagePartners(page)}
+                >
+                  {page}
+                </button>
+              );
+            })}
+
+            <button
+              onClick={() =>
+                setCurrentPagePartners((p) =>
+                  Math.min(p + 1, totalPartnerPages)
+                )
+              }
+              disabled={currentPagePartners === totalPartnerPages}
+            >
+              Next ›
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
