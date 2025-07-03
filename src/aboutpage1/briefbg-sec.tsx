@@ -6,7 +6,7 @@ const assetsPath = "./src/assets/homepage/";
 const assetsPath1 = "./src/assets/aboutpage/";
 
 const slides = [
-  { image: `${assetsPath}events-1.jpg` },
+  { image: `${assetsPath}about-image-1.png` },
   { image: `${assetsPath}events-2.jpg` },
   { image: `${assetsPath}events-3.jpg` },
   { image: `${assetsPath}events-4.jpg` },
