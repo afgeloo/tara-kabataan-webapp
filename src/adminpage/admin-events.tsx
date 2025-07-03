@@ -1070,6 +1070,15 @@ const AdminEvents = () => {
   const [eventsPage, setEventsPage] = useState(1);
   const eventsPerPage = 8;
 
+  useEffect(() => {
+    setEventsPage(1);
+  }, [
+    selectedCategory,
+    selectedStatus,
+    createdSortOrder,
+    searchQuery
+  ]);
+
   const totalEventPages = Math.ceil(filteredEvents.length / eventsPerPage);
   const pagedEvents = filteredEvents.slice(
     (eventsPage - 1) * eventsPerPage,

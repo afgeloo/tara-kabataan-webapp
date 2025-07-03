@@ -1028,6 +1028,15 @@ const AdminBlogs = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [
+    selectedCategory,
+    selectedStatus,
+    createdSortOrder,
+    searchQuery
+  ]);
+
   const totalPages = Math.ceil(filteredBlogs.length / itemsPerPage);
   const paginatedBlogs = filteredBlogs.slice(
     (currentPage - 1) * itemsPerPage,

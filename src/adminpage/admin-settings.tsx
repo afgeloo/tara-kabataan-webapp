@@ -1211,6 +1211,13 @@ const AdminSettings = () => {
   const [currentPagePartners, setCurrentPagePartners] = useState(1);
   const partnersPerPage = 8;
 
+  useEffect(() => {
+    setCurrentPagePartners(1);
+  }, [
+    searchQuery,       
+    partners.length   
+  ]);
+
   // whenever filters/search change, reset to page 1:
   useEffect(() => {
     setCurrentPagePartners(1);
