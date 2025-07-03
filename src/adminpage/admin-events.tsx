@@ -108,6 +108,8 @@ const AdminEvents = () => {
     reader.readAsDataURL(file);
   };
 
+  const [loading, setLoading] = useState<boolean>(true);
+
   const applyCrop = async () => {
     try {
       const blob = await getCroppedImg(cropSrc, croppedArea);
@@ -468,6 +470,7 @@ const AdminEvents = () => {
   }, [selectedEvent]);
 
   useEffect(() => {
+    setLoading(true);
     fetch(
       `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/events1.php`
     )
@@ -533,7 +536,8 @@ const AdminEvents = () => {
 
         setEvents(updatedEvents);
       })
-      .catch((err) => console.error("Failed to fetch events:", err));
+      .catch((err) => console.error("Failed to fetch events:", err))
+      .finally(() => setLoading(false));
   }, []);
 
   const formatDate = (timestamp: string): string => {
@@ -1072,12 +1076,7 @@ const AdminEvents = () => {
 
   useEffect(() => {
     setEventsPage(1);
-  }, [
-    selectedCategory,
-    selectedStatus,
-    createdSortOrder,
-    searchQuery
-  ]);
+  }, [selectedCategory, selectedStatus, createdSortOrder, searchQuery]);
 
   const totalEventPages = Math.ceil(filteredEvents.length / eventsPerPage);
   const pagedEvents = filteredEvents.slice(
@@ -1496,7 +1495,13 @@ const AdminEvents = () => {
                 <col style={{ width: "40px" }} />
               </colgroup>
               <tbody>
-                {pagedEvents.length > 0 ? (
+                {loading ? (
+                  <tr>
+                    <td colSpan={7} className="no-blogs-message">
+                      <span className="loading-spinner"></span> Loading events…
+                    </td>
+                  </tr>
+                ) : pagedEvents.length > 0 ? (
                   pagedEvents.map((event) => (
                     <tr
                       key={event.event_id}

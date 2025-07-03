@@ -36,6 +36,7 @@ const AdminBlogs = () => {
   const [count, setCount] = useState(-1);
   const [open, setOpen] = useState(false);
   const [blogs, setBlogs] = useState<Blog[]>([]);
+const [loading, setLoading] = useState<boolean>(true);
   const [openCreatedAt, setOpenCreatedAt] = useState(false);
   const [openCategory, setOpenCategory] = useState(false);
   const [openStatus, setOpenStatus] = useState(false);
@@ -831,21 +832,27 @@ const AdminBlogs = () => {
   };
 
   useEffect(() => {
-    fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/blogs.php`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.blogs && Array.isArray(data.blogs)) {
-          const processed = data.blogs.map((b) => ({
-            ...b,
-            more_images: b.more_images ?? [],
-          }));
-          setBlogs(processed);
-        }
-      })
-      .catch((err) => console.error("Failed to fetch blogs:", err));
-  }, []);
+  setLoading(true);    // ← start loading
+  fetch(`${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/blogs.php`)
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.blogs && Array.isArray(data.blogs)) {
+        const processed = data.blogs.map((b) => ({
+          ...b,
+          more_images: b.more_images ?? [],
+        }));
+        setBlogs(processed);
+      }
+    })
+    .catch((err) => {
+      console.error("Failed to fetch blogs:", err);
+      toast.error("Unable to load blogs.");
+    })
+    .finally(() => {
+      setLoading(false); // ← end loading
+    });
+}, []);
+
 
   useEffect(() => {
     if (isEditing && textareaRef.current && editableBlog?.content) {
@@ -1489,7 +1496,13 @@ const AdminBlogs = () => {
                   <col style={{ width: "40px" }} />
                 </colgroup>
                 <tbody>
-                  {paginatedBlogs.length > 0 ? (
+                  {loading ? (
+                    <tr>
+                      <td colSpan={7} className="no-blogs-message">
+                        <span className="loading-spinner"></span> Loading blogs…
+                      </td>
+                    </tr>
+                  ) : paginatedBlogs.length > 0 ? (
                     paginatedBlogs.map((blog) => (
                       <tr
                         key={blog.blog_id}
