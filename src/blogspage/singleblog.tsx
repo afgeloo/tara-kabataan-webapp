@@ -127,6 +127,8 @@ function SingleBlog() {
               src={getFullImageUrl(blog.image_url)}
               alt={blog.title}
               className="single-blog-image"
+              style={{ cursor: "zoom-in" }}
+              onClick={() => setFullImageUrl(getFullImageUrl(blog.image_url))}
             />
           </div>
         {moreImages.length > 0 && (

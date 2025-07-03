@@ -14,6 +14,7 @@ call npm install react-toastify
 call npm install @googlemaps/js-api-loader
 call npm install @react-google-maps/api
 call npm install @hello-pangea/dnd
+call npm install react-easy-crop
 
 
 echo Installation complete!

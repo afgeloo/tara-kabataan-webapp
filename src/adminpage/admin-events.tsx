@@ -17,6 +17,8 @@ import select from "../assets/adminpage/blogs/select.png";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
+import Cropper from "react-easy-crop";
+import { getCroppedImg } from "./utils/cropImage";
 
 const AdminEvents = () => {
   interface Event {
@@ -80,6 +82,66 @@ const AdminEvents = () => {
   const [otpRequired, setOtpRequired] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const otpRefs = useRef<HTMLInputElement[]>([]);
+  const [showCropper, setShowCropper] = useState(false);
+  const [cropSrc, setCropSrc] = useState<string>("");
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [cropMode, setCropMode] = useState<"new" | "edit">("new");
+  const [croppedArea, setCroppedArea] = useState({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+  });
+  const handleImageSelect = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    mode: "new" | "edit"
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      setCropSrc(reader.result as string);
+      setCropMode(mode);
+      setShowCropper(true);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const applyCrop = async () => {
+    try {
+      const blob = await getCroppedImg(cropSrc, croppedArea);
+
+      const form = new FormData();
+      form.append("image", blob, "cropped.jpg");
+
+      let endpoint: string;
+      if (cropMode === "new") {
+        endpoint = `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/add_new_event_image.php`;
+      } else {
+        endpoint = `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/upload_event_image.php`;
+        form.append("event_id", editableEvent!.event_id);
+      }
+
+      const res = await fetch(endpoint, { method: "POST", body: form });
+      const data = await res.json();
+
+      if (data.success && data.image_url) {
+        if (cropMode === "new") {
+          setNewImageUrl(data.image_url);
+        } else {
+          setTempImageUrl(data.image_url);
+        }
+      } else {
+        toast.error("Upload failed");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("An error occurred while uploading");
+    } finally {
+      setShowCropper(false);
+    }
+  };
 
   useEffect(() => {
     if (loggedInUser) {
@@ -1016,6 +1078,31 @@ const AdminEvents = () => {
 
   return (
     <div className="admin-events">
+      {showCropper && (
+        <div className="cropper-overlay">
+          <div className="cropper-container">
+            <button
+              className="cropper-close-btn"
+              onClick={() => setShowCropper(false)}
+            >
+              <FaTimes size={20} />
+            </button>
+            <Cropper
+              image={cropSrc}
+              crop={crop}
+              zoom={zoom}
+              aspect={16 / 9}
+              onCropChange={setCrop}
+              onZoomChange={setZoom}
+              onCropComplete={(_, area) => setCroppedArea(area)}
+            />
+            <button className="cropper-confirm-btn" onClick={applyCrop}>
+              Confirm
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="admin-events-header">
         <div className="admin-events-search-container">
           <FaSearch className="admin-events-search-icon" />
@@ -1473,35 +1560,35 @@ const AdminEvents = () => {
             </table>
           </div>
           <div className="pagination-container">
-              {totalEventPages > 1 && (
-                <div className="pagination">
-                  <button
-                    onClick={() => setEventsPage((p) => p - 1)}
-                    disabled={eventsPage === 1}
-                  >
-                    ‹ Prev
-                  </button>
-                  {[...Array(totalEventPages)].map((_, i) => {
-                    const p = i + 1;
-                    return (
-                      <button
-                        key={p}
-                        className={p === eventsPage ? "active" : ""}
-                        onClick={() => setEventsPage(p)}
-                      >
-                        {p}
-                      </button>
-                    );
-                  })}
-                  <button
-                    onClick={() => setEventsPage((p) => p + 1)}
-                    disabled={eventsPage === totalEventPages}
-                  >
-                    Next ›
-                  </button>
-                </div>
-              )}
-            </div>
+            {totalEventPages > 1 && (
+              <div className="pagination">
+                <button
+                  onClick={() => setEventsPage((p) => p - 1)}
+                  disabled={eventsPage === 1}
+                >
+                  ‹ Prev
+                </button>
+                {[...Array(totalEventPages)].map((_, i) => {
+                  const p = i + 1;
+                  return (
+                    <button
+                      key={p}
+                      className={p === eventsPage ? "active" : ""}
+                      onClick={() => setEventsPage(p)}
+                    >
+                      {p}
+                    </button>
+                  );
+                })}
+                <button
+                  onClick={() => setEventsPage((p) => p + 1)}
+                  disabled={eventsPage === totalEventPages}
+                >
+                  Next ›
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       ) : (
         <div className="admin-events-main-content">
@@ -1916,11 +2003,12 @@ const AdminEvents = () => {
                       )}
                       <input
                         type="file"
+                        id="event-image-upload"
                         accept="image/*"
                         style={{ display: "none" }}
-                        id="event-image-upload"
-                        onChange={handleImageUpload}
+                        onChange={(e) => handleImageSelect(e, "edit")} // ← crop handler
                       />
+
                       <div className="admin-blogs-image-buttons">
                         <button
                           className="upload-btn"
@@ -2485,28 +2573,7 @@ const AdminEvents = () => {
                           accept="image/*"
                           style={{ display: "none" }}
                           id="new-event-image-upload"
-                          onChange={async (e) => {
-                            const file = e.target.files?.[0];
-                            if (!file) return;
-
-                            const formData = new FormData();
-                            formData.append("image", file);
-
-                            const res = await fetch(
-                              `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/add_new_event_image.php`,
-                              {
-                                method: "POST",
-                                body: formData,
-                              }
-                            );
-
-                            const data = await res.json();
-                            if (data.success && data.image_url) {
-                              setNewImageUrl(data.image_url);
-                            } else {
-                              alert("Image upload failed.");
-                            }
-                          }}
+                          onChange={(e) => handleImageSelect(e, "new")}
                         />
 
                         <div className="admin-blogs-image-buttons">

@@ -17,6 +17,8 @@ import {
 } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
+import Cropper from "react-easy-crop";
+import { getCroppedImg } from "./utils/cropImage";
 
 interface Blog {
   blog_id: string;
@@ -70,6 +72,98 @@ const AdminBlogs = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [otpRequired, setOtpRequired] = useState(false);
   const [oldPassword, setOldPassword] = useState("");
+  const [showCropper, setShowCropper] = useState(false);
+  const [cropSrc, setCropSrc] = useState<string>("");
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [cropMode, setCropMode] = useState<"new" | "edit">("new");
+  const [croppedArea, setCroppedArea] = useState<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }>({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+  });
+
+  // replace handleNewBlogImageUpload with:
+  const handleNewBlogImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      setCropSrc(reader.result as string);
+      setShowCropper(true);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleImageSelect = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    mode: "new" | "edit"
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      setCropSrc(reader.result as string);
+      setCropMode(mode);
+      setShowCropper(true);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // new function to apply the crop + upload
+  const applyCrop = async () => {
+    try {
+      // 1. Generate the cropped image blob
+      const blob = await getCroppedImg(cropSrc, croppedArea);
+
+      // 2. Build FormData
+      const form = new FormData();
+      form.append("image", blob, "cropped.jpg");
+
+      // 3. Choose endpoint & payload based on mode
+      let endpoint: string;
+      if (cropMode === "new") {
+        endpoint = `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/add_new_blog_image.php`;
+      } else {
+        endpoint = `${import.meta.env.VITE_API_BASE_URL}/tara-kabataan/tara-kabataan-backend/api/upload_blog_image.php`;
+        // attach the blog_id so your PHP knows which blog to update
+        form.append("blog_id", editableBlog!.blog_id);
+      }
+
+      // 4. Upload
+      const res = await fetch(endpoint, {
+        method: "POST",
+        body: form,
+      });
+      const data = await res.json();
+      console.log("[crop upload]", data);
+
+      // 5. Update state for preview
+      if (data.success && data.image_url) {
+        if (cropMode === "new") {
+          setNewBlogImage(data.image_url);
+        } else {
+          setEditableBlog((prev) =>
+            prev ? { ...prev, image_url: data.image_url } : prev
+          );
+        }
+      } else {
+        toast.error("Upload failed");
+      }
+    } catch (err) {
+      console.error("applyCrop error:", err);
+      toast.error("An error occurred while uploading");
+    } finally {
+      // 6. Close the cropper
+      setShowCropper(false);
+    }
+  };
 
   useEffect(() => {
     if (newBlogModalOpen && loggedInUser) {
@@ -942,6 +1036,33 @@ const AdminBlogs = () => {
 
   return (
     <div className="admin-blogs">
+      {showCropper && (
+        <div className="cropper-overlay">
+          <div className="cropper-container">
+            <button
+              className="cropper-close-btn"
+              onClick={() => setShowCropper(false)}
+            >
+              <FaTimes size={20} />
+            </button>
+
+            <Cropper
+              image={cropSrc}
+              crop={crop}
+              zoom={zoom}
+              aspect={16 / 9}
+              onCropChange={setCrop}
+              onZoomChange={setZoom}
+              onCropComplete={(_, area) => setCroppedArea(area)}
+            />
+
+            <button className="cropper-confirm-btn" onClick={applyCrop}>
+              Confirm
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="admin-blogs-header">
         <div className="admin-blogs-search-container">
           <FaSearch className="admin-blogs-search-icon" />
@@ -1761,7 +1882,7 @@ const AdminBlogs = () => {
                         accept="image/*"
                         style={{ display: "none" }}
                         id="upload-image-input"
-                        onChange={(e) => handleImageUpload(e)}
+                        onChange={(e) => handleImageSelect(e, "edit")}
                       />
                       <div className="admin-blogs-image-buttons">
                         <button
@@ -2239,7 +2360,7 @@ const AdminBlogs = () => {
                         accept="image/*"
                         style={{ display: "none" }}
                         id="new-blog-image-input"
-                        onChange={handleNewBlogImageUpload}
+                        onChange={(e) => handleImageSelect(e, "new")}
                       />
                       <div className="admin-blogs-image-buttons">
                         <button

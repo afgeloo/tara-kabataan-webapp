@@ -2009,6 +2009,65 @@ button:disabled {
   position: relative;
 }
 
+.cropper-overlay {
+  position: fixed;
+  inset: 0;                    
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;               
+}
+
+/* Make the “X” close button a pink circle with white icon */
+.cropper-close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background-color: #fe93b4; /* pink */
+  color: #fff;               /* white “X” */
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.cropper-close-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+/* Make the Confirm button pink */
+.cropper-confirm-btn {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 50px;
+  background: linear-gradient(135deg, #fe93b4, #ff5aa5);
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.cropper-confirm-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+
+
 @media (max-width: 1024px) {
 
   .admin-profile-modal-box {

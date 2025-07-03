@@ -1,5 +1,11 @@
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import React, { useEffect, useState, MouseEvent, FormEvent } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  MouseEvent,
+  FormEvent,
+} from "react";
 import { formatDateDetails, convertTo12HourFormat } from "./mockServer";
 import { ToastContainer, toast } from "react-toastify";
 import "./css/eventdetails.css";
@@ -37,6 +43,9 @@ function EventDetails() {
   const [event, setEvent] = useState<Event | null>(null);
   const [canCopy, setCanCopy] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [fullImageUrl, setFullImageUrl] = useState<string | null>(null);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const aboutRef = useRef<HTMLDivElement>(null);
 
   // inside EventDetails()
   const [showModal, setShowModal] = useState(false);
@@ -134,6 +143,33 @@ function EventDetails() {
     }
   };
 
+  useEffect(() => {
+    const container = aboutRef.current;
+    if (!container) return;
+
+    // find all images injected by dangerouslySetInnerHTML
+    const imgs = Array.from(
+      container.querySelectorAll<HTMLImageElement>("img")
+    );
+    // attach a click handler to each
+    const handlers = imgs.map((img) => {
+      img.style.cursor = "zoom-in";
+      const handler = () => {
+        setFullImageUrl(img.src);
+        setShowImageModal(true);
+      };
+      img.addEventListener("click", handler);
+      return { img, handler };
+    });
+
+    // cleanup on re-render / unmount
+    return () => {
+      handlers.forEach(({ img, handler }) =>
+        img.removeEventListener("click", handler)
+      );
+    };
+  }, [event]);
+
   if (loading || !event) {
     return <Preloader />;
   }
@@ -158,7 +194,16 @@ function EventDetails() {
         </div>
         <div className="event-details-grid">
           <div className="event-details-left">
-            <img src={imageUrl} alt="Event" className="event-details-image" />
+            <img
+              src={imageUrl}
+              alt="Event"
+              className="event-details-image"
+              style={{ cursor: "zoom-in" }}
+              onClick={() => {
+                setFullImageUrl(imageUrl);
+                setShowImageModal(true);
+              }}
+            />
             <div className="event-details-info">
               <div className="event-detail-section-going">
                 {(() => {
@@ -303,6 +348,7 @@ function EventDetails() {
             <div className="event-divider"></div>
             <div
               className="event-about"
+              ref={aboutRef}
               dangerouslySetInnerHTML={{ __html: event.event_content }}
             ></div>
           </div>
@@ -390,6 +436,26 @@ function EventDetails() {
           limit={1}
         />
       </div>
+      {showImageModal && fullImageUrl && (
+        <div className="zoom-modal">
+          <div
+            className="zoom-backdrop"
+            onClick={() => setShowImageModal(false)}
+          />
+          <img
+            src={fullImageUrl}
+            alt="Fullscreen event"
+            className="zoom-image"
+          />
+          <button
+            className="zoom-close"
+            onClick={() => setShowImageModal(false)}
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       <Footer />
     </div>
   );
